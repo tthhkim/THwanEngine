@@ -47,9 +47,7 @@ public:
 	GLuint textureID;
 	THVector2 size;
 
-	THImage(){}
-	THImage(float _w,float _h):size(_w,_h){}
-
+	THImage(float w=0.0f,float h=0.0f):size(w,h){}
 	inline void DeleteTexture() const
 	{
 		glDeleteTextures(1,&textureID);
@@ -100,14 +98,13 @@ application and used many times to draw primitives.
 
 GL_STREAM_DRAW The buffer object data will be specified once by the
 application and used a few times to draw primitives.
-
 */
 	void Load(void* data,GLuint bytes,GLenum usage);
 	inline void Load(GLfloat* vertices,GLuint count)
 	{
 		Load(vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
 	}
-	void Update(GLvoid* data,GLintptr offset,GLuint bytes);
+	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
 
 	inline void BeginDrawing() const
 	{

@@ -92,7 +92,6 @@
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
     <ClInclude Include="..\GameEngine\Util\THTween.h" />
-    <ClInclude Include="..\THGlobal.h" />
     <ClInclude Include="..\THPrivate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

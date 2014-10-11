@@ -252,7 +252,7 @@ void Touch_Point_Up(const float x,const float y)
 		downedButton=0;
 	}		
 }
-void GoFrame(THFrame* f,void* data)
+void GoFrame(THFrame* f,void* data=0)
 {
 	if(currentFrame){currentFrame->onChangeFrame(f);}
 	f->Action(currentFrame,data);									 

@@ -84,7 +84,7 @@ void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 	//ToDo Returning to default vertexbuffer
 }
-void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes)
+void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes) const
 {
 	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
 	glBufferSubData(GL_ARRAY_BUFFER,offset,bytes,data);

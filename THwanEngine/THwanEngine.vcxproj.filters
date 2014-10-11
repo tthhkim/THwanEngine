@@ -89,8 +89,5 @@
     <ClInclude Include="..\GameEngine\Rendering\THRenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\THGlobal.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

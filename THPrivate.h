@@ -83,7 +83,7 @@ extern THVector2 viewport;
 extern THFrame* currentFrame;
 
 
-void GoFrame(THFrame* f,void* data);
+void GoFrame(THFrame* f,void* data=0);
 
 //pthread_t newThread(void* (*function)(void*), void* data);
 
