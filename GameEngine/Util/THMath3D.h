@@ -12,6 +12,7 @@ public:
 	{
 		x=_x;
 		y=_y;
+		z=_z;
 	}
 	THVector3(const THVector2& v2,const float _z)
 	{
@@ -218,7 +219,7 @@ inline THVector3 operator *(const THMatrix33& m,const THVector3& v)
 {
 	return THVector3(THDot(m.row1,v),THDot(m.row2,v),THDot(m.row3,v));
 }
-THMatrix33 operator *(const THMatrix33& a,const THMatrix33& b)
+static THMatrix33 operator *(const THMatrix33& a,const THMatrix33& b)
 {
 	const THVector3 c1(b.row1.x,b.row2.x,b.row3.x);
 	const THVector3 c2(b.row1.y,b.row2.y,b.row3.y);
