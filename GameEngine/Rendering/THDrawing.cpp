@@ -30,14 +30,14 @@ GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format)//,
 void THTexture::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	image=_image;
-	const THVector2& invSize=1.0f/_size;
+	const THVector2& invSize=1.0f/_image->size;
 	const THVector2& min=pos*invSize;
 	const THVector2& max=(pos+_size)*invSize;
 
 	textureBuffer[0].Set(min.x,min.y);
 	textureBuffer[1].Set(max.x,min.y);
-	textureBuffer[2].Set(max.x,max.y);
-	textureBuffer[3].Set(min.x,max.x);
+	textureBuffer[2].Set(min.x,max.y);
+	textureBuffer[3].Set(max.x,max.y);
 	
 	position=pos;
 	size=_size;
@@ -48,8 +48,8 @@ void THTexture::Set(THImage* _image)
 
 	textureBuffer[0].Set(0.0f,0.0f);
 	textureBuffer[1].Set(1.0f,0.0f);
-	textureBuffer[2].Set(1.0f,1.0f);
-	textureBuffer[3].Set(0.0f,1.0f);
+	textureBuffer[2].Set(0.0f,1.0f);
+	textureBuffer[3].Set(1.0f,1.0f);
 
 	position.Set(0.0f,0.0f);
 	size=image->size;
@@ -67,8 +67,8 @@ void THTexture::UpsideDown()
 
 	textureBuffer[0].Set(sx,sy2);
 	textureBuffer[1].Set(sx2,sy2);
-	textureBuffer[2].Set(sx2,sy);
-	textureBuffer[3].Set(sx,sy);
+	textureBuffer[2].Set(sx,sy);
+	textureBuffer[3].Set(sx2,sy);
 }
 
 

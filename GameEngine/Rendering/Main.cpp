@@ -714,7 +714,6 @@ THImage LoadTexture(const char* name)
 	long size=ftell(filep);
 	fseek(filep,0,SEEK_SET);
 	unsigned char* mem=new unsigned char[size];
-	THLog("LibPNG // Size : %d",size);
 	fread(mem,size,1,filep);
 
 	unsigned char* colorBuf;

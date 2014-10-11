@@ -24,7 +24,7 @@ void THMovieClip::draw()
 
 	glVertexAttrib1f(hasColorHandler,0.0f);
 	//glVertexAttrib4f(colorHandler,1.0f,1.0f,1.0f,1.0f);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 

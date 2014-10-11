@@ -280,7 +280,7 @@ void THShockWaveEffect::Load(THTexture* src)
 		"varying vec2 vTexCoord;"
 		"void main(){"
 		"vTexCoord=aTex;"
-		"gl_Position=vec4(vert.x,-vert.y,0.0,1.0);"
+		"gl_Position=vec4(vert,0.0,1.0);"
 		"}"
 		;
 	const GLchar* fs=
@@ -335,7 +335,7 @@ void THShockWaveEffect::Draw(float dt)
 	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
 	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
 
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void THSwirlEffect::Load(THTexture* src)
@@ -349,7 +349,7 @@ void THSwirlEffect::Load(THTexture* src)
 		"varying vec2 vTexCoord;"
 		"void main(){"
 		"vTexCoord=aTex;"
-		"gl_Position=vec4(vert.x,-vert.y,0.0,1.0);"
+		"gl_Position=vec4(vert,0.0,1.0);"
 		"}"
 		;
 	const GLchar* fs=
@@ -399,5 +399,5 @@ void THSwirlEffect::Draw()
 	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
 	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
 
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

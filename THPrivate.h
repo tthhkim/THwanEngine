@@ -6,6 +6,7 @@
 #define TWEEN_DELETE_LIST_SIZE 4
 
 #define USE_PNG 1
+#define SHOW_LOG 0
 
 #define THPLATFORM_WINDOWS 1
 #define THPLATFORM_ANDROID 2
@@ -42,19 +43,27 @@ class THTween;
 #else
 	#define TH_DEBUG
 #if THPLATFORM==THPLATFORM_ANDROID
+#if SHOW_LOG==1
 	#define THLog(...) __android_log_print(ANDROID_LOG_DEBUG,"TH-DEBUG",__VA_ARGS__)
+#else
+	#define THLog(...)
+#endif
 	#define THError(...) __android_log_print(ANDROID_LOG_ERROR,"TH-ERROR",__VA_ARGS__)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 	#include <cstdio>
+#if SHOW_LOG==1
 	#define THLog(...) printf("\n"__VA_ARGS__)
-	#define THError(...) printf("\nERROR	:	"__VA_ARGS__)
+#else
+	#define THLog(...)
+#endif
+	#define THError(...) printf("\n"__VA_ARGS__)
 #endif
 #endif
 
 #define MAKE_CENTER_VERTEX(name,hw,hh) \
-	GLfloat name[]={-hw, hh,hw, hh,hw,-hh,-hw,-hh}
-#define MAKE_VERTEX(name,left,right,top,bottom) \
-	GLfloat name[]={left, bottom,right, bottom,right,top,left,top}
+	GLfloat name[]={-hw, -hh,hw, -hh,-hw,hh,hw,hh}
+#define MAKE_VERTEX(name,left,bottom,right,top) \
+	GLfloat name[]={left, bottom,right, bottom,left,top,right,top}
 
 extern const GLfloat defaultFullVertices[];
 
