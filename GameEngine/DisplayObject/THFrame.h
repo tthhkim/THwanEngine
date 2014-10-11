@@ -25,9 +25,13 @@ public:
 
 	bool canTouch;
 
+	
 	THFrame(const unsigned int objectCount,const unsigned int buttonCount):objectList(objectCount),buttonList(buttonCount)
 	{
 		canTouch=true;
+	}
+	THFrame():THFrame(2,2)
+	{
 	}
 	void DrawObjects() const;
 	virtual void Draw(float dt);

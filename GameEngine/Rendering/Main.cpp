@@ -611,11 +611,11 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 
 #endif
 
-#if USE_LIBPNG==1
-#include <libpng/png.h>
-#include <libpng/pngstruct.h>
+#if USE_PNG==1
 
 #if THPLATFORM==THPLATFORM_ANDROID
+#include <libpng/png.h>
+#include <libpng/pngstruct.h>
 static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t bytesToRead)
 {
 	assert(png_ptr->io_ptr);
@@ -665,7 +665,7 @@ THImage LoadTexture(const char* name)
 		assert(st==0);
 #endif
 
-	THImage img(width,height);
+	THImage img((float)width,(float)height);
 
 	const png_uint_32 bytesPerRow = png_get_rowbytes(png_ptr, info_ptr);
 	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*height);
@@ -704,5 +704,38 @@ THImage LoadTexture(const char* name)
 	*/
 }
 #elif THPLATFORM==THPLATFORM_WINDOWS
+
+#include <lodepng.h>
+THImage LoadTexture(const char* name)
+{
+	FILE* filep=fopen(name,"rb");
+	fseek(filep,0,SEEK_END);
+
+	long size=ftell(filep);
+	fseek(filep,0,SEEK_SET);
+	unsigned char* mem=new unsigned char[size];
+	THLog("LibPNG // Size : %d",size);
+	fread(mem,size,1,filep);
+
+	unsigned char* colorBuf;
+	unsigned width=0,height=0;
+
+	lodepng_decode_memory(&colorBuf, &width,&height,
+                               mem, size,
+                               LCT_RGBA, 8);
+	THLog("LibPNG // Width : %d , Height : %d",width,height);
+#ifndef NDEBUG
+	
+		unsigned int st=width&(width-1);
+		assert(st==0);
+		st=height&(height-1);
+		assert(st==0);
+#endif
+	THImage img((float)width,(float)height);
+	img.textureID=GenerateTexture(colorBuf,width,height,GL_RGBA);
+	free(colorBuf);
+
+	return img;
+}
 #endif
 #endif
