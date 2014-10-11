@@ -104,55 +104,6 @@ static void RenderEnterFrame()
 #include <android/input.h>
 #include <android/keycodes.h>
 
-static void THEGLInit(struct android_app* app)
-{
-	extern EGLDisplay eglDisplay;
-	extern EGLSurface eglSurface;
-	extern EGLContext eglContext;
-
-	const EGLint attribs[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_NONE
-    };
-    EGLint format;
-    EGLint numConfigs;
-    EGLConfig config;
-
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    EGLint eglMajor,eglMinor;
-    eglInitialize(eglDisplay, &eglMajor,&eglMinor);
-	THLog("EGL Initialization : %d . %d",eglMajor,eglMinor);
-    eglChooseConfig(eglDisplay, attribs, &config, 1, &numConfigs);
-    eglGetConfigAttrib(eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format);
-	
-
-    ANativeWindow_setBuffersGeometry(app->window, 0, 0, format);
-
-    eglSurface = eglCreateWindowSurface(eglDisplay, config, (EGLNativeWindowType)(app->window), NULL);
-	const EGLint attrib_list[] = {
-		EGL_CONTEXT_CLIENT_VERSION, 2,
-        EGL_NONE
-    };
-    eglContext = eglCreateContext(eglDisplay, config, NULL, attrib_list);
-
-	if (eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext) == EGL_FALSE) {
-		THError("Unable to eglMakeCurrent");
-		assert(0);
-		return;
-    }
-
-	EGLint sw,sh;
-    eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, &sw);
-    eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, &sh);
-	windowSize.Set(sw,sh);
-	gameScale.Set(0.0f,0.0f);
-}
-
 static void init_display(struct android_app* app) {
 	THEGLInit(app);
 	THGLInit();
@@ -461,87 +412,6 @@ static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeW
 	return true;
 }
 
-
-static void THEGLInit(HDC deviceContext,HWND nativeWindow)
-{
-	extern EGLDisplay eglDisplay;
-	extern EGLSurface eglSurface;
-	extern EGLContext eglContext;
-
-	
-    
-    
-
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-	EGLint eglMajor,eglMinor;
-    eglInitialize(eglDisplay, &eglMajor,&eglMinor);
-	THLog("EGL Initialization : %d . %d",eglMajor,eglMinor);
-	//--------------CreateDisplay
-
-	
-	
-	const EGLint attribs[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_NONE
-    };
-	EGLint numConfigs;
-    EGLConfig config;
-    eglChooseConfig(eglDisplay, attribs, &config, 1, &numConfigs);
-	//EGLint format;
-    //eglGetConfigAttrib(eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format);
-	//--------------ChooseEGLConfig
-
-
-
-
-	
-	
-    eglSurface = eglCreateWindowSurface(eglDisplay, config, nativeWindow, NULL);
-	
-	if(eglSurface == EGL_NO_SURFACE)
-	{
-		eglGetError(); // Clear error
-		eglSurface = eglCreateWindowSurface(eglDisplay, config, NULL, NULL);
-	}
-	
-	//---------------CreateEGLSurface
-
-
-
-
-	
-
-	const EGLint attrib_list[] = {
-		EGL_CONTEXT_CLIENT_VERSION, 2,
-        EGL_NONE
-    };
-    eglContext = eglCreateContext(eglDisplay, config, NULL, attrib_list);
-
-	/*	Make OpenGL ES the current API.
-		After creating the context, EGL needs a way to know that any subsequent EGL calls are going to be affecting OpenGL ES,
-		rather than any other API (such as OpenVG).
-	*/
-	eglBindAPI(EGL_OPENGL_ES_API);
-	
-	if (eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext) == EGL_FALSE) {
-		THError("Unable to eglMakeCurrent");
-		assert(0);
-		return;
-    }
-	//---------------------SetupEGLContext
-
-	EGLint sw,sh;
-    eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, &sw);
-    eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, &sh);
-	windowSize.Set((float)sw,(float)sh);
-	gameScale.Set(0.0f,0.0f);
-}
-
 int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
 {
 	SetFrameRate(60.0f);
@@ -562,7 +432,7 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 	CreateWindowAndDisplay(applicationInstance,nativeWindow,deviceContext);
 	
 	THLog("EGLInit");
-	THEGLInit(deviceContext,nativeWindow);
+	THEGLInit(&nativeWindow);
 	THLog("GLInit");
 	THGLInit();
 

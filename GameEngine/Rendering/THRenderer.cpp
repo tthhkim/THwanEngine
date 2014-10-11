@@ -200,7 +200,66 @@ void THTerm_Display() {
     eglContext = EGL_NO_CONTEXT;
     eglSurface = EGL_NO_SURFACE;
 }
+void THEGLInit(THApplicaation* state)
+{
+    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
+    EGLint eglMajor,eglMinor;
+    eglInitialize(eglDisplay, &eglMajor,&eglMinor);
+	THLog("EGL Initialization : %d . %d",eglMajor,eglMinor);
+
+	const EGLint attribs[] = {
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_BLUE_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_RED_SIZE, 8,
+            EGL_NONE
+    };
+	EGLint numConfigs;
+    EGLConfig config;
+    eglChooseConfig(eglDisplay, attribs, &config, 1, &numConfigs);
+
+#if THPLATFORM==THPLATFORM_ANDROID
+	EGLint format;
+    eglGetConfigAttrib(eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format);
+	
+    ANativeWindow_setBuffersGeometry(app->window, 0, 0, format);
+
+    eglSurface = eglCreateWindowSurface(eglDisplay, config, (EGLNativeWindowType)(app->window), NULL);
+#elif THPLATFORM==THPLATFORM_WINDOWS
+
+	eglSurface = eglCreateWindowSurface(eglDisplay, config, *state, NULL);
+	
+	if(eglSurface == EGL_NO_SURFACE)
+	{
+		eglGetError(); // Clear error
+		eglSurface = eglCreateWindowSurface(eglDisplay, config, NULL, NULL);
+	}
+#endif
+
+
+	const EGLint attrib_list[] = {
+		EGL_CONTEXT_CLIENT_VERSION, 2,
+        EGL_NONE
+    };
+    eglContext = eglCreateContext(eglDisplay, config, NULL, attrib_list);
+#if THPLATFORM==THPLATFORM_WINDOWS
+	eglBindAPI(EGL_OPENGL_ES_API);
+#endif
+
+	if (eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext) == EGL_FALSE) {
+		THError("Unable to eglMakeCurrent");
+		assert(0);
+		return;
+    }
+
+	EGLint sw,sh;
+    eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, &sw);
+    eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, &sh);
+	windowSize.Set((float)sw,(float)sh);
+	gameScale.Set(0.0f,0.0f);
+}
 
 
 

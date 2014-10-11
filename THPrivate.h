@@ -102,7 +102,8 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp);
 typedef struct android_app* THApplicaation;
 typedef long THTimeType;
 #elif THPLATFORM==THPLATFORM_WINDOWS
-typedef void THApplicaation;
+#include <Windows.h>
+typedef HWND THApplicaation;
 typedef long long THTimeType;
 #endif
 
