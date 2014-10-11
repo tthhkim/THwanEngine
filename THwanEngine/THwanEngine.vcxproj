@@ -73,6 +73,7 @@
     <ClCompile Include="..\Callback.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THFrame.cpp" />
+    <ClCompile Include="..\GameEngine\DisplayObject\THShadowManager.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\Main.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THEffects.cpp" />
@@ -84,6 +85,7 @@
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h" />
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h" />
+    <ClInclude Include="..\GameEngine\DisplayObject\THShadowManager.h" />
     <ClInclude Include="..\GameEngine\Rendering\THDrawing.h" />
     <ClInclude Include="..\GameEngine\Rendering\THEffects.h" />
     <ClInclude Include="..\GameEngine\Rendering\THRenderer.h" />

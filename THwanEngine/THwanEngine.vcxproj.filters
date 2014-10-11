@@ -54,6 +54,9 @@
     <ClCompile Include="..\Includes\lodepng.cpp">
       <Filter>소스 파일\lodepng</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameEngine\DisplayObject\THShadowManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h">
@@ -87,6 +90,9 @@
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\GameEngine\Rendering\THRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\DisplayObject\THShadowManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
