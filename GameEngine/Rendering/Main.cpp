@@ -397,7 +397,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		return 1;
 	}
 		break;
-	case WM_RBUTTONDBLCLK:
+	case WM_RBUTTONUP:
 	{
 		if(currentFrame->onBackReleased()==0)
 		{

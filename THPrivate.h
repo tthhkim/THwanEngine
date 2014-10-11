@@ -122,5 +122,9 @@ static inline float getGameY(float _y)
 {
 	return _y*gameScale.y + viewport.y;
 }
+static inline THVector2 GetGameRelative(const THVector2& v)
+{
+	return viewport+(gameSize*v);
+}
 
 #endif
