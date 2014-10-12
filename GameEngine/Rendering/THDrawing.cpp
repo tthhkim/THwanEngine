@@ -62,8 +62,8 @@ void THTexture::UpsideDown()
 {
 	const float sx=textureBuffer[0].x;
 	const float sy=textureBuffer[0].y;
-	const float sx2=textureBuffer[2].x;
-	const float sy2=textureBuffer[2].y;
+	const float sx2=textureBuffer[3].x;
+	const float sy2=textureBuffer[3].y;
 
 	textureBuffer[0].Set(sx,sy2);
 	textureBuffer[1].Set(sx2,sy2);
