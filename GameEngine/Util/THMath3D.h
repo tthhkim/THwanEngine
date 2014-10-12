@@ -192,6 +192,11 @@ public:
 	THMatrix33 Inverse() const;
 
 	static THMatrix33 RotateAxis(const THVector3& axis,float c,float s);
+
+	/*
+	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
+	*/
+	static THMatrix33 EyeTrnsformMatrix(const THVector3& eyenormal);
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)

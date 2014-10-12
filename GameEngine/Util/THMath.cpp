@@ -19,6 +19,31 @@ THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 
 	  return (c*Ident) + (s*ux) + ((1.0f-c)*uxu);
 }
+THMatrix33 THMatrix33::EyeTrnsformMatrix(const THVector3& normz)
+{
+	const THVector3 axisz(0.0f,0.0f,1.0f);
+
+	if(axisz==normz)
+	{
+		return THMatrix33();
+	}else
+	{
+		THVector3& axis=THCross(axisz,normz);
+		const float c=THDot(axisz,normz);
+		const float s=axis.Normalize();
+
+		const THMatrix33& rotmat=THMatrix33::RotateAxis(axis,c,s);
+
+		const THVector3& normx=rotmat*THVector3(1.0f,0.0f,0.0f);
+		const THVector3& normy=rotmat*THVector3(0.0f,1.0f,0.0f);
+
+		return THMatrix33(
+			THVector3(normx.x,normy.x,normz.x),
+			THVector3(normx.y,normy.y,normz.y),
+			THVector3(normx.z,normy.z,normz.z)
+			).Inverse();
+	}
+}
 float THMatrix33::Discriminant() const
 {
 	return row1.x*(row2.y*row3.z - row2.z*row3.y) - row1.y*(row2.x*row3.z - row2.z*row3.x) + row1.z*(row2.x*row3.y - row2.y*row3.x);
