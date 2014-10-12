@@ -1,15 +1,24 @@
 #include "THMath.h"
 #include "THMath3D.h"
 
-THVector3 RotateAxis(const THVector3& v,const THVector3& normal,float c,float s)
+THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 {
-	return c*v + s*THCross(normal,v) + ((1-c)*THDot(normal,v))*normal;
-}
-THVector2 GetAngle(const THVector3& normal1,const THVector3& normal2)
-{
-	return THVector2(THDot(normal1,normal2) , THCross(normal1,normal2).Length());
-}
+	  const THMatrix33 ux
+		  (
+		  THVector3(0.0f , -axis.z , axis.y),
+		  THVector3(axis.z , 0.0f , -axis.x),
+		  THVector3(-axis.y , axis.x , 0.0f)
+		  );
+	  const THMatrix33 uxu
+		  (
+		  axis.x*axis,
+		  axis.y*axis,
+		  axis.z*axis
+		  );
+	  const THMatrix33 Ident;
 
+	  return (c*Ident) + (s*ux) + ((1.0f-c)*uxu);
+}
 float THMatrix33::Discriminant() const
 {
 	return row1.x*(row2.y*row3.z - row2.z*row3.y) - row1.y*(row2.x*row3.z - row2.z*row3.x) + row1.z*(row2.x*row3.y - row2.y*row3.x);

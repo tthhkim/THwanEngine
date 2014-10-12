@@ -76,8 +76,6 @@ inline THVector3 THCross(const THVector3& a,const THVector3& b)
 		a.x*b.y - a.y*b.x
 		);
 }
-THVector3 RotateAxis(const THVector3& v,const THVector3& normal,float c,float s);
-THVector2 GetAngle(const THVector3& v1,const THVector3& v2);
 
 
 inline THVector3 operator +(const THVector3& a,const THVector3& b)
@@ -192,6 +190,8 @@ public:
 		return Discriminant()!=0.0f;
 	}
 	THMatrix33 Inverse() const;
+
+	static THMatrix33 RotateAxis(const THVector3& axis,float c,float s);
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)
