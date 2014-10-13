@@ -19,6 +19,22 @@ THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 
 	  return (c*Ident) + (s*ux) + ((1.0f-c)*uxu);
 }
+THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
+{
+	if(p1==p2)
+	{
+		return THMatrix33();
+	}else if(p1==-p2)
+	{
+		return -THMatrix33();
+	}
+
+	THVector3& axis=THCross(p1,p2);
+	const float c=THDot(p1,p2);
+	const float s=axis.Normalize();
+
+	return THMatrix33::RotateAxis(axis,c,s);
+}
 THMatrix33 THMatrix33::EyeTrnsformMatrix(const THVector3& normz)
 {
 	const THVector3 axisz(0.0f,0.0f,1.0f);
@@ -26,23 +42,16 @@ THMatrix33 THMatrix33::EyeTrnsformMatrix(const THVector3& normz)
 	if(axisz==normz)
 	{
 		return THMatrix33();
-	}else
+	}else if(-axisz==normz)
 	{
-		THVector3& axis=THCross(axisz,normz);
-		const float c=THDot(axisz,normz);
-		const float s=axis.Normalize();
-
-		const THMatrix33& rotmat=THMatrix33::RotateAxis(axis,c,s);
-
-		const THVector3& normx=rotmat*THVector3(1.0f,0.0f,0.0f);
-		const THVector3& normy=rotmat*THVector3(0.0f,1.0f,0.0f);
-
-		return THMatrix33(
-			THVector3(normx.x,normy.x,normz.x),
-			THVector3(normx.y,normy.y,normz.y),
-			THVector3(normx.z,normy.z,normz.z)
-			).Inverse();
+		return -THMatrix33();
 	}
+
+	THVector3& axis=THCross(axisz,normz);
+	const float c=THDot(axisz,normz);
+	const float s=axis.Normalize();
+
+	return THMatrix33::RotateAxis(axis,c,-s);
 }
 float THMatrix33::Discriminant() const
 {
@@ -60,6 +69,17 @@ THMatrix33 THMatrix33::Inverse() const
 		THVector3( c23.y*det , -c13.y*det , c12.y*det ),
 		THVector3( c23.z*det , -c13.z*det , c12.z*det )
 		);
+}
+
+void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max)
+{
+	const THVector3& sizeI=1.0f/(max-min);
+	const THVector3& mmid=-(max+min);
+
+	mat[0]=2.0f*min.z*sizeI.x; mat[1]=0.0f; mat[2]=mmid.x*sizeI.x; mat[3]=0.0f;
+	mat[4]=0.0f; mat[5]=2.0f*min.z*sizeI.y; mat[6]=mmid.y*sizeI.y; mat[7]=0.0f;
+	mat[8]=0.0f; mat[9]=0.0f; mat[10]=mmid.z*sizeI.z; mat[11]=2.0f*min.z*max.z*sizeI.z;
+	mat[12]=0.0f; mat[13]=0.0f; mat[14]=1.0f; mat[15]=0.0f;
 }
 void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count)
 {

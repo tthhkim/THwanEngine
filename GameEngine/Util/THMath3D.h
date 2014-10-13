@@ -33,7 +33,7 @@ public:
 		y=_y;
 		z=_z;
 	}
-	THVector3 operator -() {return THVector3(-x,-y,-z);}
+	THVector3 operator -() const {return THVector3(-x,-y,-z);}
 	void operator +=(const THVector3& v){ x+=v.x; y+=v.y; z+=v.z; }
 	void operator -=(const THVector3& v){ x-=v.x; y-=v.y; z-=v.z; }
 	void operator *=(const float& a){ x*=a; y*=a; z*=a; }
@@ -124,6 +124,7 @@ inline bool operator ==(const THVector3& a, const THVector3& b)
 	return (a.x==b.x)&&(a.y==b.y)&&(a.z==b.z);
 }
 
+void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max);
 
 class THMatrix33
 {
@@ -140,6 +141,10 @@ public:
 		row3=r3;
 	}
 
+	THMatrix33 operator -() const
+	{
+		return THMatrix33(-row1,-row2,-row3);
+	}
 	void operator +=(const THMatrix33& m)
 	{
 		row1+=m.row1;
@@ -192,6 +197,12 @@ public:
 	THMatrix33 Inverse() const;
 
 	static THMatrix33 RotateAxis(const THVector3& axis,float c,float s);
+
+
+	/*
+	returns 3 by 3 matrix which has rotation from p1 to p2
+	*/
+	static THMatrix33 RotatePoint(const THVector3& p1,const THVector3& p2);
 
 	/*
 	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
