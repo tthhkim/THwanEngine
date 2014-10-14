@@ -101,7 +101,7 @@ inline THVector3 operator /(const THVector3& v,const float s)
 }
 inline THVector3 operator /(const float s,const THVector3& v)
 {
-	return THVector3(1.0f/v.x,1.0f/v.y,1.0f/v.z);
+	return THVector3(s/v.x,s/v.y,s/v.z);
 }
 inline THVector3 operator *(const THVector3& a, const THVector3& b)
 {
@@ -124,6 +124,7 @@ inline bool operator ==(const THVector3& a, const THVector3& b)
 	return (a.x==b.x)&&(a.y==b.y)&&(a.z==b.z);
 }
 
+// W input componet must be z*z
 void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max);
 
 class THMatrix33
@@ -204,6 +205,11 @@ public:
 	*/
 	static THMatrix33 RotatePoint(const THVector3& p1,const THVector3& p2);
 
+	/*
+	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
+	In Radian
+	*/
+	static THMatrix33 EyeTrnsformMatrix(float yangle,float xangle);
 	/*
 	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
 	*/
