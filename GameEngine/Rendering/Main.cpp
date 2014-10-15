@@ -284,7 +284,8 @@ void android_main(struct android_app* state)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <windowsx.h>
-bool destroyRequested=false;
+static bool destroyRequested=false;
+static bool isMouseDown;
 LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM windowParameters, LPARAM longWindowParameters)
 {
 	
@@ -318,7 +319,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		}
 	case WM_MOUSEMOVE:
 	{
-						 if(currentFrame->canTouch==false){return 0;}
+		if(currentFrame->canTouch==false || isMouseDown==false){return 0;}
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
 		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
@@ -328,7 +329,8 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		break;
 	case WM_LBUTTONDOWN:
 	{
-						   if(currentFrame->canTouch==false){return 0;}
+		if(currentFrame->canTouch==false){return 0;}
+		isMouseDown=true;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
 		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
@@ -339,7 +341,8 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		break;
 	case WM_LBUTTONUP:
 	{
-						 if(currentFrame->canTouch==false){return 0;}
+		if(currentFrame->canTouch==false){return 0;}
+		isMouseDown=false;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
 		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
