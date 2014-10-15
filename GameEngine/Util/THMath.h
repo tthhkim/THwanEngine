@@ -76,6 +76,10 @@ inline THVector2 THMax(const THVector2& a,const THVector2& b)
 {
 	return THVector2(a.x<b.x?b.x:a.x , a.y<b.y?b.y:a.y);
 }
+inline THVector2 THAngleVector(float angle)
+{
+	return THVector2(cosf(angle),sinf(angle));
+}
 
 
 inline THVector2 operator +(const THVector2& a,const THVector2& b)

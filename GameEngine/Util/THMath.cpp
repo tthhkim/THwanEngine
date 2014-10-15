@@ -1,5 +1,6 @@
 #include "THMath.h"
 #include "THMath3D.h"
+#include <THPrivate.h>
 
 THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 {
@@ -26,7 +27,8 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 		return THMatrix33();
 	}else if(p1==-p2)
 	{
-		return -THMatrix33();
+		THError("Cannot get axis from negative vectors");
+		return THMatrix33();
 	}
 
 	THVector3& axis=THCross(p1,p2);
@@ -35,36 +37,14 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 
 	return THMatrix33::RotateAxis(axis,c,s);
 }
-THMatrix33 THMatrix33::EyeTrnsformMatrix(float yangle,float xangle)
+THMatrix33 THMatrix33::EyeTrnsformMatrix(const THVector2& yrot,const THVector2& xrot)
 {
-	const float ycos=cos(yangle);
-	const float ysin=sin(yangle);
-	const float xcos=cos(xangle);
-	const float xsin=sin(xangle);
 	return THMatrix33
 		(
-		THVector3(ycos,ysin*xsin,ysin*xcos),
-		THVector3(0.0f,xcos,-xsin),
-		THVector3(-ysin,ycos*xsin,xcos*ycos)
+		THVector3(yrot.x , 0.0f , yrot.y),
+		THVector3(xrot.y*yrot.y , xrot.x , -xrot.y*yrot.x),
+		THVector3(-xrot.x*yrot.y , xrot.y , xrot.x*yrot.x)
 		);
-}
-THMatrix33 THMatrix33::EyeTrnsformMatrix(const THVector3& normz)
-{
-	const THVector3 axisz(0.0f,0.0f,1.0f);
-
-	if(axisz==normz)
-	{
-		return THMatrix33();
-	}else if(-axisz==normz)
-	{
-		return -THMatrix33();
-	}
-
-	THVector3& axis=THCross(axisz,normz);
-	const float c=THDot(axisz,normz);
-	const float s=axis.Normalize();
-
-	return THMatrix33::RotateAxis(axis,c,-s);
 }
 void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max)
 {

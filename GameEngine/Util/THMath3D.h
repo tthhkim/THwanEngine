@@ -209,11 +209,7 @@ public:
 	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
 	In Radian
 	*/
-	static THMatrix33 EyeTrnsformMatrix(float yangle,float xangle);
-	/*
-	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
-	*/
-	static THMatrix33 EyeTrnsformMatrix(const THVector3& eyenormal);
+	static THMatrix33 EyeTrnsformMatrix(const THVector2& yrot,const THVector2& xrot);
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)
