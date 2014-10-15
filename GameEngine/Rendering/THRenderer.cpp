@@ -42,7 +42,12 @@ void OnDrawFrame(float dt)
 	//Draw Start
 	//glUseProgram(program);
 	
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(
+		GL_COLOR_BUFFER_BIT
+#if USE_DEPTH_BUFFER==1
+		|GL_DEPTH_BUFFER_BIT
+#endif
+		);
 
 	currentFrame->Draw(dt);
 
@@ -173,7 +178,15 @@ void THGLInit()
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+#if USE_DEPTH_BUFFER==1
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+#else
 	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+#endif
 	glViewport(0, 0, (GLsizei)windowSize.x,(GLsizei)windowSize.y);
 
 	OnSurfaceCreated();
@@ -214,6 +227,9 @@ void THEGLInit(THApplicaation* state)
             EGL_BLUE_SIZE, 8,
             EGL_GREEN_SIZE, 8,
             EGL_RED_SIZE, 8,
+#if USE_DEPTH_BUFFER==1
+			EGL_DEPTH_SIZE,8,
+#endif
             EGL_NONE
     };
 	EGLint numConfigs;

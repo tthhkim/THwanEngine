@@ -7,6 +7,7 @@
 
 #define USE_PNG 1
 #define SHOW_LOG 0
+#define USE_DEPTH_BUFFER 1
 
 #define THPLATFORM_WINDOWS 1
 #define THPLATFORM_ANDROID 2
