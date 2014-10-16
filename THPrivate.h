@@ -78,19 +78,13 @@ extern THVector2 gameScale;
 extern THVector2 viewport;
 extern THFrame* currentFrame;
 
-extern THProgramObject defaultProgram;
+extern THProgram defaultProgram;
 extern GLuint vertexHandler;
 extern GLuint rotationHandler;
 extern GLuint positionHandler;
 extern GLuint textureHandler;
 extern GLuint projectMatrixHandler;
 extern GLuint hasColorHandler,colorHandler;
-
-extern THVector2 windowSize;
-extern THVector2 gameSize;
-extern THVector2 gameScale;
-extern THVector2 viewport;
-extern THFrame* currentFrame;
 
 
 void GoFrame(THFrame* f,void* data=0);

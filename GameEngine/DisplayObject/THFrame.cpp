@@ -36,7 +36,7 @@ void THFrame::RemoveButton(THButton* button)
 }
 void THFrame::DrawObjects() const
 {
-	glUseProgram(defaultProgram.programObject);
+	defaultProgram.Use();
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
 	THDisplayObject* object;

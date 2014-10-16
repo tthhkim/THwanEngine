@@ -1,16 +1,180 @@
 #include "THEffects.h"
 
+void THLightEffect::Load(THTexture* dest,THTexture* src)
+{
+	destTexture=dest;
+	srcTexture=src;
 
-void THLightBaseCircle::Load()
+	const GLchar* vs=
+		"precision mediump float;"
+		"attribute vec2 vert;"
+		"attribute vec2 aDestTex;"
+		"attribute vec2 aSrcTex;"
+		"varying vec2 vDestTex;"
+		"varying vec2 vSrcTex;"
+		"void main(){"
+		"vDestTex=aDestTex;"
+		"vSrcTex=aSrcTex;"
+		"gl_Position=vec4(vert,0.0,1.0);"
+		"}"
+		;
+	const GLchar* fs=
+		"precision mediump float;"
+		"uniform vec3 ambient;"
+		"uniform float lightAmpli;"
+		"uniform sampler2D sDestTex;"
+		"uniform sampler2D sSrcTex;"
+		"varying vec2 vDestTex;"
+		"varying vec2 vSrcTex;"
+		"void main(){"
+		"vec3 lColor=texture2D(sSrcTex,vSrcTex).rgb;"
+		"vec4 dColor=texture2D(sDestTex,vDestTex);"
+		"gl_FragColor=vec4(dColor.rgb*(ambient +(lightAmpli*lColor)),dColor.a);"
+		"}"
+		;
+	program.Load(vs,fs);
+
+	vertexHandler=program.GetAttribLocation("vert");
+	destHandler=program.GetAttribLocation("aDestTex");
+	srcHandler=program.GetAttribLocation("aSrcTex");
+	amplitudeHandler=program.GetUniformLocation("lightAmpli");
+
+	glUniform1i(program.GetUniformLocation("sDestTex"),0);
+	glUniform1i(program.GetUniformLocation("sSrcTex"),1);
+
+	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(destHandler);
+	glEnableVertexAttribArray(srcHandler);
+}
+
+void THLightEffect::Draw() const
+{
+	program.Use();
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,destTexture->image->textureID);
+	
+
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(destHandler,2,GL_FLOAT,GL_FALSE,0,destTexture->textureBuffer);
+	glVertexAttribPointer(srcHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void THBlurEffect::Load(THTexture* src)
+{
+	srcTexture=src;
+
+	const GLchar* vs=
+		"precision mediump float;"
+		"attribute vec2 vert;"
+		"attribute vec2 aTex;"
+		"varying vec2 vTex;"
+		"void main(){"
+		"vTex=aTex;"
+		"gl_Position=vec4(vert,0.0,1.0);"
+		"}"
+		;
+	const GLchar* fs=
+		"precision mediump float;"
+		"uniform float weights[12];" //weights max 12steps
+		"uniform lowp int stepCount;" //counts of steps max 12
+		"uniform vec2 dir;"  //blur direction
+		"uniform vec2 blur;" // radius / textureResolution
+		"uniform sampler2D sTexture;"
+		
+		"varying vec2 vTex;"
+		"void main(){"
+
+		"vec4 cSum=texture2D( sTexture , vTex)*weights[0];"
+
+		"lowp int i;"
+		"for(i=1;i<=12;++i){"
+		"if(i>stepCount){break;}"
+		"cSum += texture2D( sTexture , vTex + ((i)*blur*dir) ) * weights[i];"
+		"cSum += texture2D( sTexture , vTex - ((i)*blur*dir) ) * weights[i];"
+		"}"
+
+		"gl_FragColor=cSum;"
+		"}"
+		/*
+		"precision mediump float;"
+		"uniform sampler2D sTexture;"
+		"uniform vec2 dir;"  //blur direction
+		"uniform vec2 blur;" // radius / textureResolution
+		"varying vec2 vTex;"
+		"void main(){"
+		"vec4 cSum=vec4(0.0);"
+
+		"cSum += texture2D(sTexture , vTex - (4.0*blur*dir))*0.0162162162;"
+		"cSum += texture2D(sTexture , vTex - (3.0*blur*dir))*0.0540540541;"
+		"cSum += texture2D(sTexture , vTex - (2.0*blur*dir))*0.1216216216;"
+		"cSum += texture2D(sTexture , vTex - (1.0*blur*dir))*0.1945945946;"
+
+		"cSum += texture2D(sTexture , vTex)*0.2270270270;"
+
+		"cSum += texture2D(sTexture , vTex + (1.0*blur*dir))*0.1945945946;"
+		"cSum += texture2D(sTexture , vTex + (2.0*blur*dir))*0.1216216216;"
+		"cSum += texture2D(sTexture , vTex + (3.0*blur*dir))*0.0540540541;"
+		"cSum += texture2D(sTexture , vTex + (4.0*blur*dir))*0.0162162162;"
+
+		"gl_FragColor=cSum;"
+		"}"
+		*/
+		;
+	program.Load(vs,fs);
+
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
+	glUniform1i(program.GetUniformLocation("stepCount"),stepCount);
+
+	float weights[13];
+	const float sc=(float)stepCount;
+
+	const float csquare=1.0f;  //¥ò^2
+
+	const float ci=1.0f/csquare;
+	for(int i=0;i<stepCount;++i)
+	{
+		weights[i]=expf((float)(-i*i)*ci);
+	}
+
+	glUniform1fv(program.GetUniformLocation("weights"),stepCount,weights);
+
+	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(textureHandler);
+}
+
+void THBlurEffect::Draw() const
+{
+	program.Use();
+
+	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
+
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+
+void THLightBaseCircle::Load(const THVector2& resolution)
 {
 	const GLchar* vs=
 		"precision mediump float;"
-		"uniform vec2 screenScale;"
+		"uniform vec2 cPosition;"
+		"uniform float lRadius;"
+		"uniform vec2 ndcMat;"
 		"attribute vec2 vert;"
 		"varying vec2 vVert;"
 		"void main(){"
-		"vVert=(vert+1.0)*(0.5*screenScale);"
-		"gl_Position=vec4(vert.x,-vert.y,0.0,1.0);"
+		"vec2 np=(vert*lRadius)+cPosition;"
+		"vVert=np;"
+		"gl_Position=vec4(ndcMat.x*np.x - 1.0, ndcMat.y*np.y - 1.0,0.0,1.0);"
 		"}"
 		;
 	const GLchar* fs=
@@ -31,157 +195,26 @@ void THLightBaseCircle::Load()
 		"gl_FragColor=vec4(factor,factor,factor,1.0);"
 		"}"
 		;
-	programObject.Load(vs,fs);
+	program.Load(vs,fs);
 
-	circleRadiusHandler=programObject.GetUniformLocation("cRadius");
-	positionHandler=programObject.GetUniformLocation("cPosition");
-	lcGapiHandler=programObject.GetUniformLocation("lcGapi");
-	radiusHandler=programObject.GetUniformLocation("lRadius");
-	radiusiHandler=programObject.GetUniformLocation("lRadiusi");
+	const THVector2& sci=2.0f/resolution;
+	program.SetUniform("ndcMat",sci.x,sci.y);
 
-	vertexHandler=programObject.GetAttribLocation("vert");
+	positionHandler=program.GetUniformLocation("cPosition");
+	vertexHandler=program.GetAttribLocation("vert");
 
 	glEnableVertexAttribArray(vertexHandler);
 }
 void THLightBaseCircle::Draw()
 {
-	glUseProgram(programObject.programObject);
-
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
-
+	program.Use();
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,defaultFullVertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void THLightBasePolygon::Load()
-{
-	const GLchar* vs=
-		"precision mediump float;"
-		"uniform vec2 screenScale;"
-		"uniform vec2 pPosition;"
-		"attribute vec2 vert;"
-		"varying vec2 vVert;"
-		"void main(){"
-		"vec2 rp=vert+pPosition;"
-		"vVert=rp;"
-		"rp=rp*screenScale - 1.0;"
-		"gl_Position=vec4(rp.x,-rp.y,0.0,1.0);"
-		"}"
-		;
-	const GLchar* fs=
-		"precision mediump float;"
-		"uniform vec2 screenScale;"
-		"uniform vec2 sNormals[8];"
-		"uniform vec2 sVertices[8];"
-		"uniform vec2 pPosition;"
-		"uniform float sRadius;"
-		"uniform lowp int pCount;"
-		"varying vec2 vVert;"
-		"void main(){"
-		"float shortest=99999.9*screenScale.x;"
-		"lowp int i;"
-		"for(i=0;i<8;++i){"
-		"if(i>=pCount){break;}"
-		"float dpos=dot((vVert-sVertices[i]-pPosition)*screenScale.x,sNormals[i]);"
-		"if(dpos<0.0){gl_FragColor=vec4(0.0,0.0,0.0,1.0);return;}"
-		"if(dpos<shortest){shortest=dpos;}"
-		"}"
-		"float factor=0.0;"
-		"if(shortest<sRadius*screenScale.x){"
-		"factor=shortest/(screenScale.x*sRadius);"
-		"}else{"
-		"factor=1.0;"
-		"}"
-		"gl_FragColor=vec4(factor,factor,factor,1.0);"
-		"}"
-		;
-	programObject.Load(vs,fs);
-
-	positionHandler=programObject.GetUniformLocation("pPosition");
-	radiusHandler=programObject.GetUniformLocation("sRadius");
-
-	vertexHandler=programObject.GetAttribLocation("vert");
-
-	glEnableVertexAttribArray(vertexHandler);
-}
-void THLightBasePolygon::Draw()
-{
-	glUseProgram(programObject.programObject);
-
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
-
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-}
 
 
-void THLightEffect::Load(THTexture* dest,THTexture* src)
-{
-	destTexture=dest;
-	srcTexture=src;
-
-	const GLchar* vs=
-		"precision mediump float;"
-		"uniform vec2 screenScale;"
-		"attribute vec2 vert;"
-		"attribute vec2 aDestTex;"
-		"attribute vec2 aSrcTex;"
-		"varying vec2 vDestTex;"
-		"varying vec2 vSrcTex;"
-		"void main(){"
-		"vDestTex=aDestTex;"
-		"vSrcTex=aSrcTex;"
-		"gl_Position=vec4(vert.x,-vert.y,0.0,1.0);"
-		"}"
-		;
-	const GLchar* fs=
-		"precision mediump float;"
-		"uniform vec3 ambient;"
-		"uniform float lightAmpli;"
-		"uniform sampler2D sDestTex;"
-		"uniform sampler2D sSrcTex;"
-		"varying vec2 vDestTex;"
-		"varying vec2 vSrcTex;"
-		"void main(){"
-		"vec3 lColor=texture2D(sSrcTex,vSrcTex).rgb;"
-		"vec4 dColor=texture2D(sDestTex,vDestTex);"
-		"gl_FragColor=vec4(dColor.rgb*(ambient +(lightAmpli*lColor)),dColor.a);"
-		"}"
-		;
-	programObject.Load(vs,fs);
-
-	lightAmbientHandler=programObject.GetUniformLocation("ambient");
-	lighAmplitudeHandler=programObject.GetUniformLocation("lightAmpli");
-
-	vertexHandler=programObject.GetAttribLocation("vert");
-	destHandler=programObject.GetAttribLocation("aDestTex");
-	srcHandler=programObject.GetAttribLocation("aSrcTex");
-
-	glUniform1i(programObject.GetUniformLocation("sDestTex"),0);
-	glUniform1i(programObject.GetUniformLocation("sSrcTex"),1);
-
-	glEnableVertexAttribArray(vertexHandler);
-	glEnableVertexAttribArray(destHandler);
-	glEnableVertexAttribArray(srcHandler);
-}
-
-void THLightEffect::Draw()
-{
-	glUseProgram(programObject.programObject);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,destTexture->image->textureID);
-	
-
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
-	glVertexAttribPointer(destHandler,2,GL_FLOAT,GL_FALSE,0,destTexture->textureBuffer);
-	glVertexAttribPointer(srcHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
-
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-}
-
-
+/*
 void THWaveEffect::Load(THTexture* src)
 {
 	srcTexture=src;
@@ -268,6 +301,8 @@ void THWaveEffect::Draw(float dt)
 
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
+*/
+
 
 void THShockWaveEffect::Load(THTexture* src)
 {
@@ -309,30 +344,30 @@ void THShockWaveEffect::Load(THTexture* src)
 		//"gl_FragColor=cCol;"
 		"}"
 		;
-	programObject.Load(vs,fs);
+	program.Load(vs,fs);
 
 	const THVector2& tp=src->GetPosition();
-	glUniform4f(programObject.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
-	glUniform2f(programObject.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
+	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
+	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
 
-	positionHandler=programObject.GetUniformLocation("sPosition");
-	timeHandler=programObject.GetUniformLocation("time");
-	isOnHandler=programObject.GetUniformLocation("isOn");
+	positionHandler=program.GetUniformLocation("sPosition");
+	timeHandler=program.GetUniformLocation("time");
+	isOnHandler=program.GetUniformLocation("isOn");
 
-	vertexHandler=programObject.GetAttribLocation("vert");
-	textureHandler=programObject.GetAttribLocation("aTex");
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
 
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
 }
 void THShockWaveEffect::Draw(float dt)
 {
+	program.Use();
 	shockTime+=dt;
 	SetTime(shockTime);
-	glUseProgram(programObject.programObject);
-
+	
 	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,defaultFullVertices);
 	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -374,18 +409,17 @@ void THSwirlEffect::Load(THTexture* src)
 		"gl_FragColor=texture2D(sTexture,(np+cPosition)*textureInverted);"
 		"}"
 		;
-	programObject.Load(vs,fs);
+	program.Load(vs,fs);
 
 	const THVector2& tp=src->GetPosition();
-	glUniform4f(programObject.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
-	glUniform2f(programObject.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
+	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
+	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
 	
-	rotationHandler=programObject.GetUniformLocation("cAngle");
-	radiusHandler=programObject.GetUniformLocation("cRadius");
+	rotationHandler=program.GetUniformLocation("cAngle");
 	SetCoeff(8.0f);
 
-	vertexHandler=programObject.GetAttribLocation("vert");
-	textureHandler=programObject.GetAttribLocation("aTex");
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
 
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
@@ -393,7 +427,7 @@ void THSwirlEffect::Load(THTexture* src)
 
 void THSwirlEffect::Draw()
 {
-	glUseProgram(programObject.programObject);
+	program.Use();
 
 	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
 	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);

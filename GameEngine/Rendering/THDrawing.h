@@ -9,35 +9,52 @@
 GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format);//,const unsigned int isRepeat);
 //void DrawTexture();
 
-class THProgramObject
+class THProgram
 {
 protected:
 	GLuint vertex;
 	GLuint fragment;
 public:
-	GLuint programObject;
+	GLuint program;
 
 	void Load(const GLchar* vs,const GLchar* fs);
+
+	void SetUniform(const char* name,float f1) const
+	{
+		glUniform1f(glGetUniformLocation(program,name),f1);
+	}
+	void SetUniform(const char* name,float f1,float f2) const
+	{
+		glUniform2f(glGetUniformLocation(program,name),f1,f2);
+	}
+	void SetUniform(const char* name,float f1,float f2,float f3) const
+	{
+		glUniform3f(glGetUniformLocation(program,name),f1,f2,f3);
+	}
+	void SetUniform(const char* name,float f1,float f2,float f3,float f4) const
+	{
+		glUniform4f(glGetUniformLocation(program,name),f1,f2,f3,f4);
+	}
 	inline GLuint GetUniformLocation(const GLchar* name) const
 	{
-		return glGetUniformLocation(programObject,name);
+		return glGetUniformLocation(program,name);
 	}
 	inline GLuint GetAttribLocation(const GLchar* name) const
 	{
-		return glGetAttribLocation(programObject,name);
+		return glGetAttribLocation(program,name);
 	}
-	inline void UseProgram() const
+	inline void Use() const
 	{
-		glUseProgram(programObject);
+		glUseProgram(program);
 	}
 
 	void Delete() const
 	{
-		glDetachShader(programObject,vertex);
-		glDetachShader(programObject,fragment);
+		glDetachShader(program,vertex);
+		glDetachShader(program,fragment);
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
-		glDeleteProgram(programObject);
+		glDeleteProgram(program);
 	}
 };
 
