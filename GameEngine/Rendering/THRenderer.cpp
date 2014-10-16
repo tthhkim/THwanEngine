@@ -19,7 +19,7 @@ extern THVector2 gameSize(0.0f,0.0f);
 extern THVector2 gameScale(0.0f,0.0f);
 extern THVector2 viewport(0.0f,0.0f);
 
-extern THProgramObject defaultProgram=THProgramObject();
+extern THProgram defaultProgram=THProgram();
 extern GLuint vertexHandler=0;
 extern GLuint rotationHandler=0;
 extern GLuint positionHandler=0;
@@ -31,7 +31,7 @@ extern THFrame* currentFrame=0;
 THButton* downedButton=0;
 
 
-const MAKE_CENTER_VERTEX(defaultFullVertices,1.0f,1.0f);
+extern const MAKE_CENTER_VERTEX(defaultFullVertices,1.0f,1.0f);
 
 
 
@@ -115,15 +115,15 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 
 	return shader;
 }
-void THProgramObject::Load(const GLchar* vs,const GLchar* fs)
+void THProgram::Load(const GLchar* vs,const GLchar* fs)
 {
 	vertex=InitShader(vs,GL_VERTEX_SHADER);
 	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
-	programObject=glCreateProgram();
-	glAttachShader(programObject,vertex);
-	glAttachShader(programObject,fragment);
-	glLinkProgram(programObject);
-	glUseProgram(programObject);
+	program=glCreateProgram();
+	glAttachShader(program,vertex);
+	glAttachShader(program,fragment);
+	glLinkProgram(program);
+	glUseProgram(program);
 }
 void THGLInit()
 {
@@ -163,7 +163,7 @@ void THGLInit()
 			"}";
 	defaultProgram.Load(vs,fs);
 
-	const THProgramObject& mprogram=defaultProgram;
+	const THProgram& mprogram=defaultProgram;
 
 	vertexHandler=mprogram.GetAttribLocation("vert");
 	rotationHandler=mprogram.GetAttribLocation("rotmat");

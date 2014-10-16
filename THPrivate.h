@@ -78,7 +78,7 @@ extern THVector2 gameScale;
 extern THVector2 viewport;
 extern THFrame* currentFrame;
 
-extern THProgramObject defaultProgram;
+extern THProgram defaultProgram;
 extern GLuint vertexHandler;
 extern GLuint rotationHandler;
 extern GLuint positionHandler;
