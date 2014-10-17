@@ -27,6 +27,7 @@ extern GLuint textureHandler=0;
 extern GLuint projectMatrixHandler=0;
 extern GLuint hasColorHandler=0,colorHandler=0;
 
+
 extern THFrame* currentFrame=0;
 THButton* downedButton=0;
 

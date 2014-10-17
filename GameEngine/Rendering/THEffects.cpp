@@ -81,24 +81,24 @@ void THBlurEffect::Load(THTexture* src)
 		;
 	const GLchar* fs=
 		"precision mediump float;"
-		"uniform sampler2D sTexture;"
+		"uniform float weights[20];" //weights max 20steps
+		"uniform lowp int stepCount;" //counts of steps max 20
 		"uniform vec2 dir;"  //blur direction
 		"uniform vec2 blur;" // radius / textureResolution
+		"uniform lowp int blurOppos;" // wheather blur opposite side
+		"uniform sampler2D sTexture;"
+		
 		"varying vec2 vTex;"
 		"void main(){"
-		"vec4 cSum=vec4(0.0);"
 
-		"cSum += texture2D(sTexture , vTex - (4.0*blur*dir))*0.0162162162;"
-		"cSum += texture2D(sTexture , vTex - (3.0*blur*dir))*0.0540540541;"
-		"cSum += texture2D(sTexture , vTex - (2.0*blur*dir))*0.1216216216;"
-		"cSum += texture2D(sTexture , vTex - (1.0*blur*dir))*0.1945945946;"
+		"vec4 cSum=texture2D( sTexture , vTex)*weights[0];"
 
-		"cSum += texture2D(sTexture , vTex)*0.2270270270;"
-
-		"cSum += texture2D(sTexture , vTex + (1.0*blur*dir))*0.1945945946;"
-		"cSum += texture2D(sTexture , vTex + (2.0*blur*dir))*0.1216216216;"
-		"cSum += texture2D(sTexture , vTex + (3.0*blur*dir))*0.0540540541;"
-		"cSum += texture2D(sTexture , vTex + (4.0*blur*dir))*0.0162162162;"
+		"lowp int i;"
+		"for(i=1;i<=12;++i){"
+		"if(i>stepCount){break;}"
+		"cSum += texture2D( sTexture , vTex - (float(i)*blur*dir) ) * weights[i];"
+		"if(blurOppos==1){cSum += texture2D( sTexture , vTex + (float(i)*blur*dir) ) * weights[i];}"
+		"}"
 
 		"gl_FragColor=cSum;"
 		"}"
@@ -107,6 +107,33 @@ void THBlurEffect::Load(THTexture* src)
 
 	vertexHandler=program.GetAttribLocation("vert");
 	textureHandler=program.GetAttribLocation("aTex");
+	directionHandler=program.GetUniformLocation("dir");
+	blurOppositeHandler=program.GetUniformLocation("blurOppos");
+	glUniform1i(program.GetUniformLocation("stepCount"),stepCount);
+
+
+//-------Calculating weights
+	float weights[20];
+
+	const float csquare=1.0f;  //¥ò^2
+	const float ci=1.0f/csquare;
+
+	float sum=0.0f;
+	weights[0]=1.0f;
+	for(int i=1;i<stepCount;++i)
+	{
+		weights[i]=expf((float)(-i*i)*ci);
+		sum+=weights[i];
+	}
+	sum*=2.0f;
+	sum+=1.0f;
+	const float sumi=1.0f/sum;
+	for(int i=0;i<stepCount;++i)
+	{
+		weights[i]*=sumi;
+	}
+
+	glUniform1fv(program.GetUniformLocation("weights"),stepCount,weights);
 
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);

@@ -1,10 +1,17 @@
-#include <THPrivate.h>
-#include <GameEngine/Rendering/THDrawing.h>
-#include <GameEngine/DisplayObject/THDisplayObject.h>
-
 #include <malloc.h>
 
+#include <THPrivate.h>
+
+#include <GameEngine/Util/THMath3D.h>
+
+#include <GameEngine/Rendering/THDrawing.h>
+#include <GameEngine/Rendering/THEffects.h>
+
+#include <GameEngine/DisplayObject/THDisplayObject.h>
 #include <GameEngine/DisplayObject/THFrame.h>
+
+
+
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/asset_manager.h>

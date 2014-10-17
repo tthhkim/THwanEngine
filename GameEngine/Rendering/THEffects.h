@@ -40,24 +40,38 @@ public:
 	THTexture* srcTexture;
 	const GLfloat* vertex;
 
-	THBlurEffect(){ vertex=defaultFullVertices; }
+	THBlurEffect(int steps)
+	{
+		assert(steps<=20);
+		stepCount=steps;
+		vertex=defaultFullVertices;
+	}
 
 	void Load(THTexture* src);
 	void Draw() const;
 
+	void SetBlurOpposite(bool opp) const
+	{
+		glUniform1i(blurOppositeHandler,opp?1:0);
+	}
 	void SetDirection(float x,float y) const
 	{
-		program.SetUniform("dir",x,y);
+		glUniform2f(directionHandler,x,y);
 	}
 	void SetRadius(float r) const
 	{
-		const THVector2& bl=r / srcTexture->image->size;
+		const THVector2& bl=(r/(float)stepCount) / srcTexture->image->size;
 		program.SetUniform("blur",bl.x,bl.y);
 	}
 
 protected:
 	GLuint vertexHandler;
 	GLuint textureHandler;
+
+	GLuint blurOppositeHandler;
+	GLuint directionHandler;
+
+	int stepCount;
 };
 
 
@@ -70,12 +84,12 @@ public:
 	void Draw();
 
 	
-	void SetPosition(float x,float y)
+	void SetPosition(float x,float y) const
 	{
 		glUniform2f(positionHandler,x,y);
 	}
 
-	void SetRadius(float lightRadius,float circleRadius)
+	void SetRadius(float lightRadius,float circleRadius) const
 	{
 		program.SetUniform("cRadius",circleRadius);
 		program.SetUniform("lRadius",lightRadius);
