@@ -6,7 +6,7 @@
 
 #include <GameEngine/Util/THMath.h>
 
-GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format);//,const unsigned int isRepeat);
+GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);//,const unsigned int isRepeat);
 //void DrawTexture();
 
 class THProgram

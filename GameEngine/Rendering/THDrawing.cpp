@@ -4,14 +4,13 @@
 #include <malloc.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
-GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format)//,const unsigned int isRepeat)
+GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter,bool isRepeat)//,const unsigned int isRepeat)
 {
 	GLuint tex;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	/*
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	if(isRepeat)
 	{
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -19,10 +18,9 @@ GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format)//,
 	}
 	else
 	{
-	*/
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//}
+	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
 
 	return tex;
