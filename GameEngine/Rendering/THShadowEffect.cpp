@@ -21,20 +21,26 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 		"attribute vec2 vert;"
 		"attribute vec3 pos;"
 		"attribute vec4 rot;"
+		"attribute vec2 aTex;"
+		"varying vec2 vTex;"
 		"void main(){"
+		"vTex=aTex;"
 		"vec2 cp=vec2( dot(vert,rot.xy) , dot(vert,rot.zw))+pos.xy;"
 		"vec2 lxy=lightPos.xy;"
 		"if(pos.z==lightPos.z){return;}"
 		"vec2 lp=lxy + ((-lightPos.z/(pos.z-lightPos.z))*(cp-lxy));"
 		"vec3 np=vec3(lp,1.0);"
-		"gl_Position=vec4( dot(ndcMat[0],np) , dot(ndcMat[1],np) , 0.0 , 1.0);"
+		"gl_Position=vec4(  dot(ndcMat[0],np) , dot(ndcMat[1],np)  , 0.0 , 1.0);"
 		"}"
 		;
 	const GLchar* fs=
 		"precision mediump float;"
-		"uniform float uAlpha;"
+		"uniform vec4 shadowColor;"
+		"uniform sampler2D sTexture;"
+		"varying vec2 vTex;"
 		"void main(){"
-		"gl_FragColor=vec4(0.0,0.0,0.0,uAlpha);"
+		"float talpha=texture2D(sTexture,vTex).a;"
+		"gl_FragColor=vec4(shadowColor.rgb,shadowColor.a*talpha);"
 		"}"
 		;
 
@@ -43,10 +49,12 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 	lightPositionHandler=program.GetUniformLocation("lightPos");
 
 	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
 	positionHandler=program.GetAttribLocation("pos");
 	rotationHandler=program.GetAttribLocation("rot");
 
 	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(textureHandler);
 
 	SetOrtho(minp,maxp);
 }
@@ -58,11 +66,14 @@ void THShadowEffect::Draw()
 	{
 		const THShadowObject& so=objects.arr[i];
 		
+		glBindTexture(GL_TEXTURE_2D,so.mc->texture->image->textureID);
+
 		const THVector2& pos=so.mc->position;
 		glVertexAttrib3f(positionHandler,pos.x,pos.y,so.z);
 		glVertexAttrib4fv(rotationHandler,(const GLfloat*)&so.mc->rotation);
 
 		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
+		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->texture->textureBuffer);
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	}

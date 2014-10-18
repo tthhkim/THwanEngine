@@ -35,9 +35,9 @@ public:
 	{
 		glUniform3f(lightPositionHandler,x,y,z);
 	}
-	inline void SetShadowAlpha(float a) const
+	inline void SetShadowColor(float r,float g,float b,float a) const
 	{
-		program.SetUniform("uAlpha",a);
+		program.SetUniform("shadowColor",r,g,b,a);
 	}
 
 	void Push(THMovieClip* mc,float z)
@@ -71,7 +71,7 @@ public:
 protected:
 	GLuint lightPositionHandler;
 
-	GLuint vertexHandler;
+	GLuint vertexHandler,textureHandler;
 	GLuint positionHandler;
 	GLuint rotationHandler;
 };

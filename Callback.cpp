@@ -19,7 +19,7 @@
 
 void OnCreate(THApplicaation* state)
 {
-	//GoFrame();
+	//GoFrame
 }
 void OnSurfaceCreated()
 {
