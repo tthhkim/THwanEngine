@@ -155,13 +155,13 @@ Radius/sec
 
 */
 
-class THWaveEffect
+class THLinearWaveEffect
 {
 public:
 	THProgram program;
 	const GLfloat* vertex;
 	
-	THWaveEffect(){time=0.0f;}
+	THLinearWaveEffect(){time=0.0f;vertex=defaultFullVertices;}
 
 	void Load(THTexture* src);
 	void Draw(float dt);
@@ -193,6 +193,37 @@ protected:
 	GLuint vertexHandler,textureHandler;
 
 	THTexture *srcTexture;
+};
+
+class THAngularWaveEffect
+{
+public:
+	THProgram program;
+	const GLfloat* vertex;
+
+	THAngularWaveEffect():time(0.0f){vertex=defaultFullVertices;}
+
+	void Load(THTexture* src);
+	void Draw(float dt);
+
+	void SetCenter(float x,float y) const
+	{
+		program.SetUniform("center",x*0.01f,y*0.01f);
+	}
+	void SetWave(float frequency,float amplitude,float velocity)
+	{
+		program.SetUniform("frequency",frequency);
+		program.SetUniform("amplitude",amplitude);
+		program.SetUniform("angularVel",velocity);
+		timeLimit=6.283185f/velocity;
+	}
+protected:
+	float time;
+	float timeLimit;
+	GLuint vertexHandler,textureHandler;
+	GLuint timeHandler;
+
+	THTexture* srcTexture;
 };
 
 class THShockWaveEffect

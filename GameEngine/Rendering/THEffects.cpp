@@ -281,13 +281,12 @@ void THSwirlEffect::Draw()
 }
 
 
-void THWaveEffect::Load(THTexture* src)
+void THLinearWaveEffect::Load(THTexture* src)
 {
 	srcTexture=src;
 
 	const GLchar* vs=
 		"precision mediump float;"
-		"uniform vec2 screenScale;"
 		"attribute vec2 vert;"
 		"attribute vec2 aTex;"
 		"varying vec2 vTexCoord;"
@@ -298,7 +297,7 @@ void THWaveEffect::Load(THTexture* src)
 		;
 	const GLchar* fs=
 		"precision mediump float;"
-		"uniform float time;" // currentTime(sec) * pixel per sec
+		"uniform float time;" // currentTime(sec)
 		"uniform vec2 dir;"
 		"uniform vec2 dirskew"
 		"uniform float waveAmpli;"
@@ -330,10 +329,75 @@ void THWaveEffect::Load(THTexture* src)
 	glEnableVertexAttribArray(textureHandler);
 }
 
-void THWaveEffect::Draw(float dt)
+void THLinearWaveEffect::Draw(float dt)
 {
 	time+=dt;
 	if(time>=freqI){time-=freqI;}
+	program.Use();
+
+	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
+	glUniform1f(timeHandler,time);
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void THAngularWaveEffect::Load(THTexture* src)
+{
+	srcTexture=src;
+
+	const GLchar* vs=
+		"precision mediump float;"
+		"attribute vec2 vert;"
+		"attribute vec2 aTex;"
+		"varying vec2 vTexCoord;"
+		"void main(){"
+		"vTexCoord=aTex;"
+		"gl_Position=vec4(vert,0.0,1.0);"
+		"}"
+		;
+	//scaled : center,
+	const GLchar* fs=
+		"precision mediump float;"
+		"uniform float time;"
+		"uniform float amplitude;"
+		"uniform float angularVel;"
+		"uniform float frequency;"
+		"uniform vec2 center;"
+		"uniform vec4 textureInfo;"//x,y,size
+		"uniform vec2 textureInverted;"
+		"uniform sampler2D sTexture;"
+		"varying vec2 vTexCoord;"
+		"void main(){"
+		"vec2 cCoord=(vTexCoord*textureInfo.zw)-textureInfo.xy;"
+		"vec2 deltaP=(cCoord-center);"
+		"float theta=atan(deltaP.y,deltaP.x);"
+		"float factor=sin(theta*frequency+time*angularVel)*amplitude + 1.0;"
+		"vec2 scaledP=deltaP*factor + center;"
+		"gl_FragColor=texture2D(sTexture,scaledP*textureInverted);"
+		"}"
+		;
+	program.Load(vs,fs);
+
+	timeHandler=program.GetUniformLocation("time");
+
+	const THVector2& ts=src->image->size*0.01f;
+	const THVector2& tp=src->GetPosition()*0.01f;
+	program.SetUniform("textureInfo",tp.x,tp.y,ts.x,ts.y);
+	program.SetUniform("textureInverted",1.0f/ts.x,1.0f/ts.y);
+
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
+
+	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(textureHandler);
+}
+
+void THAngularWaveEffect::Draw(float dt)
+{
+	time+=dt;
+	if(time>=timeLimit){time-=timeLimit;}
 	program.Use();
 
 	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
