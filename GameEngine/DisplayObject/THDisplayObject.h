@@ -129,8 +129,8 @@ public:
 		{
 			minBound.x,minBound.y,
 			maxBound.x,minBound.y,
-			minBound.x,maxBound.y,
-			maxBound.x,maxBound.y
+			maxBound.x,maxBound.y,
+			minBound.x,maxBound.y
 		};
 
 		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
@@ -139,7 +139,7 @@ public:
 
 		glVertexAttrib1f(hasColorHandler,1.0f);
 		glVertexAttrib4f(colorHandler,r,g,b,1.0f);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 #endif
 

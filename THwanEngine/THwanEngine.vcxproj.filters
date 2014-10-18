@@ -54,6 +54,9 @@
     <ClCompile Include="..\GameEngine\Rendering\THShadowEffect.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h">
@@ -90,6 +93,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\GameEngine\Rendering\THShadowEffect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\DisplayObject\THChar.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

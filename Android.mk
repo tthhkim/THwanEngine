@@ -5,11 +5,12 @@ LOCAL_MODULE:=THGLInstant
 LOCAL_SRC_FILES:=GameEngine/Rendering/THDrawing.cpp\
 GameEngine/Rendering/THRenderer.cpp\
 GameEngine/Rendering/THEffects.cpp\
+GameEngine/Rendering/THShadowEffect.cpp\
 GameEngine/Rendering/Main.cpp\
-GameEngine/Util/THFile.cpp\
 GameEngine/Util/THMath.cpp\
 GameEngine/DisplayObject/THFrame.cpp\
 GameEngine/DisplayObject/THDisplayObject.cpp\
+GameEngine/DisplayObject/THChar.cpp\
 Callback.cpp
 LOCAL_LDLIBS:=-lGLESv2 -lEGL -llog -landroid
 LOCAL_STATIC_LIBRARIES:=android_native_app_glue THLibPNG

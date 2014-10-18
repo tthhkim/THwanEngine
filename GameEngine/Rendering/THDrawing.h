@@ -75,7 +75,6 @@ class THTexture
 public:
 	THImage* image;
 	THVector2 textureBuffer[4];
-	THVector2 position,size;
 
 	void Set(THImage* _image);
 	void Set(THImage* _image,const THVector2& pos,const THVector2& size);
@@ -94,6 +93,9 @@ public:
 	{
 		return GetPosition()+(GetSize()*v);
 	}
+
+protected:
+	THVector2 position,size;
 };
 
 

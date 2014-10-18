@@ -9,6 +9,7 @@
 #include <GameEngine/Rendering/THShadowEffect.h>
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
+#include <GameEngine/DisplayObject/THChar.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
 #if THPLATFORM==THPLATFORM_ANDROID
