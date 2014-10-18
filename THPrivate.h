@@ -50,12 +50,13 @@ class THTween;
 #endif
 #endif
 
-#define MAKE_CENTER_VERTEX(name,hw,hh) \
-	GLfloat name[]={-hw, -hh,hw, -hh,-hw,hh,hw,hh}
-#define MAKE_VERTEX(name,left,bottom,right,top) \
-	GLfloat name[]={left, bottom,right, bottom,left,top,right,top}
+#define MAKE_CENTER_VERTEX(hw,hh) \
+	{-hw, -hh,hw, -hh,-hw,hh,hw,hh}
+#define MAKE_VERTEX(left,bottom,right,top) \
+	{left, bottom,right, bottom,left,top,right,top}
 
 extern const GLfloat defaultFullVertices[];
+extern GLfloat fullScreenVertices[];
 
 #ifndef NDEBUG
 extern float cFPS;

@@ -24,6 +24,7 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 		"void main(){"
 		"vec2 cp=vec2( dot(vert,rot.xy) , dot(vert,rot.zw))+pos.xy;"
 		"vec2 lxy=lightPos.xy;"
+		"if(pos.z==lightPos.z){return;}"
 		"vec2 lp=lxy + ((-lightPos.z/(pos.z-lightPos.z))*(cp-lxy));"
 		"vec3 np=vec3(lp,1.0);"
 		"gl_Position=vec4( dot(ndcMat[0],np) , dot(ndcMat[1],np) , 0.0 , 1.0);"

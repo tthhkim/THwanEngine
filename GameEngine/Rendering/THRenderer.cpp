@@ -32,8 +32,8 @@ extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
 
 
-extern const MAKE_CENTER_VERTEX(defaultFullVertices,1.0f,1.0f);
-
+extern const GLfloat defaultFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
+extern GLfloat fullScreenVertices[8]={0.0};
 
 
 
@@ -71,6 +71,9 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
 	};
 	glUniform3fv(projectMatrixHandler,2,matx);
+
+	const GLfloat fv[]=MAKE_VERTEX(minp.x,minp.y,maxp.x,maxp.y);
+	memcpy(fullScreenVertices,fv,sizeof(GLfloat)*8);
 
 	THLog("Set Ortho : %.1f , %.1f / %.1f , %.1f",minp.x,minp.y,maxp.x,maxp.y);
 }

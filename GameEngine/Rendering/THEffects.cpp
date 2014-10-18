@@ -193,7 +193,7 @@ void THLightBaseCircle::Load(const THVector2& resolution)
 		"void main(){"
 		"vec2 light2vert=(vVert-cPosition)*lRadiusi;"
 		"float dpos=length(light2vert);"
-		"if(dpos>1.0){gl_FragColor=vec4(0.0,0.0,0.0,0.0);return;}"
+		"if(dpos>1.0){return;}"
 		"if(dpos<=cRadius*lRadiusi){gl_FragColor=vec4(1.0,1.0,1.0,1.0);return;}"
 		"if(cRadius==lRadius){return;}"
 		"float factor=1.0-(dpos*lRadius-cRadius)*lcGapi;"
@@ -304,11 +304,11 @@ void THWaveEffect::Load(THTexture* src)
 		"uniform float waveAmpli;"
 		"uniform float waveFreq;"
 		"uniform float waveVeli;"
-		"uniform vec4 textureInfo;"//x,y,size
+		"uniform vec2 textureInfo;"//size
 		"uniform sampler2D sTexture;"
 		"varying vec2 vTexCoord;"
 		"void main(){"
-		"vec2 cCoord=(vTexCoord*textureInfo.zw)+textureInfo.xy;"
+		"vec2 cCoord=vTexCoord*textureInfo;"
 		"float dp=dot(dir,cCoord);"
 		"float factor=waveAmpli*sin(6.2831853*waveFreq*(time-dp*waveVeli));"
 		"gl_FragColor=texture2D( sTexture , vTexCoord + (dirskew*factor));"
@@ -320,9 +320,8 @@ void THWaveEffect::Load(THTexture* src)
 	directionHandler=program.GetUniformLocation("dir");
 	directionSkew=program.GetUniformLocation("dirskew");
 
-	const THVector2& tp=src->GetPosition()*0.01f;
 	const THVector2& ts=src->GetSize()*0.01f;
-	program.SetUniform("textureInfo",tp.x,tp.y,ts.x,ts.y);
+	program.SetUniform("textureInfo",ts.x,ts.y);
 
 	vertexHandler=program.GetAttribLocation("vert");
 	textureHandler=program.GetAttribLocation("aTex");
@@ -344,7 +343,6 @@ void THWaveEffect::Draw(float dt)
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
-
 
 void THShockWaveEffect::Load(THTexture* src)
 {

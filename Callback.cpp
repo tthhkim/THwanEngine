@@ -1,4 +1,4 @@
-#include <malloc.h>
+#include <string.h>
 
 #include <THPrivate.h>
 
@@ -6,17 +6,16 @@
 
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/Rendering/THEffects.h>
+#include <GameEngine/Rendering/THShadowEffect.h>
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 #include <GameEngine/DisplayObject/THFrame.h>
-
-
-
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/asset_manager.h>
 #include <unistd.h>
 #endif
+
 
 void OnCreate(THApplicaation* state)
 {

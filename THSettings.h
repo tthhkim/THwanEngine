@@ -14,6 +14,6 @@
 #define THPLATFORM THPLATFORM_WINDOWS
 
 #define GAUSSIAN_SIGMA_SQUARE 1.0f // ¥ò^2 for gaussian function
-#define GAUSSIAN_ZERO_X_VALUE 2.5f // X value where return is 0.0
+#define GAUSSIAN_ZERO_X_VALUE 2.0f // X value where return is 0.0
 
 #endif
