@@ -128,10 +128,8 @@ void THBlurEffect::Load(THTexture* src)
 //-------Calculating weights
 	float weights[20];
 
-	const float csquare=1.0f;  //¥ò^2
-	const float ci=1.0f/csquare;
-	const float zerox=2.5f;	//x value where g(x) is 0.
-	const float xstep=zerox/(float)(stepCount);
+	const float ci=1.0f/GAUSSIAN_SIGMA_SQUARE;
+	const float xstep=GAUSSIAN_ZERO_X_VALUE/(float)(stepCount);
 
 	float sum=0.0f;
 	weights[0]=1.0f;

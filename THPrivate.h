@@ -1,18 +1,7 @@
 #ifndef THKim_THPrivate
 #define THKim_THPrivate
 
-#define MAX_FILE_NAME 8
-#define TIMER_DELETE_LIST_SIZE 4
-#define TWEEN_DELETE_LIST_SIZE 4
-
-#define USE_PNG 1
-#define SHOW_LOG 0
-#define USE_DEPTH_BUFFER 0
-
-#define THPLATFORM_WINDOWS 1
-#define THPLATFORM_ANDROID 2
-
-#define THPLATFORM THPLATFORM_WINDOWS
+#include <THSettings.h>
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android_native_app_glue.h>
