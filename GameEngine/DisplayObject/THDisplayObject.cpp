@@ -11,6 +11,8 @@ THVector2 drawingOffset;
 THVector2 tempPoition;
 //Offset Coordinations;
 
+using namespace THDefaultProgram;
+
 void THMovieClip::Draw()
 {
 	tempPoition=drawingOffset+position;
@@ -23,7 +25,8 @@ void THMovieClip::Draw()
 	glVertexAttrib2fv(positionHandler,(const GLfloat*)&tempPoition);
 
 	glVertexAttrib1f(hasColorHandler,0.0f);
-	//glVertexAttrib4f(colorHandler,1.0f,1.0f,1.0f,1.0f);
+	glVertexAttrib4f(colorHandler,0.0f,0.0f,0.0f,0.0f);
+	glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 

@@ -12,6 +12,8 @@
 #include <GameEngine/DisplayObject/THChar.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
+using namespace THDefaultProgram;
+
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/asset_manager.h>
 #include <unistd.h>
@@ -52,7 +54,7 @@ void OnLoadInstanceState(saved_state* loaded)
 */
 
 /*
-const MAKE_CENTER_VERTEX(myver,360.0f,640.0f);
+const GLfloat myver[]=MAKE_CENTER_VERTEX(360.0f,640.0f);
 class MyFrame :public THFrame
 {
 	void Draw(float dt)
@@ -65,6 +67,7 @@ class MyFrame :public THFrame
 
 		glVertexAttrib1f(hasColorHandler,1.0f);
 		glVertexAttrib4f(colorHandler,1.0f,0.8f,0.3f,1.0f);
+		glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 };

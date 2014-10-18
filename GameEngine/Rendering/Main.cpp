@@ -3,9 +3,6 @@
 #include <string.h>
 #include <malloc.h>
 
-#include <EGL/egl.h>
-#include <GLES2/gl2.h>
-
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
@@ -408,6 +405,7 @@ static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeW
 
 int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
 {
+	using namespace THDefaultProgram;
 	SetFrameRate(60.0f);
 	AllocConsole();
 	using namespace std;

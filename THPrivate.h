@@ -70,6 +70,8 @@ extern THVector2 gameMinBound;
 
 extern THFrame* currentFrame;
 
+namespace THDefaultProgram
+{
 extern THProgram defaultProgram;
 extern GLuint vertexHandler;
 extern GLuint rotationHandler;
@@ -77,6 +79,8 @@ extern GLuint positionHandler;
 extern GLuint textureHandler;
 extern GLuint projectMatrixHandler;
 extern GLuint hasColorHandler,colorHandler;
+extern GLuint colorMultiplyHandler;
+};
 
 
 void GoFrame(THFrame* f,void* data=0);

@@ -125,6 +125,7 @@ public:
 #ifndef NDEBUG
 	void DrawDebug(float r,float g,float b) const
 	{
+		using namespace THDefaultProgram;
 		const GLfloat vertic[]=
 		{
 			minBound.x,minBound.y,
@@ -139,6 +140,7 @@ public:
 
 		glVertexAttrib1f(hasColorHandler,1.0f);
 		glVertexAttrib4f(colorHandler,r,g,b,1.0f);
+		glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 #endif

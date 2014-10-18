@@ -10,15 +10,17 @@
 #include <GameEngine/Util/THTween.h>
 #include <GameEngine/Util/THArray.h>
 
-extern EGLDisplay eglDisplay=EGL_NO_DISPLAY;
-extern EGLSurface eglSurface=EGL_NO_SURFACE;
-extern EGLContext eglContext=EGL_NO_CONTEXT;
+static EGLDisplay eglDisplay=EGL_NO_DISPLAY;
+static EGLSurface eglSurface=EGL_NO_SURFACE;
+static EGLContext eglContext=EGL_NO_CONTEXT;
 
 extern THVector2 windowSize(0.0f,0.0f);
 extern THVector2 gameScale(0.0f,0.0f);
 extern THVector2 gameMinBound(0.0f,0.0f);
 extern THVector2 gameMaxBound(0.0f,0.0f);
 
+namespace THDefaultProgram
+{
 extern THProgram defaultProgram=THProgram();
 extern GLuint vertexHandler=0;
 extern GLuint rotationHandler=0;
@@ -26,17 +28,16 @@ extern GLuint positionHandler=0;
 extern GLuint textureHandler=0;
 extern GLuint projectMatrixHandler=0;
 extern GLuint hasColorHandler=0,colorHandler=0;
+extern GLuint colorMultiplyHandler=0;
+};
 
+using namespace THDefaultProgram;
 
 extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
 
-
 extern const GLfloat defaultFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
 extern GLfloat fullScreenVertices[8]={0.0};
-
-
-
 
 void OnDrawFrame(float dt)
 {
@@ -57,6 +58,8 @@ void OnDrawFrame(float dt)
 }
 void SetOrtho(const THVector2& minp,const THVector2& maxp)
 {
+
+
 	gameMinBound=minp;
 	gameMaxBound=maxp;
 
@@ -141,28 +144,32 @@ void THGLInit()
 			"varying vec2 vTex;"
 			"attribute float aHasColor;"
 			"varying float vHasColor;"
-			"attribute mediump vec4 aColor;"
-			"varying mediump vec4 vColor;"
+			"attribute vec4 aColor;"
+			"varying vec4 vColor;"
+			"attribute vec4 aColorM;"
+			"varying vec4 vColorM;"
 			"void main(){"
 			"vec3 lastP=vec3(vec2(dot(rotmat.rg,vert),dot(rotmat.ba,vert))+pos,1.0);"
 			"gl_Position=vec4(dot(projectionMat[0],lastP),dot(projectionMat[1],lastP),0.0,1.0);"
 			"vTex=aTex;"
 			"vHasColor=aHasColor;"
 			"vColor=aColor;"
+			"vColorM=aColorM;"
 			"}";
 
 	const GLchar* fs=
 			"precision mediump float;"
 			"varying vec2 vTex;"
 			"varying mediump vec4 vColor;"
+			"varying vec4 vColorM;"
 			"varying float vHasColor;"
 			"uniform sampler2D sTexture;"
 			"void main(){"
 			"vec4 cColor;"
 			"if(vHasColor>0.5){"
-			"gl_FragColor=vColor;"
+			"gl_FragColor=vColor*vColorM;"
 			"}else{"
-			"gl_FragColor=texture2D(sTexture,vTex);"
+			"gl_FragColor=texture2D(sTexture,vTex)*vColorM + vColor;"
 			"}"
 			"}";
 	defaultProgram.Load(vs,fs);
@@ -174,6 +181,7 @@ void THGLInit()
 	positionHandler=mprogram.GetAttribLocation("pos");
 	textureHandler=mprogram.GetAttribLocation("aTex");
 	colorHandler=mprogram.GetAttribLocation("aColor");
+	colorMultiplyHandler=mprogram.GetAttribLocation("aColorM");
 	hasColorHandler=mprogram.GetAttribLocation("aHasColor");
 	projectMatrixHandler=mprogram.GetUniformLocation("projectionMat");
 

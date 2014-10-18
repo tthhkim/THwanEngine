@@ -1,6 +1,6 @@
 #include "THChar.h"
 #include <THPrivate.h>
-
+using namespace THDefaultProgram;
 void THChar::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	THTexture::Set(_image,pos,_size);
@@ -45,6 +45,8 @@ void THString::Draw()
 		glVertexAttrib2f(positionHandler,cl,position.y);
 
 		glVertexAttrib1f(hasColorHandler,0.0f);
+		glVertexAttrib4f(colorHandler,0.0f,0.0f,0.0f,0.0f);
+		glVertexAttrib4f(colorMultiplyHandler,red,green,blue,alpha);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

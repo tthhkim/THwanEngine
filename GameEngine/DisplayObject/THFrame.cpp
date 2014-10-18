@@ -34,6 +34,7 @@ void THFrame::RemoveButton(THButton* button)
 {
 	buttonList.Delete(button);
 }
+using namespace THDefaultProgram;
 void THFrame::DrawObjects() const
 {
 	defaultProgram.Use();

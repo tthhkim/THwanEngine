@@ -30,10 +30,12 @@ class THString : public THDisplayObject
 public:
 	THVector2 position;
 	float scale;
+	float red,green,blue,alpha;
 
 	THString(float _scale):THDisplayObject()
 	{
 		scale=_scale;
+		red=green=blue=alpha=1.0f;
 	}
 	
 	
