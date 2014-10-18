@@ -129,6 +129,9 @@ void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max);
 /*
 	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
 	In Radian
+
+	positive right for yRotation
+	positive down for xRotation
 	*/
 void EyeTrnsformMatrix(float* mat,const THVector2& yrot,const THVector2& xrot);
 

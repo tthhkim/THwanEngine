@@ -284,6 +284,5 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 
 
 void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count);
-void GetScaledVertices(const THVector2 *points,THVector2 *out,unsigned int count,const THVector2& min,const THVector2& max);
 
 #endif

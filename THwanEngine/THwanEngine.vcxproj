@@ -77,7 +77,6 @@
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THEffects.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp" />
-    <ClCompile Include="..\GameEngine\Util\THFile.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
     <ClCompile Include="..\Includes\lodepng.cpp" />
   </ItemGroup>
@@ -88,7 +87,6 @@
     <ClInclude Include="..\GameEngine\Rendering\THEffects.h" />
     <ClInclude Include="..\GameEngine\Rendering\THRenderer.h" />
     <ClInclude Include="..\GameEngine\Util\THArray.h" />
-    <ClInclude Include="..\GameEngine\Util\THFile.h" />
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
     <ClInclude Include="..\GameEngine\Util\THTween.h" />

@@ -45,9 +45,6 @@
     <ClCompile Include="..\Callback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameEngine\Util\THFile.cpp">
-      <Filter>소스 파일\Util</Filter>
-    </ClCompile>
     <ClCompile Include="..\GameEngine\Util\THMath.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THArray.h">
-      <Filter>헤더 파일\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameEngine\Util\THFile.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THMath.h">

@@ -94,10 +94,22 @@ void THBlurEffect::Load(THTexture* src)
 		"vec4 cSum=texture2D( sTexture , vTex)*weights[0];"
 
 		"lowp int i;"
+		
+		"if(blurOppos==1){"
+
+		"for(i=1;i<=12;++i){"
+		"if(i>stepCount){break;}"
+		"cSum += texture2D( sTexture , vTex - (float(i)*blur*dir) ) * (2.0*weights[i]);"
+		"}"
+
+		"}else{"
+
 		"for(i=1;i<=12;++i){"
 		"if(i>stepCount){break;}"
 		"cSum += texture2D( sTexture , vTex - (float(i)*blur*dir) ) * weights[i];"
-		"if(blurOppos==1){cSum += texture2D( sTexture , vTex + (float(i)*blur*dir) ) * weights[i];}"
+		"cSum += texture2D( sTexture , vTex + (float(i)*blur*dir) ) * weights[i];"
+		"}"
+
 		"}"
 
 		"gl_FragColor=cSum;"

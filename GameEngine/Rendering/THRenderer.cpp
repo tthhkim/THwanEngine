@@ -10,9 +10,9 @@
 #include <GameEngine/Util/THTween.h>
 #include <GameEngine/Util/THArray.h>
 
-extern EGLDisplay eglDisplay=0;
-extern EGLSurface eglSurface=0;
-extern EGLContext eglContext=0;
+extern EGLDisplay eglDisplay=EGL_NO_DISPLAY;
+extern EGLSurface eglSurface=EGL_NO_SURFACE;
+extern EGLContext eglContext=EGL_NO_CONTEXT;
 
 extern THVector2 windowSize(0.0f,0.0f);
 extern THVector2 gameSize(0.0f,0.0f);
@@ -29,7 +29,7 @@ extern GLuint hasColorHandler=0,colorHandler=0;
 
 
 extern THFrame* currentFrame=0;
-THButton* downedButton=0;
+extern THButton* downedButton=0;
 
 
 extern const MAKE_CENTER_VERTEX(defaultFullVertices,1.0f,1.0f);
