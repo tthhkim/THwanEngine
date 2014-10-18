@@ -109,6 +109,7 @@ void THBlurEffect::Load(THTexture* src)
 	textureHandler=program.GetAttribLocation("aTex");
 	directionHandler=program.GetUniformLocation("dir");
 	blurOppositeHandler=program.GetUniformLocation("blurOppos");
+	radiusHandler=program.GetUniformLocation("blur");
 	glUniform1i(program.GetUniformLocation("stepCount"),stepCount);
 
 
@@ -117,12 +118,16 @@ void THBlurEffect::Load(THTexture* src)
 
 	const float csquare=1.0f;  //¥ò^2
 	const float ci=1.0f/csquare;
+	const float zerox=2.5f;	//x value where g(x) is 0.
+	const float xstep=zerox/(float)(stepCount);
 
 	float sum=0.0f;
 	weights[0]=1.0f;
+	float x=0.0f;
 	for(int i=1;i<stepCount;++i)
 	{
-		weights[i]=expf((float)(-i*i)*ci);
+		x+=xstep;
+		weights[i]=expf(-x*x*ci);
 		sum+=weights[i];
 	}
 	sum*=2.0f;
@@ -178,7 +183,7 @@ void THLightBaseCircle::Load(const THVector2& resolution)
 		"void main(){"
 		"vec2 light2vert=(vVert-cPosition)*lRadiusi;"
 		"float dpos=length(light2vert);"
-		"if(dpos>1.0){gl_FragColor=vec4(0.0,0.0,0.0,1.0);return;}"
+		"if(dpos>1.0){gl_FragColor=vec4(0.0,0.0,0.0,0.0);return;}"
 		"if(dpos<=cRadius*lRadiusi){gl_FragColor=vec4(1.0,1.0,1.0,1.0);return;}"
 		"if(cRadius==lRadius){return;}"
 		"float factor=1.0-(dpos*lRadius-cRadius)*lcGapi;"
@@ -202,9 +207,70 @@ void THLightBaseCircle::Draw()
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+void THSwirlEffect::Load(THTexture* src)
+{
+	srcTexture=src;
+
+	const GLchar* vs=
+		"precision mediump float;"
+		"attribute vec2 vert;"
+		"attribute vec2 aTex;"
+		"varying vec2 vTexCoord;"
+		"void main(){"
+		"vTexCoord=aTex;"
+		"gl_Position=vec4(vert,0.0,1.0);"
+		"}"
+		;
+	const GLchar* fs=
+		"precision mediump float;"
+		"uniform vec2 cPosition;"
+		"uniform float cAngle;"
+		"uniform vec2 cRadius;"//radius,radiusInvert
+		"uniform float angleCoeff;"
+		"uniform vec4 textureInfo;"//x,y,size
+		"uniform vec2 textureInverted;"
+		"uniform sampler2D sTexture;"
+		"varying vec2 vTexCoord;"
+		"void main(){"
+		"vec2 cCoord=(vTexCoord*textureInfo.zw) - textureInfo.xy;"
+		"vec2 c2v=(cCoord-cPosition)*cRadius[1];"
+		"float dpos=dot(c2v,c2v);"
+		"if(dpos>1.0){gl_FragColor=texture2D(sTexture,vTexCoord);return;}"
+		"dpos=(1.0-sqrt(dpos));"
+		"float cangle=cAngle*dpos*dpos*angleCoeff;"
+		"float tcos=cos(cangle);float tsin=sin(cangle);"
+		"vec2 np=vec2(dot(c2v,vec2(tcos,-tsin)),dot(c2v,vec2(tsin,tcos)))*cRadius[0];"
+		"gl_FragColor=texture2D(sTexture,(np+cPosition)*textureInverted);"
+		"}"
+		;
+	program.Load(vs,fs);
+
+	const THVector2& tp=src->GetPosition();
+	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
+	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
+	
+	rotationHandler=program.GetUniformLocation("cAngle");
+	SetCoeff(8.0f);
+
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
+
+	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(textureHandler);
+}
+
+void THSwirlEffect::Draw()
+{
+	program.Use();
+
+	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
 
 
-/*
 void THWaveEffect::Load(THTexture* src)
 {
 	srcTexture=src;
@@ -217,64 +283,39 @@ void THWaveEffect::Load(THTexture* src)
 		"varying vec2 vTexCoord;"
 		"void main(){"
 		"vTexCoord=aTex;"
-		"gl_Position=vec4(vert.x,-vert.y,0.0,1.0);"
+		"gl_Position=vec4(vert,0.0,1.0);"
 		"}"
 		;
 	const GLchar* fs=
 		"precision mediump float;"
-		"uniform vec2 cPosition;"
 		"uniform float time;" // currentTime(sec) * pixel per sec
-		"uniform float waveHeight;"
-		"uniform vec4 textureInfo;"//x,y,size
-		"uniform vec2 textureInverted;"
-		"uniform sampler2D sTexture;"
-		"varying vec2 vTexCoord;"
-		"void main(){"
-		"vec2 cCoord=(vTexCoord*textureInfo.zw) - textureInfo.xy;"
-		"vec2 c2v=(cCoord-cPosition);"
-		"float dpos=dot(c2v,c2v);"
-		"c2v=c2v/dpos;"
-		"if(dpos>1.0){gl_FragColor=texture2D(sTexture,vTexCoord);return;}"
-		"dpos=sqrt(dpos);"
-		"float factor=waveHeight*sin();"
-		"}"
-		"precision mediump float;"
-		"uniform float waveRadiusi;"
+		"uniform vec2 dir;"
+		"uniform vec2 dirskew"
 		"uniform float waveAmpli;"
 		"uniform float waveFreq;"
-		"uniform float time;"
-		"uniform vec2 wavePosition;"
-		"uniform vec2 textureInverted;"
-		"uniform float lightAmpli;"
+		"uniform float waveVeli;"
+		"uniform vec4 textureInfo;"//x,y,size
 		"uniform sampler2D sTexture;"
-		"varying vec2 vVert;"
 		"varying vec2 vTexCoord;"
 		"void main(){"
-		"vec2 wave2vert=(vVert-wavePosition)*waveRadiusi;"
-		"float dpos=dot(wave2vert,wave2vert);"
-		"if(dpos>1.0){gl_FragColor=texture2D(sTexture,vTexCoord);return;}"
-		"dpos=sqrt(dpos);"
-		"float factor=waveAmpli*sin(6.2831*waveFreq*(time - dpos))*(1.0-dpos);"
-		"vec4 cCol;"
-		"if(dpos==0.0){cCol=texture2D(sTexture,vTexCoord);}else{"
-		"wave2vert=wave2vert/dpos;"
-		"cCol=texture2D(sTexture,vTexCoord+wave2vert*factor*textureInverted);"
-		"}"
-		"gl_FragColor=vec4(cCol.rgb*(1.0-factor*lightAmpli),cCol.a);"
+		"vec2 cCoord=(vTexCoord*textureInfo.zw)+textureInfo.xy;"
+		"float dp=dot(dir,cCoord);"
+		"float factor=waveAmpli*sin(6.2831853*waveFreq*(time-dp*waveVeli));"
+		"gl_FragColor=texture2D( sTexture , vTexCoord + (dirskew*factor));"
 		"}"
 		;
-	programObject.Load(vs,fs);
+	program.Load(vs,fs);
 
-	timeHandler=programObject.GetUniformLocation("time");
-	waveNormalHandler=programObject.GetUniformLocation("waveNormal");
+	timeHandler=program.GetUniformLocation("time");
+	directionHandler=program.GetUniformLocation("dir");
+	directionSkew=program.GetUniformLocation("dirskew");
 
-	const THVector2& tp=src->GetPosition();
-	glUniform4f(programObject.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
-	glUniform2f(programObject.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
+	const THVector2& tp=src->GetPosition()*0.01f;
+	const THVector2& ts=src->GetSize()*0.01f;
+	program.SetUniform("textureInfo",tp.x,tp.y,ts.x,ts.y);
 
-
-	vertexHandler=programObject.GetAttribLocation("vert");
-	textureHandler=programObject.GetAttribLocation("aTex");
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
 
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
@@ -282,16 +323,17 @@ void THWaveEffect::Load(THTexture* src)
 
 void THWaveEffect::Draw(float dt)
 {
-	glUseProgram(programObject.programObject);
+	time+=dt;
+	if(time>=freqI){time-=freqI;}
+	program.Use();
 
 	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
-	glUniform1f(timeHandler,dt);
+	glUniform1f(timeHandler,time);
 	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
 	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
 
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
-*/
 
 
 void THShockWaveEffect::Load(THTexture* src)
@@ -363,65 +405,3 @@ void THShockWaveEffect::Draw(float dt)
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void THSwirlEffect::Load(THTexture* src)
-{
-	srcTexture=src;
-
-	const GLchar* vs=
-		"precision mediump float;"
-		"attribute vec2 vert;"
-		"attribute vec2 aTex;"
-		"varying vec2 vTexCoord;"
-		"void main(){"
-		"vTexCoord=aTex;"
-		"gl_Position=vec4(vert,0.0,1.0);"
-		"}"
-		;
-	const GLchar* fs=
-		"precision mediump float;"
-		"uniform vec2 cPosition;"
-		"uniform float cAngle;"
-		"uniform vec2 cRadius;"//radius,radiusInvert
-		"uniform float angleCoeff;"
-		"uniform vec4 textureInfo;"//x,y,size
-		"uniform vec2 textureInverted;"
-		"uniform sampler2D sTexture;"
-		"varying vec2 vTexCoord;"
-		"void main(){"
-		"vec2 cCoord=(vTexCoord*textureInfo.zw) - textureInfo.xy;"
-		"vec2 c2v=(cCoord-cPosition)*cRadius[1];"
-		"float dpos=dot(c2v,c2v);"
-		"if(dpos>1.0){gl_FragColor=texture2D(sTexture,vTexCoord);return;}"
-		"dpos=(1.0-sqrt(dpos));"
-		"float cangle=cAngle*dpos*dpos*angleCoeff;"
-		"float tcos=cos(cangle);float tsin=sin(cangle);"
-		"vec2 np=vec2(dot(c2v,vec2(tcos,-tsin)),dot(c2v,vec2(tsin,tcos)))*cRadius[0];"
-		"gl_FragColor=texture2D(sTexture,(np+cPosition)*textureInverted);"
-		"}"
-		;
-	program.Load(vs,fs);
-
-	const THVector2& tp=src->GetPosition();
-	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
-	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
-	
-	rotationHandler=program.GetUniformLocation("cAngle");
-	SetCoeff(8.0f);
-
-	vertexHandler=program.GetAttribLocation("vert");
-	textureHandler=program.GetAttribLocation("aTex");
-
-	glEnableVertexAttribArray(vertexHandler);
-	glEnableVertexAttribArray(textureHandler);
-}
-
-void THSwirlEffect::Draw()
-{
-	program.Use();
-
-	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
-	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-}

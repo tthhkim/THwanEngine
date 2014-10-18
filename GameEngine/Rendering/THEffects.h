@@ -37,7 +37,6 @@ class THBlurEffect
 {
 public:
 	THProgram program;
-	THTexture* srcTexture;
 	const GLfloat* vertex;
 
 	THBlurEffect(int steps)
@@ -61,15 +60,18 @@ public:
 	void SetRadius(float r) const
 	{
 		const THVector2& bl=(r/(float)stepCount) / srcTexture->image->size;
-		program.SetUniform("blur",bl.x,bl.y);
+		glUniform2f(radiusHandler,bl.x,bl.y);
 	}
 
 protected:
+	THTexture* srcTexture;
+
 	GLuint vertexHandler;
 	GLuint textureHandler;
 
 	GLuint blurOppositeHandler;
 	GLuint directionHandler;
+	GLuint radiusHandler;
 
 	int stepCount;
 };
@@ -109,7 +111,44 @@ protected:
 
 	GLuint positionHandler;
 };
+class THSwirlEffect
+{
+public:
+	THProgram program;
+	const GLfloat* vertex;
 
+	THSwirlEffect()
+	{
+		vertex=defaultFullVertices;
+	}
+
+	void Load(THTexture* src);
+	void Draw();
+
+
+	void SetRadius(float r)
+	{
+		program.SetUniform("cRadius",r,1.0f/r);
+	}
+	void SetAngle(float r)
+	{
+		glUniform1f(rotationHandler,r);
+	}
+	void SetPosition(float x,float y)
+	{
+		program.SetUniform("cPosition",x,y);
+	}
+	void SetCoeff(float a)
+	{
+		program.SetUniform("angleCoeff",a);
+	}
+
+protected:
+	THTexture* srcTexture;
+	GLuint vertexHandler,textureHandler;
+
+	GLuint rotationHandler;
+};
 
 
 /*
@@ -119,45 +158,47 @@ Radius/sec
 
 
 */
-/*
-class THWaveEffect : public THEffect
+
+class THWaveEffect
 {
 public:
-	THWaveEffect():THEffect(){}
+	THProgram program;
+	const GLfloat* vertex;
+	
+	THWaveEffect(){time=0.0f;}
 
 	void Load(THTexture* src);
-	void Draw(float time);
+	void Draw(float dt);
 
-	void SetFrequency(float f)
+	void SetWave(float amplitude,float velocity,float frequency)
 	{
-		programObject.UseProgram();
-		glUniform1f(programObject.GetUniformLocation("waveFreq"),f);
+		program.SetUniform("waveVeli",100.0f/velocity);
+		program.SetUniform("waveFreq",frequency);
+		program.SetUniform("waveAmpli",amplitude*0.01f);
+		freqI=10.0f/frequency;
 	}
-	void SetLightCoeff(float l)
+	void SetDirection(float x,float y) const
 	{
-		programObject.UseProgram();
-		glUniform1f(programObject.GetUniformLocation("lightAmpli"),l);
+		const THVector2& sizeI=1.0f/srcTexture->image->size;
+		glUniform2f(directionHandler,x,y);
+		glUniform2f(directionSkew,-y*sizeI.x,x*sizeI.y);
 	}
-	void SetPosition(float x,float y)
+	void SetLightCoeff(float l) const
 	{
-		programObject.UseProgram();
-		glUniform2f(programObject.GetUniformLocation("wavePos"),x,y);
-	}
-	void SetAmplitude(float a)
-	{
-		programObject.UseProgram();
-		glUniform1f(programObject.GetUniformLocation("waveAmpli"),a);
+		program.SetUniform("lightAmpli",l);
 	}
 
 protected:
-	GLuint timeHandler;
+	float time;
+	float freqI;
 
+	GLuint timeHandler;
+	GLuint directionHandler,directionSkew;
 	GLuint vertexHandler,textureHandler;
-	GLuint waveNormalHandler;
 
 	THTexture *srcTexture;
 };
-*/
+
 class THShockWaveEffect
 {
 public:
@@ -208,43 +249,6 @@ protected:
 	GLuint positionHandler,timeHandler,isOnHandler;
 };
 
-class THSwirlEffect
-{
-public:
-	THProgram program;
-	const GLfloat* vertex;
 
-	THSwirlEffect()
-	{
-		vertex=defaultFullVertices;
-	}
-
-	void Load(THTexture* src);
-	void Draw();
-
-
-	void SetRadius(float r)
-	{
-		program.SetUniform("cRadius",r,1.0f/r);
-	}
-	void SetAngle(float r)
-	{
-		glUniform1f(rotationHandler,r);
-	}
-	void SetPosition(float x,float y)
-	{
-		program.SetUniform("cPosition",x,y);
-	}
-	void SetCoeff(float a)
-	{
-		program.SetUniform("angleCoeff",a);
-	}
-
-protected:
-	THTexture* srcTexture;
-	GLuint vertexHandler,textureHandler;
-
-	GLuint rotationHandler;
-};
 
 #endif

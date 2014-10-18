@@ -39,17 +39,36 @@ void THFrame::DrawObjects() const
 	defaultProgram.Use();
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
+
+
 	THDisplayObject* object;
 	for(unsigned int i=0;i<objectList.num;++i)
 	{
 		object=objectList.arr[i];
 		if(object->visible)
 		{
-			object->draw();
+			object->Draw();
 		}
 	}
-	glDisableVertexAttribArray(vertexHandler);
 	glDisableVertexAttribArray(textureHandler);
+
+#ifndef NDEBUG
+	THButton* btn;
+	for(unsigned int i=0;i<buttonList.num;++i)
+	{
+		btn=buttonList.arr[i];
+		if(btn->enable)
+		{
+			btn->DrawDebug(0.1f,0.3f,0.9f);
+		}else
+		{
+			btn->DrawDebug(0.9f,0.3f,0.1f);
+		}
+	}
+#endif
+
+	glDisableVertexAttribArray(vertexHandler);
+	
 }
 void THFrame::Draw(float dt)
 {

@@ -230,15 +230,6 @@ void android_main(struct android_app* state)
 
 	assetManager=state->activity->assetManager;
 
-	
-	extern char* dataPath;
-	extern unsigned int dataPathLen;
-	dataPathLen=strlen(state->activity->internalDataPath)+1;
-	dataPath=new char[dataPathLen+MAX_FILE_NAME+1];
-	dataPath[dataPathLen-1]='/';
-	memcpy(dataPath,state->activity->internalDataPath,dataPathLen-1);
-	
-
 	SetFrameRate(60.0f);
 
 	OnCreate(state);

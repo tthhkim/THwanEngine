@@ -19,7 +19,7 @@ public:
 	void* frame;
 	void* userData;
 
-	virtual void draw()=0;
+	virtual void Draw()=0;
 
 	THDisplayObject()
 	{
@@ -44,7 +44,7 @@ public:
 		vertexBuffer=vertex;
 	}
 
-	void draw();
+	void Draw();
 };
 
 class THGroupClip : public THDisplayObject
@@ -57,7 +57,7 @@ public:
 	{
 	}
 
-	void draw();
+	void Draw();
 	void AddChild(THDisplayObject* object);
 	void ReAddChild(THDisplayObject* object);
 };
@@ -75,13 +75,8 @@ public:
 	void (*onDown)(float,float,THButton*);
 	void (*onRelease)(float,float,THButton*);
 
-	THButton(float w,float h)
+	THButton(float w,float h):minBound(),maxBound(w,h)
 	{
-		x=0.0f;
-		y=0.0f;
-		xplusw=w;
-		yplush=h;
-
 		frame=0;
 		enable=true;
 
@@ -94,9 +89,11 @@ public:
 	void SetPosition(float _x,float _y);
 	void SetSize(float w,float h);
 
+	void Synchronize(const THVector2& extraBound);
+
 	inline bool HitTest(float px,float py) const
 	{
-		return (x<px)&&(xplusw>px) && (y<py)&&(yplush>py);
+		return (minBound.x<px)&&(maxBound.x>px) && (minBound.y<py)&&(maxBound.y>py);
 	}
 	void SetDowned()
 	{
@@ -125,11 +122,29 @@ public:
 		}
 	}
 
+#ifndef NDEBUG
+	void DrawDebug(float r,float g,float b) const
+	{
+		const GLfloat vertic[]=
+		{
+			minBound.x,minBound.y,
+			maxBound.x,minBound.y,
+			minBound.x,maxBound.y,
+			maxBound.x,maxBound.y
+		};
+
+		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
+		glVertexAttrib4f(rotationHandler,1.0f,0.0f,0.0f,1.0f);
+		glVertexAttrib2f(positionHandler,0.0f,0.0f);
+
+		glVertexAttrib1f(hasColorHandler,1.0f);
+		glVertexAttrib4f(colorHandler,r,g,b,1.0f);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
+#endif
+
 protected:
-	float x;
-	float y;
-	float xplusw;
-	float yplush;
+	THVector2 minBound,maxBound;
 	THTexture* normal;
 };
 

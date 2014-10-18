@@ -11,7 +11,7 @@ THVector2 drawingOffset;
 THVector2 tempPoition;
 //Offset Coordinations;
 
-void THMovieClip::draw()
+void THMovieClip::Draw()
 {
 	tempPoition=drawingOffset+position;
 
@@ -29,7 +29,7 @@ void THMovieClip::draw()
 
 
 
-void THGroupClip::draw()
+void THGroupClip::Draw()
 {
 	THDisplayObject* object;
 	drawingOffset+=position;
@@ -37,7 +37,7 @@ void THGroupClip::draw()
 	{
 		object=(THDisplayObject*)list.arr[i];
 		if(object->visible)
-		{object->draw();}
+		{object->Draw();}
 	}
 	drawingOffset-=position;
 }			  
@@ -56,14 +56,23 @@ inline void THGroupClip::ReAddChild(THDisplayObject* displayObject)
 
 void THButton::SetPosition(float _x,float _y)
 {
-	xplusw=xplusw-x+_x;
-	x=_x;
-
-	yplush=yplush-y+_y;
-	y=_y;
+	const THVector2 p(_x,_y);
+	maxBound=maxBound-minBound+p;
+	minBound=p;
 }
 void THButton::SetSize(float w,float h)
 {
-	xplusw=x+w;
-	yplush=y+h;
+	maxBound=minBound+THVector2(w,h);
+}
+void THButton::Synchronize(const THVector2& extraBound)
+{
+	assert(clip);
+
+	const THVector2* arrs=(const THVector2*)clip->vertexBuffer;
+
+	const THVector2& minc=arrs[0];
+	const THVector2& maxc=arrs[3];
+
+	minBound=clip->position+minc-extraBound;
+	maxBound=clip->position+maxc+extraBound;
 }
