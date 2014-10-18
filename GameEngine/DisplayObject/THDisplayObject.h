@@ -53,7 +53,7 @@ public:
 	THArray<THDisplayObject*> list;
 	THVector2 position;
 
-	THGroupClip(const unsigned int listCount=5):THDisplayObject(),list(listCount)
+	THGroupClip(const unsigned int listCount=10):THDisplayObject(),list(listCount)
 	{
 	}
 

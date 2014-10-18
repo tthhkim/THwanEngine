@@ -103,9 +103,6 @@ public:
 		
 	}
 
-
-	
-
 protected:
 	GLuint vertexHandler;
 
@@ -149,7 +146,6 @@ protected:
 
 	GLuint rotationHandler;
 };
-
 
 /*
 

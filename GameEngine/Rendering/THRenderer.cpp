@@ -15,9 +15,9 @@ extern EGLSurface eglSurface=EGL_NO_SURFACE;
 extern EGLContext eglContext=EGL_NO_CONTEXT;
 
 extern THVector2 windowSize(0.0f,0.0f);
-extern THVector2 gameSize(0.0f,0.0f);
 extern THVector2 gameScale(0.0f,0.0f);
-extern THVector2 viewport(0.0f,0.0f);
+extern THVector2 gameMinBound(0.0f,0.0f);
+extern THVector2 gameMaxBound(0.0f,0.0f);
 
 extern THProgram defaultProgram=THProgram();
 extern GLuint vertexHandler=0;
@@ -57,12 +57,12 @@ void OnDrawFrame(float dt)
 }
 void SetOrtho(const THVector2& minp,const THVector2& maxp)
 {
+	gameMinBound=minp;
+	gameMaxBound=maxp;
+
 	const THVector2& size=(maxp-minp);
 
-	gameSize=size;
-	viewport=minp;
-	
-	gameScale=gameSize / windowSize;
+	gameScale=size / windowSize;
 
 	const THVector2& sizeI=1.0f/size;
 	const THVector2& mid=(minp+maxp);

@@ -35,6 +35,44 @@ public:
 		arr[num]=object;
 		++num;
 	}
+	int Find(const T& object)
+	{
+		for(unsigned int i=0;i<num;++i)
+		{
+			if(arr[i]==object)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	int FindBack(const T& object)
+	{
+		unsigned int i=num;
+		while(i)
+		{
+			--i;
+			if(arr[i]==object)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	void Delete(unsigned int index)
+	{
+		assert(index<num);
+		--num;
+		memmove(arr+index,arr+(index+1),(num-index)*sizeof(T));
+	}
+	void Delete(const T& object)
+	{
+		int ind=Find(object);
+		if(ind!=-1)
+		{
+			Delete(ind);
+		}
+	}
 	void Repush(const T& object)
 	{
 		unsigned int i;
@@ -48,19 +86,7 @@ public:
 			}
 		}
 	}
-	void Delete(const T& object)
-	{
-		unsigned int i;
-		for(i=0;i<num-1;++i)
-		{
-			if(arr[i]==object)
-			{
-				--num;
-				memmove(arr+i,arr+(i+1),(num-i)*sizeof(T));
-				return;
-			}
-		}
-	}
+	
 	inline void Clear()
 	{
 		num=0;

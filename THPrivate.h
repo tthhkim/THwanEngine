@@ -62,9 +62,11 @@ extern float cFPS;
 #endif
 
 extern THVector2 windowSize;
-extern THVector2 gameSize;
 extern THVector2 gameScale;
-extern THVector2 viewport;
+
+extern THVector2 gameMaxBound;
+extern THVector2 gameMinBound;
+
 extern THFrame* currentFrame;
 
 extern THProgram defaultProgram;
@@ -110,15 +112,15 @@ THTween* AddTween(float* _src,float _dest,float seconds,float acceleration);
 
 static inline float getGameX(float _x)
 {
-	return _x*gameScale.x + viewport.x;
+	return _x*gameScale.x + gameMinBound.x;
 }
 static inline float getGameY(float _y)
 {
-	return _y*gameScale.y + viewport.y;
+	return _y*gameScale.y + gameMinBound.y;
 }
 static inline THVector2 GetGameRelative(const THVector2& v)
 {
-	return viewport+(gameSize*v);
+	return gameMinBound+((gameMaxBound-gameMinBound)*v);
 }
 
 #endif
