@@ -19,7 +19,7 @@ public:
 	void* frame;
 	void* userData;
 
-	virtual void Draw() const=0;
+	virtual void Draw()=0;
 
 	THDisplayObject()
 	{
@@ -44,22 +44,7 @@ public:
 		vertexBuffer=vertex;
 	}
 
-	void Draw() const;
-};
-
-class THGroupClip : public THDisplayObject
-{
-public:
-	THArray<THDisplayObject*> list;
-	THVector2 position;
-
-	THGroupClip(const unsigned int listCount=10):THDisplayObject(),list(listCount)
-	{
-	}
-
-	void Draw() const;
-	void AddChild(THDisplayObject* object);
-	void ReAddChild(THDisplayObject* object);
+	void Draw();
 };
 
 class THButton

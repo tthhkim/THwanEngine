@@ -42,7 +42,7 @@ public:
 	
 	void SetString(const THChar** charArr,unsigned int cCount);
 	void SetStringMulti(const THChar** charArr,unsigned int cCount);
-	void Draw() const;
+	void Draw();
 
 	inline void Delete()
 	{

@@ -44,7 +44,7 @@ void THString::SetStringMulti(const THChar** charArr,unsigned int cCount)
 		}
 	}
 }
-void THString::Draw() const
+void THString::Draw()
 {
 	float cl=position.x;
 	float cy=position.y;
