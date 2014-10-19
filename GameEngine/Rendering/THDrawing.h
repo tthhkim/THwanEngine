@@ -7,7 +7,6 @@
 #include <GameEngine/Util/THMath.h>
 
 
-
 class THProgram
 {
 protected:
@@ -65,13 +64,14 @@ public:
 	GLsizei width,height;
 
 	THImage(GLsizei w,GLsizei h):size((float)w,(float)h){width=w;height=h;}
+
+	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+
 	inline void DeleteTexture() const
 	{
 		glDeleteTextures(1,&textureID);
 	}
 };
-
-THImage GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 
 class THTexture
 {

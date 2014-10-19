@@ -28,7 +28,7 @@ void THString::SetString(const THChar** charArr,unsigned int cCount)
 	}
 	length*=scale;
 }
-void THString::Draw()
+void THString::Draw() const
 {
 	float cl=position.x;
 	const THChar* ch;

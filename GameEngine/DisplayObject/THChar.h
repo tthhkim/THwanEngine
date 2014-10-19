@@ -40,7 +40,7 @@ public:
 	
 	
 	void SetString(const THChar** charArr,unsigned int cCount);
-	void Draw();
+	void Draw() const;
 
 	inline void Delete()
 	{

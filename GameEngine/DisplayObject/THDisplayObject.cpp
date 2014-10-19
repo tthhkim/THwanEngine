@@ -13,7 +13,7 @@ THVector2 tempPoition;
 
 using namespace THDefaultProgram;
 
-void THMovieClip::Draw()
+void THMovieClip::Draw() const
 {
 	tempPoition=drawingOffset+position;
 
@@ -32,7 +32,7 @@ void THMovieClip::Draw()
 
 
 
-void THGroupClip::Draw()
+void THGroupClip::Draw() const
 {
 	THDisplayObject* object;
 	drawingOffset+=position;

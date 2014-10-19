@@ -543,7 +543,8 @@ THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	AAsset_close(aasset);
 
-	THImage img=GenerateTexture(colorBuf,width,height,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
+	THImage img(width,height);
+	img.Load(colorBuf,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
 	free(colorBuf);
 
 	return img;
@@ -575,7 +576,8 @@ THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 		st=height&(height-1);
 		assert(st==0);
 #endif
-	THImage img=GenerateTexture(colorBuf,width,height,GL_RGBA,filter,isRepeat);
+	THImage img(width,height);
+	img.Load(colorBuf,GL_RGBA,filter,isRepeat);
 	free(colorBuf);
 
 	return img;

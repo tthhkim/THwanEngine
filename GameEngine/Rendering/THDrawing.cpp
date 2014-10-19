@@ -4,11 +4,10 @@
 #include <malloc.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
-THImage GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter,bool isRepeat)
+void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 {
-	THImage image(width,height);
-	glGenTextures(1, &image.textureID);
-	glBindTexture(GL_TEXTURE_2D, image.textureID);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	if(isRepeat)
@@ -22,8 +21,6 @@ THImage GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GL
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
-
-	return image;
 }
 
 void THTexture::SetBuffer(const THVector2& minp,const THVector2& maxp)
