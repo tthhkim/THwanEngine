@@ -59,7 +59,7 @@ public:
 	}
 	void SetRadius(float r) const
 	{
-		const THVector2& bl=(r/(float)stepCount) / srcTexture->image->size;
+		const THVector2 bl=(r/(float)stepCount) / srcTexture->image->size;
 		glUniform2f(radiusHandler,bl.x,bl.y);
 	}
 
@@ -175,7 +175,7 @@ public:
 	}
 	void SetDirection(float x,float y) const
 	{
-		const THVector2& sizeI=1.0f/srcTexture->image->size;
+		const THVector2 sizeI=1.0f/srcTexture->image->size;
 		glUniform2f(directionHandler,x,y);
 		glUniform2f(directionSkew,-y*sizeI.x,x*sizeI.y);
 	}

@@ -3,8 +3,8 @@
 
 void THShadowEffect::SetOrtho(const THVector2& minp,const THVector2& maxp)
 {
-	const THVector2& sizeI=1.0f/(maxp-minp);
-	const THVector2& mid=(minp+maxp);
+	const THVector2 sizeI=1.0f/(maxp-minp);
+	const THVector2 mid=(minp+maxp);
 	const GLfloat matx[]={
 		sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
 		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y

@@ -484,7 +484,7 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 
 	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
 }
-THImage LoadTexture(const char* name)
+THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 {
 	THLog("Texture Generation : %s",name);
 #ifndef NDEBUG
@@ -527,8 +527,6 @@ THImage LoadTexture(const char* name)
 		assert(st==0);
 #endif
 
-	THImage img((float)width,(float)height);
-
 	const png_uint_32 bytesPerRow = png_get_rowbytes(png_ptr, info_ptr);
 	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*height);
 	png_bytep* rowBytes=(png_bytep*)malloc(height*sizeof(png_bytep));
@@ -545,30 +543,15 @@ THImage LoadTexture(const char* name)
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	AAsset_close(aasset);
 
-	img.textureID=GenerateTexture(colorBuf,width,height,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB);
+	THImage img=GenerateTexture(colorBuf,width,height,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
 	free(colorBuf);
 
 	return img;
-	
-	/*
-	if(pthread_equal(pthread_self(),glThread))
-	{
-		THLog("From GLThread");
-		genTexture(texture,colorBuf,width,height);
-		free(colorBuf);
-		return;
-	}else{
-		THLog("Not From GLThread");
-		texturePointer=texture;
-		textureColorBuffer=colorBuf;
-		textureInfo=(width<<16)|height;
-	}
-	*/
 }
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
-THImage LoadTexture(const char* name)
+THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 {
 	FILE* filep=fopen(name,"rb");
 	fseek(filep,0,SEEK_END);
@@ -592,8 +575,7 @@ THImage LoadTexture(const char* name)
 		st=height&(height-1);
 		assert(st==0);
 #endif
-	THImage img((float)width,(float)height);
-	img.textureID=GenerateTexture(colorBuf,width,height,GL_RGBA);
+	THImage img=GenerateTexture(colorBuf,width,height,GL_RGBA,filter,isRepeat);
 	free(colorBuf);
 
 	return img;

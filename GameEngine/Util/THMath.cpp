@@ -32,7 +32,7 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 	}
 
 	const float leni=1.0f/(p1.Length()*p2.Length());
-	THVector3& axis=THCross(p1,p2);
+	THVector3 axis=THCross(p1,p2);
 	const float c=THDot(p1,p2)*leni;
 	const float s=axis.Normalize()*leni;
 
@@ -46,8 +46,8 @@ void EyeTrnsformMatrix(float* mat,const THVector2& yrot,const THVector2& xrot)
 }
 void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max)
 {
-	const THVector3& sizeI=1.0f/(max-min);
-	const THVector3& mmid=(max+min)*sizeI;
+	const THVector3 sizeI=1.0f/(max-min);
+	const THVector3 mmid=(max+min)*sizeI;
 
 	mat[0]=2.0f*min.z*sizeI.x;	mat[1]=0.0f;				mat[2]=mmid.x;			mat[3]=0.0f;
 	mat[4]=0.0f;				mat[5]=2.0f*min.z*sizeI.y;	mat[6]=mmid.y;			mat[7]=0.0f;
@@ -61,9 +61,9 @@ float THMatrix33::Discriminant() const
 }
 THMatrix33 THMatrix33::Inverse() const
 {
-	const THVector3& c12=THCross(row1,row2);
-	const THVector3& c13=THCross(row1,row3);
-	const THVector3& c23=THCross(row2,row3);
+	const THVector3 c12=THCross(row1,row2);
+	const THVector3 c13=THCross(row1,row3);
+	const THVector3 c23=THCross(row2,row3);
 	const float det=1.0f/Discriminant();
 
 	return THMatrix33(

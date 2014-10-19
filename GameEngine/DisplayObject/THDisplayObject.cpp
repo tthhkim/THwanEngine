@@ -73,8 +73,8 @@ void THButton::Synchronize(const THVector2& extraBound)
 
 	const THVector2* arrs=(const THVector2*)clip->vertexBuffer;
 
-	const THVector2& minc=arrs[0];
-	const THVector2& maxc=arrs[3];
+	const THVector2 minc=arrs[0];
+	const THVector2 maxc=arrs[3];
 
 	minBound=clip->position+minc-extraBound;
 	maxBound=clip->position+maxc+extraBound;

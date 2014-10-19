@@ -15,6 +15,8 @@ static EGLSurface eglSurface=EGL_NO_SURFACE;
 static EGLContext eglContext=EGL_NO_CONTEXT;
 
 extern THVector2 windowSize(0.0f,0.0f);
+extern GLsizei windowWidthi=0;
+extern GLsizei windowHeighti=0;
 extern THVector2 gameScale(0.0f,0.0f);
 extern THVector2 gameMinBound(0.0f,0.0f);
 extern THVector2 gameMaxBound(0.0f,0.0f);
@@ -58,17 +60,15 @@ void OnDrawFrame(float dt)
 }
 void SetOrtho(const THVector2& minp,const THVector2& maxp)
 {
-
-
 	gameMinBound=minp;
 	gameMaxBound=maxp;
 
-	const THVector2& size=(maxp-minp);
+	const THVector2 size=maxp-minp;
 
 	gameScale=size / windowSize;
 
-	const THVector2& sizeI=1.0f/size;
-	const THVector2& mid=(minp+maxp);
+	const THVector2 sizeI=1.0f/size;
+	const THVector2 mid=(minp+maxp);
 	const GLfloat matx[]={
 		sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
 		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
@@ -285,6 +285,8 @@ void THEGLInit(THApplicaation* state)
 	EGLint sw,sh;
     eglQuerySurface(eglDisplay, eglSurface, EGL_WIDTH, &sw);
     eglQuerySurface(eglDisplay, eglSurface, EGL_HEIGHT, &sh);
+	windowWidthi=sw;
+	windowHeighti=sh;
 	windowSize.Set((float)sw,(float)sh);
 	gameScale.Set(0.0f,0.0f);
 }

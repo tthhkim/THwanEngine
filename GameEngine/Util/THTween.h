@@ -88,8 +88,8 @@ public:
 		ct=0.0f;
 
 		const float inv_time=1.0f/seconds;
-		const THVector2& vel=(dest-*src)*inv_time;
-		const THVector2& vc=vel*coeff;
+		const THVector2 vel=(dest-*src)*inv_time;
+		const THVector2 vc=vel*coeff;
 
 		accel=2.0f*vc*inv_time;
 		v0=vel-vc;

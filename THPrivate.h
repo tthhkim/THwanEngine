@@ -21,8 +21,6 @@ class THFrame;
 class THTween;
 
 #if THPLATFORM==THPLATFORM_WINDOWS
-#define WINDOW_WIDTH 360
-#define WINDOW_HEIGHT 640
 #define APPLICATION_NAME "TestApplicatonName"
 #define WINDOW_CLASS_NAME "SAMPLE_WIDOW_CLASSNAME"
 #endif
@@ -63,6 +61,8 @@ extern float cFPS;
 #endif
 
 extern THVector2 windowSize;
+extern GLsizei windowWidthi;
+extern GLsizei windowHeighti;
 extern THVector2 gameScale;
 
 extern THVector2 gameMaxBound;
@@ -99,7 +99,7 @@ typedef long long THTimeType;
 #endif
 
 void OnCreate(THApplicaation* state);
-THImage LoadTexture(const char* name);
+THImage LoadTexture(const char* name,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 void OnSurfaceCreated();
 //void OnSaveInstanceState(saved_state* saved);
 //void OnLoadInstanceState(saved_state* loaded);

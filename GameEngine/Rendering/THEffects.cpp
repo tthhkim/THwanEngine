@@ -202,7 +202,7 @@ void THLightBaseCircle::Load(const THVector2& resolution)
 		;
 	program.Load(vs,fs);
 
-	const THVector2& sci=2.0f/resolution;
+	const THVector2 sci=2.0f/resolution;
 	program.SetUniform("ndcMat",sci.x,sci.y);
 
 	positionHandler=program.GetUniformLocation("cPosition");
@@ -255,7 +255,7 @@ void THSwirlEffect::Load(THTexture* src)
 		;
 	program.Load(vs,fs);
 
-	const THVector2& tp=src->GetPosition();
+	const THVector2 tp=src->GetPosition();
 	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
 	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
 	
@@ -319,7 +319,7 @@ void THLinearWaveEffect::Load(THTexture* src)
 	directionHandler=program.GetUniformLocation("dir");
 	directionSkew=program.GetUniformLocation("dirskew");
 
-	const THVector2& ts=src->GetSize()*0.01f;
+	const THVector2 ts=src->GetSize()*0.01f;
 	program.SetUniform("textureInfo",ts.x,ts.y);
 
 	vertexHandler=program.GetAttribLocation("vert");
@@ -382,8 +382,8 @@ void THAngularWaveEffect::Load(THTexture* src)
 
 	timeHandler=program.GetUniformLocation("time");
 
-	const THVector2& ts=src->image->size*0.01f;
-	const THVector2& tp=src->GetPosition()*0.01f;
+	const THVector2 ts=src->image->size*0.01f;
+	const THVector2 tp=src->GetPosition()*0.01f;
 	program.SetUniform("textureInfo",tp.x,tp.y,ts.x,ts.y);
 	program.SetUniform("textureInverted",1.0f/ts.x,1.0f/ts.y);
 
@@ -450,7 +450,7 @@ void THShockWaveEffect::Load(THTexture* src)
 		;
 	program.Load(vs,fs);
 
-	const THVector2& tp=src->GetPosition();
+	const THVector2 tp=src->GetPosition();
 	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
 	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
 

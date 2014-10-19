@@ -4,11 +4,11 @@
 #include <malloc.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
-GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter,bool isRepeat)//,const unsigned int isRepeat)
+THImage GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter,bool isRepeat)
 {
-	GLuint tex;
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
+	THImage image(width,height);
+	glGenTextures(1, &image.textureID);
+	glBindTexture(GL_TEXTURE_2D, image.textureID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	if(isRepeat)
@@ -23,34 +23,43 @@ GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLf
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
 
-	return tex;
+	return image;
+}
+
+void THTexture::SetBuffer(const THVector2& minp,const THVector2& maxp)
+{
+#if PNG_UPSIDE_DOWN==1
+	textureBuffer[0].Set(minp.x,maxp.y);
+	textureBuffer[1].Set(maxp.x,maxp.y);
+	textureBuffer[2].Set(minp.x,minp.y);
+	textureBuffer[3].Set(maxp.x,minp.y);
+#else
+	textureBuffer[0].Set(minp.x,minp.y);
+	textureBuffer[1].Set(maxp.x,minp.y);
+	textureBuffer[2].Set(minp.x,maxp.y);
+	textureBuffer[3].Set(maxp.x,maxp.y);
+#endif
 }
 void THTexture::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	image=_image;
-	const THVector2& invSize=1.0f/_image->size;
-	const THVector2& min=pos*invSize;
-	const THVector2& max=(pos+_size)*invSize;
+	const THVector2 invSize=1.0f/_image->size;
+	const THVector2 min=pos*invSize;
+	const THVector2 max=(pos+_size)*invSize;
 
-	textureBuffer[0].Set(min.x,min.y);
-	textureBuffer[1].Set(max.x,min.y);
-	textureBuffer[2].Set(min.x,max.y);
-	textureBuffer[3].Set(max.x,max.y);
-	
 	position=pos;
 	size=_size;
+
+	SetBuffer(min,max);
 }
 void THTexture::Set(THImage* _image)
 {
 	image=_image;
 
-	textureBuffer[0].Set(0.0f,0.0f);
-	textureBuffer[1].Set(1.0f,0.0f);
-	textureBuffer[2].Set(0.0f,1.0f);
-	textureBuffer[3].Set(1.0f,1.0f);
-
 	position.Set(0.0f,0.0f);
 	size=image->size;
+
+	SetBuffer(THVector2(0.0f,0.0f),THVector2(1.0f,1.0f));
 }
 void THTexture::Set(const THTexture& _texture,const THVector2& pos,const THVector2& size)
 {
@@ -91,29 +100,15 @@ void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes) const
 	//ToDo Returning to default vertexbuffer
 }
 
-void THFrameBuffer::Load(GLenum format)
+void THFrameBuffer::Load(THImage* img)
 {
-#ifndef NDEBUG
-	const char* formatName="NAN";
-	switch(format)
-	{
-	case GL_RGB:
-		formatName="GL_RGB";
-		break;
-	case GL_RGBA:
-		formatName="GL_RGBA";
-		break;
-	case GL_ALPHA:
-		formatName="GL_ALPHA";
-		break;
-	case GL_DEPTH_COMPONENT:
-		formatName="GL_DEPTH_COMPONENT";
-		break;
-	}
+	fboImage=img;
 
-	THLog("FrameBuffer Generation; %.1f / %.1f / %s",fboImage.size.x,fboImage.size.y,formatName);
+#ifndef NDEBUG
+	THLog("FrameBuffer Generation;");
 #endif
 
+	/*
 	GLuint fboTextureHandler;
 	glGenTextures(1,&fboTextureHandler);
 	glBindTexture(GL_TEXTURE_2D,fboTextureHandler);
@@ -121,6 +116,7 @@ void THFrameBuffer::Load(GLenum format)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D,0,format,(GLsizei)fboImage.size.x,(GLsizei)fboImage.size.y,0,format,GL_UNSIGNED_BYTE,0);
 	fboImage.textureID=fboTextureHandler;
+	*/
 
 	/*
 	glGenRenderbuffers(1,&rbHandler);
@@ -131,7 +127,7 @@ void THFrameBuffer::Load(GLenum format)
 	glGenFramebuffers(1,&fboHandler);
 	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 	//glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,rbHandler);
-	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fboTextureHandler,0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fboImage->textureID,0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	//ToDo Returning to default framebuffer

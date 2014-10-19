@@ -6,8 +6,7 @@
 
 #include <GameEngine/Util/THMath.h>
 
-GLuint GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);//,const unsigned int isRepeat);
-//void DrawTexture();
+
 
 class THProgram
 {
@@ -63,13 +62,17 @@ class THImage
 public:
 	GLuint textureID;
 	THVector2 size;
+	GLsizei width,height;
 
-	THImage(float w=0.0f,float h=0.0f):size(w,h){}
+	THImage(GLsizei w,GLsizei h):size((float)w,(float)h){width=w;height=h;}
 	inline void DeleteTexture() const
 	{
 		glDeleteTextures(1,&textureID);
 	}
 };
+
+THImage GenerateTexture(void* data,GLsizei width,GLsizei height,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+
 class THTexture
 {
 public:
@@ -96,6 +99,8 @@ public:
 
 protected:
 	THVector2 position,size;
+
+	void SetBuffer(const THVector2& minp,const THVector2& maxp);
 };
 
 
@@ -146,21 +151,21 @@ class THFrameBuffer
 {
 public:
 	GLuint fboHandler;//,rbHandler;
-	THImage fboImage;
+	THImage* fboImage;
 
-	THFrameBuffer(unsigned int width,unsigned int height):fboImage((float)width,(float)height){}
-	void Load(GLenum format);
+	void Load(THImage* img);
 	inline void BeginDrawing() const
 	{
-		glViewport(0,0,(GLsizei)fboImage.size.x,(GLsizei)fboImage.size.y);
+		glViewport(0,0,fboImage->width,fboImage->height);
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-		glBindTexture(GL_TEXTURE_2D,fboImage.textureID);
+		glBindTexture(GL_TEXTURE_2D,fboImage->textureID);
 		//glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
 	}
 	inline void EndDrawing() const
 	{
-		extern THVector2 windowSize;
-		glViewport(0,0,(GLsizei)windowSize.x,(GLsizei)windowSize.y);
+		extern GLsizei windowWidthi;
+		extern GLsizei windowHeighti;
+		glViewport(0,0,windowWidthi,windowHeighti);
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		//ToDo Returning to default framebuffer
 		//glBindRenderbuffer(GL_RENDERBUFFER,0);

@@ -5,7 +5,7 @@ void THChar::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	THTexture::Set(_image,pos,_size);
 
-	const THVector2& sxy2=_size/_image->size;
+	const THVector2 sxy2=_size/_image->size;
 
 	length=sxy2.x;
 
