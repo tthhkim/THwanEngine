@@ -161,15 +161,7 @@ public:
 		glBindTexture(GL_TEXTURE_2D,fboImage->textureID);
 		//glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
 	}
-	inline void EndDrawing() const
-	{
-		extern GLsizei windowWidthi;
-		extern GLsizei windowHeighti;
-		glViewport(0,0,windowWidthi,windowHeighti);
-		glBindFramebuffer(GL_FRAMEBUFFER,0);
-		//ToDo Returning to default framebuffer
-		//glBindRenderbuffer(GL_RENDERBUFFER,0);
-	}
+	void EndDrawing() const;
 	void DeleteFBO() const
 	{
 		glDeleteFramebuffers(1,&fboHandler);

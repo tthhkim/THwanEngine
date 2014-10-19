@@ -129,3 +129,10 @@ void THFrameBuffer::Load(THImage* img)
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	//ToDo Returning to default framebuffer
 }
+void THFrameBuffer::EndDrawing() const
+{
+	glViewport(0,0,windowWidthi,windowHeighti);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	//ToDo Returning to default framebuffer
+	//glBindRenderbuffer(GL_RENDERBUFFER,0);
+}
