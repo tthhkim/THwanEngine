@@ -219,8 +219,6 @@ void THLightBaseCircle::Draw()
 
 void THSwirlEffect::Load(THTexture* src)
 {
-	srcTexture=src;
-
 	const GLchar* vs=
 		"precision mediump float;"
 		"attribute vec2 vert;"
@@ -255,10 +253,8 @@ void THSwirlEffect::Load(THTexture* src)
 		;
 	program.Load(vs,fs);
 
-	const THVector2 tp=src->GetPosition();
-	glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
-	glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
-	
+	SetTexture(src);
+
 	rotationHandler=program.GetUniformLocation("cAngle");
 	SetCoeff(8.0f);
 

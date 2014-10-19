@@ -19,7 +19,7 @@ public:
 	{
 		program.SetUniform("ambient",r,g,b);
 	}
-	void SetAmplitude(float a) const
+	void SetIntensity(float a) const
 	{
 		glUniform1f(amplitudeHandler,a);
 	}
@@ -57,9 +57,16 @@ public:
 	{
 		glUniform2f(directionHandler,x,y);
 	}
-	void SetRadius(float r) const
+	void SetRadius(float r)
 	{
-		const THVector2 bl=(r/(float)stepCount) / srcTexture->image->size;
+		radiusFactor=r/(float)stepCount;
+		const THVector2 bl=(radiusFactor / srcTexture->image->size);
+		glUniform2f(radiusHandler,bl.x,bl.y);
+	}
+	void SetTexture(THTexture* src)
+	{
+		srcTexture=src;
+		const THVector2 bl=(radiusFactor / srcTexture->image->size);
 		glUniform2f(radiusHandler,bl.x,bl.y);
 	}
 
@@ -72,6 +79,7 @@ protected:
 	GLuint blurOppositeHandler;
 	GLuint directionHandler;
 	GLuint radiusHandler;
+	float radiusFactor;
 
 	int stepCount;
 };
@@ -138,6 +146,13 @@ public:
 	void SetCoeff(float a)
 	{
 		program.SetUniform("angleCoeff",a);
+	}
+	void SetTexture(THTexture* src)
+	{
+		srcTexture=src;
+		const THVector2 tp=src->GetPosition();
+		glUniform4f(program.GetUniformLocation("textureInfo"),tp.x,tp.y,src->image->size.x,src->image->size.y);
+		glUniform2f(program.GetUniformLocation("textureInverted"),1.0f/src->image->size.x,1.0f/src->image->size.y);
 	}
 
 protected:

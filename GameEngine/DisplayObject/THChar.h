@@ -31,6 +31,7 @@ public:
 	THVector2 position;
 	float scale;
 	float red,green,blue,alpha;
+	float lineHeight;
 
 	THString(float _scale):THDisplayObject()
 	{
@@ -40,6 +41,7 @@ public:
 	
 	
 	void SetString(const THChar** charArr,unsigned int cCount);
+	void SetStringMulti(const THChar** charArr,unsigned int cCount);
 	void Draw() const;
 
 	inline void Delete()

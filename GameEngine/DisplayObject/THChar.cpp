@@ -28,13 +28,37 @@ void THString::SetString(const THChar** charArr,unsigned int cCount)
 	}
 	length*=scale;
 }
+void THString::SetStringMulti(const THChar** charArr,unsigned int cCount)
+{
+	count=cCount;
+	chars=new THChar*[count];
+	memcpy(chars,charArr,sizeof(THChar*)*count);
+
+	const float la=lineHeight>0.0f?lineHeight:-lineHeight;
+	length=la;
+	for(unsigned int i=0;i<count;++i)
+	{
+		if(chars[i]==0)
+		{
+			length+=la;
+		}
+	}
+}
 void THString::Draw() const
 {
 	float cl=position.x;
+	float cy=position.y;
 	const THChar* ch;
 	for(unsigned int i=0;i<count;++i)
 	{
 		ch=chars[i];
+
+		if(ch==0)
+		{
+			cy+=lineHeight;
+			cl=position.x;
+			continue;
+		}
 
 		glBindTexture(GL_TEXTURE_2D,ch->image->textureID);
 
