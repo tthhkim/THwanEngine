@@ -110,10 +110,9 @@ void SetFrameRate(float rate);
 
 
 THTimeType GetCurrentTimeMicro();
-void AddTimerFunction(float timeSkip,void (*action)(void*),void* data);
 
-THTween* AddTween(THVector2* _src,const THVector2& _dest,float seconds,float acceleration);
-THTween* AddTween(float* _src,float _dest,float seconds,float acceleration);
+void AddTimer(float timeSkip,void (*action)(void*),void* data);
+void AddTween(THTween* tween);
 
 static inline float getGameX(float _x)
 {

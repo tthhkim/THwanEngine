@@ -369,29 +369,16 @@ THArray<struct THTimerDef*> timerDeleteList(TIMER_DELETE_LIST_SIZE);
 
 
 
-static void AddTweenToList(THTween* tween)
+
+void AddTween(THTween* tween)
 {
-	THLog("Tween Adding...");
+	THLog("Tween Adding %.2f Seconds",tween->time);
 	tween->next=tweenList;
 	if(tweenList)
 	{
 		tweenList->prev=tween;
 	}
 	tweenList=tween;
-}
-THTween* AddTween(THVector2* _src,const THVector2& _dest,float seconds,float acceleration)
-{
-	THTween* tween=new THTweenDouble(_src,_dest,seconds,acceleration);
-	AddTweenToList(tween);
-
-	return tween;
-}
-THTween* AddTween(float* _src,float _dest,float seconds,float acceleration)
-{
-	THTween* tween=new THTweenSingle(_src,_dest,seconds,acceleration);
-	AddTweenToList(tween);
-
-	return tween;
 }
 static void DeleteTween(THTween* tween)
 {
@@ -412,7 +399,6 @@ static void DeleteTween(THTween* tween)
 
 static void AddTimerToList(struct THTimerDef* timer)
 {
-	THLog("Timer Adding...");
 	timer->next=timerList;
 	if(timerList)
 	{
@@ -435,10 +421,12 @@ static void DeleteTimer(struct THTimerDef* timer)
 		timerList=timer->next;
 	}
 }
-void AddTimerFunction(float _timeSkip,void (*_action)(void*),void* _data)
+void AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 {
 	assert(_timeSkip>0.0f);
 	assert(_action);
+
+	THLog("Timer Adding %.2f Seconds",_timeSkip);
 
 	struct THTimerDef* timer=(struct THTimerDef*)malloc(sizeof(struct THTimerDef));
 	
@@ -483,11 +471,10 @@ void MainEnterFrame(float dt)
 		tween=(THTween*)tweenDeleteList.arr[i];
 		if(tween->onEndTween)
 		{
-			THLog("Tween Deleting...");
 			tween->onEndTween(tween->data);
 		}
 		DeleteTween(tween);
-		delete tween;
+		if(tween->autoDelete){delete tween;}
 	}
 	tweenDeleteList.Clear();
 	for(i=0;i<timerDeleteList.num;++i)
