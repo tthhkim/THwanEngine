@@ -91,3 +91,15 @@ void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count)
 
 	normals[count-1]=vect;
 }
+void GetCirclePolygonVertices(THVector2* arr,int count,float radius)
+{
+	THVector2 last(radius,0.0f);
+
+	const THRot rot(TH_2PI/(float)count);
+	for(int i=0;i<count-1;++i)
+	{
+		arr[i]=last;
+		last=rot*last;
+	}
+	arr[count-1]=last;
+}

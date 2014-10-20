@@ -3,6 +3,9 @@
 
 #include <math.h>
 
+#define TH_PI 3.14159265359f
+#define TH_2PI 6.28318530718f
+
 class THVector2
 {
 public:
@@ -283,6 +286,7 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 }
 
 
-void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count);
+void GetNormals(const THVector2 *points,THVector2* normals,int count);
+void GetCirclePolygonVertices(THVector2* arr,unsigned int count,float radius);
 
 #endif

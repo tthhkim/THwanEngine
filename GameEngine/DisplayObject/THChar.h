@@ -5,6 +5,7 @@
 #include <GLES2/gl2.h>
 
 #include <GameEngine/Util/THMath.h>
+#include <GameEngine/Util/THArray.h>
 #include <GameEngine/Rendering/THDrawing.h>
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
@@ -31,22 +32,21 @@ public:
 	THVector2 position;
 	float scale;
 	float red,green,blue,alpha;
-	float lineHeight;
 
-	THString(float _scale):THDisplayObject()
+	THString(float _scale,unsigned int cap=10):THDisplayObject(),chars(cap)
 	{
 		scale=_scale;
 		red=green=blue=alpha=1.0f;
 	}
 	
-	
-	void SetString(const THChar** charArr,unsigned int cCount);
-	void SetStringMulti(const THChar** charArr,unsigned int cCount);
+	/*
+		Last char must be 0
+	*/
+	void SetString(const THChar** charArr);
 	void Draw();
 
 	inline void Delete()
 	{
-		delete[] chars;
 	}
 	inline float Length() const
 	{
@@ -54,8 +54,7 @@ public:
 	}
 
 protected:
-	THChar **chars;
-	unsigned int count;
+	THArray<const THChar*> chars;
 	float length;
 };
 

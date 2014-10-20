@@ -109,7 +109,7 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 	GLint buflen;
 	glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&buflen);
 
-	if(buflen>1)
+	if(buflen>12)
 	{
 		GLchar* log_string=new char[buflen+3];
 		glGetShaderInfoLog(shader,buflen,0,log_string);

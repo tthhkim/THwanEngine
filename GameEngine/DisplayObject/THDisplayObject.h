@@ -47,6 +47,7 @@ public:
 	void Draw();
 };
 
+
 class THButton
 {
 public:

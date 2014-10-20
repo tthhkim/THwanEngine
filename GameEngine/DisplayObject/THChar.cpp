@@ -15,50 +15,28 @@ void THChar::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 	vertexBuffer[3].Set(sxy2.x,sxy2.y);
 }
 
-void THString::SetString(const THChar** charArr,unsigned int cCount)
+void THString::SetString(const THChar** charArr)
 {
-	count=cCount;
-	chars=new THChar*[count];
-	memcpy(chars,charArr,sizeof(THChar*)*count);
-
+	chars.Clear();
 	length=0.0f;
-	for(unsigned int i=0;i<count;++i)
-	{
-		length+=chars[i]->Length();
-	}
-	length*=scale;
-}
-void THString::SetStringMulti(const THChar** charArr,unsigned int cCount)
-{
-	count=cCount;
-	chars=new THChar*[count];
-	memcpy(chars,charArr,sizeof(THChar*)*count);
+	unsigned int i=0;
 
-	const float la=lineHeight>0.0f?lineHeight:-lineHeight;
-	length=la;
-	for(unsigned int i=0;i<count;++i)
+	while(charArr[i]!=0)
 	{
-		if(chars[i]==0)
-		{
-			length+=la;
-		}
+		length+=charArr[i]->Length();
+		chars.Push(charArr[i]);
+		++i;
 	}
+
+	length*=scale;
 }
 void THString::Draw()
 {
 	float cl=position.x;
-	float cy=position.y;
 	const THChar* ch;
-	for(unsigned int i=0;i<count;++i)
+	for(unsigned int i=0;i<chars.num;++i)
 	{
-		ch=chars[i];
-
-		if(ch==0)
-		{
-			cy+=lineHeight;
-			cl=position.x;
-			continue;
-		}
+		ch=chars.arr[i];
 
 		glBindTexture(GL_TEXTURE_2D,ch->image->textureID);
 
