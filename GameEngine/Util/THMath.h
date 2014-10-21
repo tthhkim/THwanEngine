@@ -287,6 +287,6 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 
 
 void GetNormals(const THVector2 *points,THVector2* normals,int count);
-void GetCirclePolygonVertices(THVector2* arr,unsigned int count,float radius);
+void GetCirclePolygonVertices(THVector2* arr,int count,float radius);
 
 #endif
