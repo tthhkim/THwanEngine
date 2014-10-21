@@ -110,7 +110,7 @@ public:
 	GLuint vboHandler;
 	GLuint attribHandler;
 
-	THVertexBuffer(GLuint _attribHandler){
+	THVertexBuffer(){
 		attribHandler=_attribHandler;
 	}
 	/*
@@ -123,10 +123,10 @@ application and used many times to draw primitives.
 GL_STREAM_DRAW The buffer object data will be specified once by the
 application and used a few times to draw primitives.
 */
-	void Load(void* data,GLuint bytes,GLenum usage);
-	inline void Load(GLfloat* vertices,GLuint count)
+	void Load(GLuint _attribHandler,void* data,GLuint bytes,GLenum usage);
+	inline void Load(GLuint _attribHandler,GLfloat* vertices,GLuint count)
 	{
-		Load(vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
+		Load(_attribHandler,vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
 	}
 	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
 
