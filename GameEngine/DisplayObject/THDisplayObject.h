@@ -111,7 +111,6 @@ public:
 #ifndef NDEBUG
 	void DrawDebug(float r,float g,float b) const
 	{
-		using namespace THDefaultProgram;
 		const GLfloat vertic[]=
 		{
 			minBound.x,minBound.y,
@@ -120,13 +119,13 @@ public:
 			minBound.x,maxBound.y
 		};
 
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
-		glVertexAttrib4f(rotationHandler,1.0f,0.0f,0.0f,1.0f);
-		glVertexAttrib2f(positionHandler,0.0f,0.0f);
+		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
+		glVertexAttrib4f(THDefaultProgram.rotationHandler,1.0f,0.0f,0.0f,1.0f);
+		glVertexAttrib2f(THDefaultProgram.positionHandler,0.0f,0.0f);
 
-		glVertexAttrib1f(hasColorHandler,1.0f);
-		glVertexAttrib4f(colorHandler,r,g,b,1.0f);
-		glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
+		glVertexAttrib1f(THDefaultProgram.hasColorHandler,1.0f);
+		glVertexAttrib4f(THDefaultProgram.colorHandler,r,g,b,1.0f);
+		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 #endif

@@ -21,19 +21,7 @@ extern THVector2 gameScale(0.0f,0.0f);
 extern THVector2 gameMinBound(0.0f,0.0f);
 extern THVector2 gameMaxBound(0.0f,0.0f);
 
-namespace THDefaultProgram
-{
-extern THProgram defaultProgram=THProgram();
-extern GLuint vertexHandler=0;
-extern GLuint rotationHandler=0;
-extern GLuint positionHandler=0;
-extern GLuint textureHandler=0;
-extern GLuint projectMatrixHandler=0;
-extern GLuint hasColorHandler=0,colorHandler=0;
-extern GLuint colorMultiplyHandler=0;
-};
-
-using namespace THDefaultProgram;
+extern struct THDPS THDefaultProgram={THProgram(),0,0,0,0,0,0,0,0};
 
 extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
@@ -73,7 +61,7 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 		sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
 		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
 	};
-	glUniform3fv(projectMatrixHandler,2,matx);
+	glUniform3fv(THDefaultProgram.projectMatrixHandler,2,matx);
 
 	const GLfloat fv[]=MAKE_VERTEX(minp.x,minp.y,maxp.x,maxp.y);
 	memcpy(fullScreenVertices,fv,sizeof(GLfloat)*8);
@@ -172,18 +160,18 @@ void THGLInit()
 			"gl_FragColor=texture2D(sTexture,vTex)*vColorM + vColor;"
 			"}"
 			"}";
-	defaultProgram.Load(vs,fs);
+	THDefaultProgram.defaultProgram.Load(vs,fs);
 
-	const THProgram& mprogram=defaultProgram;
+	const THProgram& mprogram=THDefaultProgram.defaultProgram;
 
-	vertexHandler=mprogram.GetAttribLocation("vert");
-	rotationHandler=mprogram.GetAttribLocation("rotmat");
-	positionHandler=mprogram.GetAttribLocation("pos");
-	textureHandler=mprogram.GetAttribLocation("aTex");
-	colorHandler=mprogram.GetAttribLocation("aColor");
-	colorMultiplyHandler=mprogram.GetAttribLocation("aColorM");
-	hasColorHandler=mprogram.GetAttribLocation("aHasColor");
-	projectMatrixHandler=mprogram.GetUniformLocation("projectionMat");
+	THDefaultProgram.vertexHandler=mprogram.GetAttribLocation("vert");
+	THDefaultProgram.rotationHandler=mprogram.GetAttribLocation("rotmat");
+	THDefaultProgram.positionHandler=mprogram.GetAttribLocation("pos");
+	THDefaultProgram.textureHandler=mprogram.GetAttribLocation("aTex");
+	THDefaultProgram.colorHandler=mprogram.GetAttribLocation("aColor");
+	THDefaultProgram.colorMultiplyHandler=mprogram.GetAttribLocation("aColorM");
+	THDefaultProgram.hasColorHandler=mprogram.GetAttribLocation("aHasColor");
+	THDefaultProgram.projectMatrixHandler=mprogram.GetUniformLocation("projectionMat");
 
     //glClearColor(0.7f,0.6f,0.5f,1.0f);
 	glClearColor(0.0f,0.0f,0.0f,1.0f);

@@ -8,20 +8,18 @@
 #include <assert.h>
 
 
-using namespace THDefaultProgram;
-
 void THMovieClip::Draw()
 {
 	glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertexBuffer);
-	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,texture->textureBuffer);
+	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertexBuffer);
+	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,texture->textureBuffer);
 
-	glVertexAttrib4fv(rotationHandler,(const GLfloat*)&rotation);
-	glVertexAttrib2fv(positionHandler,(const GLfloat*)&position);
+	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&rotation);
+	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&position);
 
-	glVertexAttrib1f(hasColorHandler,0.0f);
-	glVertexAttrib4f(colorHandler,0.0f,0.0f,0.0f,0.0f);
-	glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
+	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
+	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
+	glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 

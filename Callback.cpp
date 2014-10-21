@@ -12,8 +12,6 @@
 #include <GameEngine/DisplayObject/THChar.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
-using namespace THDefaultProgram;
-
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/asset_manager.h>
 #include <unistd.h>
@@ -59,15 +57,15 @@ class MyFrame :public THFrame
 {
 	void Draw(float dt)
 	{
-		glEnableVertexAttribArray(vertexHandler);
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,myver);
+		glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
+		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,myver);
 
-		glVertexAttrib4f(rotationHandler,1.0f,0.0f,0.0f,1.0f);
-		glVertexAttrib2f(positionHandler,0.0f,0.0f);
+		glVertexAttrib4f(THDefaultProgram.rotationHandler,1.0f,0.0f,0.0f,1.0f);
+		glVertexAttrib2f(THDefaultProgram.positionHandler,0.0f,0.0f);
 
-		glVertexAttrib1f(hasColorHandler,1.0f);
-		glVertexAttrib4f(colorHandler,1.0f,0.8f,0.3f,1.0f);
-		glVertexAttrib4f(colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
+		glVertexAttrib1f(THDefaultProgram.hasColorHandler,1.0f);
+		glVertexAttrib4f(THDefaultProgram.colorHandler,1.0f,0.8f,0.3f,1.0f);
+		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 };

@@ -1,6 +1,6 @@
 #include "THChar.h"
 #include <THPrivate.h>
-using namespace THDefaultProgram;
+
 void THChar::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	THTexture::Set(_image,pos,_size);
@@ -40,15 +40,15 @@ void THString::Draw()
 
 		glBindTexture(GL_TEXTURE_2D,ch->image->textureID);
 
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,ch->vertexBuffer);
-		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,ch->textureBuffer);
+		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,ch->vertexBuffer);
+		glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,ch->textureBuffer);
 
-		glVertexAttrib4f(rotationHandler,scale,0.0f,0.0f,scale);
-		glVertexAttrib2f(positionHandler,cl,position.y);
+		glVertexAttrib4f(THDefaultProgram.rotationHandler,scale,0.0f,0.0f,scale);
+		glVertexAttrib2f(THDefaultProgram.positionHandler,cl,position.y);
 
-		glVertexAttrib1f(hasColorHandler,0.0f);
-		glVertexAttrib4f(colorHandler,0.0f,0.0f,0.0f,0.0f);
-		glVertexAttrib4f(colorMultiplyHandler,red,green,blue,alpha);
+		glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
+		glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
+		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,red,green,blue,alpha);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

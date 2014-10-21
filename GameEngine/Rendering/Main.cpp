@@ -405,7 +405,6 @@ static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeW
 
 int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
 {
-	using namespace THDefaultProgram;
 	SetFrameRate(60.0f);
 	AllocConsole();
 	using namespace std;
@@ -456,7 +455,7 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 	THLog("OnDestroy()");
 	OnDestroy();
 
-	defaultProgram.Delete();
+	THDefaultProgram.defaultProgram.Delete();
 	THTerm_Display();
 
 	if (deviceContext)

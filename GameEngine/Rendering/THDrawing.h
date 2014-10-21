@@ -109,10 +109,6 @@ class THVertexBuffer
 public:
 	GLuint vboHandler;
 	GLuint attribHandler;
-
-	THVertexBuffer(){
-		attribHandler=_attribHandler;
-	}
 	/*
 GL_STATIC_DRAW The buffer object data will be specified once by the
 application and used many times to draw primitives.

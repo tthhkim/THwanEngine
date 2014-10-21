@@ -34,12 +34,11 @@ void THFrame::RemoveButton(THButton* button)
 {
 	buttonList.Delete(button);
 }
-using namespace THDefaultProgram;
 void THFrame::DrawObjects() const
 {
-	defaultProgram.Use();
-	glEnableVertexAttribArray(vertexHandler);
-	glEnableVertexAttribArray(textureHandler);
+	THDefaultProgram.defaultProgram.Use();
+	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
+	glEnableVertexAttribArray(THDefaultProgram.textureHandler);
 
 
 	THDisplayObject* object;
@@ -51,7 +50,7 @@ void THFrame::DrawObjects() const
 			object->Draw();
 		}
 	}
-	glDisableVertexAttribArray(textureHandler);
+	glDisableVertexAttribArray(THDefaultProgram.textureHandler);
 
 #ifndef NDEBUG
 	THButton* btn;
@@ -68,7 +67,7 @@ void THFrame::DrawObjects() const
 	}
 #endif
 
-	glDisableVertexAttribArray(vertexHandler);
+	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
 	
 }
 void THFrame::Draw(float dt)
