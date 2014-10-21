@@ -121,7 +121,7 @@ static inline float getGameX(float _x)
 }
 static inline float getGameY(float _y)
 {
-	return _y*gameScale.y + gameMinBound.y;
+	return -_y*gameScale.y + gameMaxBound.y;
 }
 static inline THVector2 GetGameRelative(const THVector2& v)
 {
