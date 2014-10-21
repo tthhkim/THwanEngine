@@ -219,7 +219,7 @@ public:
 	{
 		const float c=cosf(angle);
 		const float s=sinf(angle);
-		THMatrix22(c,-s,s,c);
+		THMatrix22::Set(c,-s,s,c);
 	}
 
 	inline void Set(const float c,const float s)
