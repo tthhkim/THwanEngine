@@ -338,6 +338,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	case WM_LBUTTONDOWN:
 	{
 		if(currentFrame->canTouch==false){return 0;}
+		if(isMouseDown){return 0;}
 		isMouseDown=true;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
