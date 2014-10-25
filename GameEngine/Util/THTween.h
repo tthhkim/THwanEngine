@@ -17,7 +17,7 @@ public:
 
 	const float time;
 
-	virtual bool step(float dt)=0;
+	virtual bool step()=0;
 
 	THTween(float _time):time(_time)
 	{
@@ -60,9 +60,9 @@ public:
 		ct=0.0f;
 	}
 
-	bool step(float dt)
+	bool step()
 	{
-		ct+=dt;
+		ct+=deltaTime;
 		if(ct<time)
 		{
 			*src=src0+0.5f*accel*ct*ct + v0*ct;

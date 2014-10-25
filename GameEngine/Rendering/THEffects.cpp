@@ -325,9 +325,9 @@ void THLinearWaveEffect::Load(THTexture* src)
 	glEnableVertexAttribArray(textureHandler);
 }
 
-void THLinearWaveEffect::Draw(float dt)
+void THLinearWaveEffect::Draw()
 {
-	time+=dt;
+	time+=deltaTime;
 	if(time>=freqI){time-=freqI;}
 	program.Use();
 
@@ -390,9 +390,9 @@ void THAngularWaveEffect::Load(THTexture* src)
 	glEnableVertexAttribArray(textureHandler);
 }
 
-void THAngularWaveEffect::Draw(float dt)
+void THAngularWaveEffect::Draw()
 {
-	time+=dt;
+	time+=deltaTime;
 	if(time>=timeLimit){time-=timeLimit;}
 	program.Use();
 

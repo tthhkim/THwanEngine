@@ -86,9 +86,9 @@ static void RenderEnterFrame()
 
 	if(gap>THFrameRate)
 	{
-		const float dt=(float)((double)gap*1e-9);
-		if(THisRunning){MainEnterFrame(dt);}
-		OnDrawFrame(dt);
+		deltaTime=(float)((double)gap*1e-9);
+		if(THisRunning){MainEnterFrame();}
+		OnDrawFrame();
 		THLastNanosec=ct;
 	}
 }
@@ -106,9 +106,9 @@ static void RenderEnterFrame()
 
 	if(gap>THFrameRate)
 	{
-		const float dt=(float)((double)gap*1e-6);
-		if(THisRunning){MainEnterFrame(dt);}
-		OnDrawFrame(dt);
+		deltaTime=(float)((double)gap*1e-6);
+		if(THisRunning){MainEnterFrame();}
+		OnDrawFrame();
 		THLastNanosec=ct;
 	}
 }

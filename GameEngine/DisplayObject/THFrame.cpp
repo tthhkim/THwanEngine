@@ -38,7 +38,7 @@ void THFrame::DrawObjects() const
 	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
 	
 }
-void THFrame::Draw(float dt)
+void THFrame::Draw()
 {
 	DrawObjects();
 }

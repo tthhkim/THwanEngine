@@ -179,7 +179,7 @@ public:
 	THLinearWaveEffect(){time=0.0f;vertex=defaultFullVertices;}
 
 	void Load(THTexture* src);
-	void Draw(float dt);
+	void Draw();
 
 	void SetWave(float amplitude,float velocity,float frequency)
 	{
@@ -219,7 +219,7 @@ public:
 	THAngularWaveEffect():time(0.0f){vertex=defaultFullVertices;}
 
 	void Load(THTexture* src);
-	void Draw(float dt);
+	void Draw();
 
 	void SetCenter(float x,float y) const
 	{

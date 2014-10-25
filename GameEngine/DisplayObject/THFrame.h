@@ -33,11 +33,11 @@ public:
 
 	virtual void onTouchEvent(THMotionEvent* event,THActionType action,float x,float y){}
 	virtual int onBackReleased(){return 0;}
-	virtual void onEnterFrame(float dt){}
+	virtual void onEnterFrame(){}
 	virtual void Action(THFrame* callFrame,void* data){}
 	virtual void onChangeFrame(THFrame* toFrame){}
 
-	virtual void Draw(float dt);
+	virtual void Draw();
 
 
 	void DrawObjects() const;

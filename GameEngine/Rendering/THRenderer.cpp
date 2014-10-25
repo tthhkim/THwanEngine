@@ -31,7 +31,9 @@ extern THButton* downedButton=0;
 extern const GLfloat defaultFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
 extern GLfloat fullScreenVertices[8]={0.0};
 
-void OnDrawFrame(float dt)
+extern float deltaTime=0.0f;
+
+void OnDrawFrame()
 {
 	//Draw Start
 	//glUseProgram(program);
@@ -43,7 +45,7 @@ void OnDrawFrame(float dt)
 #endif
 		);
 
-	currentFrame->Draw(dt);
+	currentFrame->Draw();
 
 	eglSwapBuffers(eglDisplay, eglSurface);
 	//Draw End
@@ -221,7 +223,7 @@ void THEGLInit(THApplicaation* state)
 
     EGLint eglMajor,eglMinor;
     eglInitialize(eglDisplay, &eglMajor,&eglMinor);
-	THLog("EGL Initialization : %d . %d",eglMajor,eglMinor);
+	THLog("EGL Initialization : %d.%d",eglMajor,eglMinor);
 
 	const EGLint attribs[] = {
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -432,12 +434,12 @@ void AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 
 
 
-void MainEnterFrame(float dt)
+void MainEnterFrame()
 {
 	THTween* tween;
 	for(tween=tweenList;tween;tween=tween->next)
 	{
-		if(tween->step(dt))
+		if(tween->step())
 		{
 			THLog("Tween End");
 			tweenDeleteList.Push(tween);
@@ -446,7 +448,7 @@ void MainEnterFrame(float dt)
 	struct THTimerDef* timer;
 	for(timer=timerList;timer;timer=timer->next)
 	{
-		timer->timeSkip-=dt;
+		timer->timeSkip-=deltaTime;
 		if(timer->timeSkip<=0.0f)
 		{
 			THLog("Timer End");
@@ -476,5 +478,5 @@ void MainEnterFrame(float dt)
 	}
 	timerDeleteList.Clear();
 
-	currentFrame->onEnterFrame(dt);
+	currentFrame->onEnterFrame();
 }
