@@ -10,8 +10,60 @@
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 
+#define THSTRING_LEFT 0
+#define THSTRING_RIGHT 1
+#define THSTRING_CENTER 2
+class THChar;
+class THString : public THDisplayObject
+{
+public:
+	float scale;
+	//color of text
+	float red,green,blue,alpha;
+	//relative offset of text
+
+	THString(unsigned int cap=10):THDisplayObject(),chars(cap)
+	{
+		scale=1.0f;
+		red=green=blue=alpha=1.0f;
+		positionOffset=0.0f;
+	}
+	
+	/*
+		Last char must be 0
+	*/
+	void SetString(const THChar** charArr);
+	void Draw();
+	void SetWidth(float w);
+
+	inline float Length() const
+	{
+		return length*scale;
+	}
+	inline void SetPosition(const THVector2& p,float _positionOffset)
+	{
+		position.Set(p.x-length*scale*_positionOffset,p.y);
+		positionOffset=_positionOffset;
+	}
+	inline THVector2 GetPosition() const
+	{
+		return THVector2(position.x + length*scale*positionOffset,position.y);
+	}
+	inline float GetPositionOffset() const
+	{
+		return positionOffset;
+	}
+
+protected:
+	THArray<const THChar*> chars;
+	float length;
+	float positionOffset;
+	THVector2 position;
+};
+
 class THChar : public THTexture
 {
+	friend class THString;
 public:
 	THVector2 vertexBuffer[4];
 
@@ -25,38 +77,6 @@ protected:
 	float length;
 };
 
-class THString : public THDisplayObject
-{
-	
-public:
-	THVector2 position;
-	float scale;
-	float red,green,blue,alpha;
 
-	THString(unsigned int cap=10):THDisplayObject(),chars(cap)
-	{
-		scale=1.0f;
-		red=green=blue=alpha=1.0f;
-	}
-	
-	/*
-		Last char must be 0
-	*/
-	void SetString(const THChar** charArr);
-	void Draw();
-	void SetWidth(float w);
-
-	inline void Delete()
-	{
-	}
-	inline float Length() const
-	{
-		return length*scale;
-	}
-
-protected:
-	THArray<const THChar*> chars;
-	float length;
-};
 
 #endif

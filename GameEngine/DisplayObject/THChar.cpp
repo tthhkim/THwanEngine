@@ -23,14 +23,16 @@ void THString::SetString(const THChar** charArr)
 
 	while(charArr[i]!=0)
 	{
-		length+=charArr[i]->Length();
+		length+=charArr[i]->length;
 		chars.Push(charArr[i]);
 		++i;
 	}
 }
 void THString::SetWidth(float w)
 {
+	const THVector2 cp=GetPosition();
 	scale=w/length;
+	SetPosition(cp,positionOffset);
 }
 void THString::Draw()
 {
@@ -54,6 +56,6 @@ void THString::Draw()
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		cl+=ch->Length()*scale;
+		cl+=ch->length*scale;
 	}
 }

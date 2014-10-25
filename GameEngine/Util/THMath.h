@@ -291,13 +291,19 @@ void GetCirclePolygonVertices(THVector2* arr,int count,float radius);
 
 #include <stdlib.h>
 extern double InvRandomMax;
+
+//in a range [0,1)
 static inline double THRand01()
-{
-	return rand()*InvRandomMax;
-}
+{ return rand()*InvRandomMax; }
+
+//in a range [a,b)
 static inline double THRand(double a,double b)
-{
-	return a+(b-a)*THRand01();
-}
+{ return a+(b-a)*THRand01(); }
+//in a range [a,b)
+static inline float THRandf(float a,float b)
+{ return a+(float)((b-a)*THRand01()); }
+//in a range [a,b)
+static inline int THRandi(int a,int b)
+{ return a+(int)((b-a)*THRand01()); }
 
 #endif

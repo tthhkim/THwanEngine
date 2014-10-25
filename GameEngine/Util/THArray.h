@@ -75,8 +75,7 @@ public:
 	}
 	void Repush(const T& object)
 	{
-		unsigned int i;
-		for(i=0;i<num-1;++i)
+		for(unsigned i=0;i<num-1;++i)
 		{
 			if(arr[i]==object)
 			{

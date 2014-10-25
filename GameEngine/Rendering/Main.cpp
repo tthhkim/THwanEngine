@@ -48,14 +48,16 @@ void SetFrameRate(float _frameRate)
 //randomize random field
 static void Randomize()
 {
-	unsigned int rv=time(0);
-	unsigned int cv=0;
+	unsigned int rv=(unsigned int)time(0);
+	unsigned int cvp=0;
+	unsigned int cvm=1;
 	while(rv)
 	{
-		cv=cv*10+rv%10;
-		rv*=0.1f;
+		cvp+=rv;
+		rv=rv>>1;
+		cvm*=rv?rv:1;
 	}
-	srand(cv);
+	srand((unsigned int)((cvp+cvm)*0.5f));
 
 
 	extern double InvRandomMax;

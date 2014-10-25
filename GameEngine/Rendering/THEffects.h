@@ -241,56 +241,6 @@ protected:
 	THTexture* srcTexture;
 };
 
-class THShockWaveEffect
-{
-public:
-	THProgram program;
-	THShockWaveEffect()
-	{
-	}
-
-	void Load(THTexture* src);
-	void Draw(float dt); 
-
-	void SetWaveSize(float w,float h)
-	{
-		program.SetUniform("waveWidth",w,1.0f/w);
-		program.SetUniform("waveHeight",h);
-	}
-	void SetPosition(float x,float y)
-	{
-		glUniform2f(positionHandler,x,y);
-	}
-	void SetTime(float t)
-	{
-		glUniform1f(timeHandler,t*timeCoeff);
-	}
-	void SetVelocity(float v)
-	{
-		timeCoeff=v;
-	}
-	void SetLightCoeff(float a)
-	{
-		program.SetUniform("lightCoeff",a);
-	}
-	void Switch(bool isOn)
-	{
-		glUniform1i(isOnHandler,isOn?1:0);
-	}
-
-	void Shock()
-	{
-		shockTime=0.0f;
-		Switch(true);
-	}
-
-protected:
-	float shockTime,timeCoeff;
-	THTexture* srcTexture;
-	GLuint vertexHandler,textureHandler;
-	GLuint positionHandler,timeHandler,isOnHandler;
-};
-
 
 
 #endif
