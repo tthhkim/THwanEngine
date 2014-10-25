@@ -115,6 +115,8 @@ static void RenderEnterFrame()
 
 #endif
 
+static float Touch_lastX,Touch_lastY;
+
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/input.h>
 #include <android/keycodes.h>
@@ -132,15 +134,24 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
 		const float x=getGameX(AMotionEvent_getX(event,0));
 		const float y=getGameY(AMotionEvent_getY(event,0));
 
-		currentFrame->onTouchEvent(event,action,x,y);
+		currentFrame->OnTouchEvent(event,action,x,y);
 
 		switch(action)
 		{
 		case AMOTION_EVENT_ACTION_DOWN:
+			currentFrame->OnTouchDown(x,y);
 			Touch_Point_Down(x,y);
+			Touch_lastX=x;
+			Touch_lastY=y;
 			break;
 		case AMOTION_EVENT_ACTION_UP:
+			currentFrame->OnTouchUp(x,y);
 			Touch_Point_Up(x,y);
+			break;
+		case AMOTION_EVENT_ACTION_MOVE:
+			currentFrame->OnTouchMove(x,y,x-Touch_lastX,y-Touch_lastY);
+			Touch_lastX=x;
+			Touch_lastY=y;
 			break;
 			/*
 		case AMOTION_EVENT_ACTION_POINTER_DOWN:
@@ -170,7 +181,7 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
 		{
 			if(AKEY_EVENT_ACTION_UP==AKeyEvent_getAction(event))
 			{
-				return currentFrame->onBackReleased();
+				return currentFrame->OnBackReleased();
 			}
 		}
 		
@@ -330,7 +341,10 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		if(currentFrame->canTouch==false || isMouseDown==false){return 0;}
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchMove(px,py,px-Touch_lastX,py-Touch_lastY);
+		Touch_lastX=px;
+		Touch_lastY=py;
 
 		return 1;
 	}
@@ -342,7 +356,10 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		isMouseDown=true;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchDown(px,py);
+		Touch_lastX=px;
+		Touch_lastY=py;
 		Touch_Point_Down(px,py);
 
 		return 1;
@@ -354,7 +371,8 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		isMouseDown=false;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->onTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
+		currentFrame->OnTouchUp(px,py);
 		Touch_Point_Up(px,py);
 
 		return 1;
@@ -362,7 +380,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		break;
 	case WM_RBUTTONUP:
 	{
-		if(currentFrame->onBackReleased()==0)
+		if(currentFrame->OnBackReleased()==0)
 		{
 			destroyRequested = true;
 

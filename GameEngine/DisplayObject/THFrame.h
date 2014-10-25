@@ -31,11 +31,17 @@ public:
 		canTouch=true;
 	}
 
-	virtual void onTouchEvent(THMotionEvent* event,THActionType action,float x,float y){}
-	virtual int onBackReleased(){return 0;}
-	virtual void onEnterFrame(){}
+	virtual void OnTouchEvent(THMotionEvent* event,THActionType action,float x,float y){}
+	virtual void OnTouchDown(float x,float y){}
+	virtual void OnTouchUp(float x,float y){}
+	virtual void OnTouchMove(float x,float y,float deltaX,float deltaY){}
+
+	virtual int OnBackReleased(){return 0;}
+	virtual void OnEnterFrame(){}
 	virtual void Action(THFrame* callFrame,void* data){}
-	virtual void onChangeFrame(THFrame* toFrame){}
+	virtual void OnChangeFrame(THFrame* toFrame){}
+
+	
 
 	virtual void Draw();
 

@@ -335,7 +335,7 @@ void Touch_Point_Up(const float x,const float y)
 }
 void GoFrame(THFrame* f,void* data)
 {
-	if(currentFrame){currentFrame->onChangeFrame(f);}
+	if(currentFrame){currentFrame->OnChangeFrame(f);}
 	f->Action(currentFrame,data);									 
 	currentFrame = f;
 }
@@ -478,5 +478,5 @@ void MainEnterFrame()
 	}
 	timerDeleteList.Clear();
 
-	currentFrame->onEnterFrame();
+	currentFrame->OnEnterFrame();
 }
