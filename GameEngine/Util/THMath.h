@@ -289,4 +289,15 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 void GetNormals(const THVector2 *points,THVector2* normals,int count);
 void GetCirclePolygonVertices(THVector2* arr,int count,float radius);
 
+#include <stdlib.h>
+extern double InvRandomMax;
+static inline double THRand01()
+{
+	return rand()*InvRandomMax;
+}
+static inline double THRand(double a,double b)
+{
+	return a+(b-a)*THRand01();
+}
+
 #endif

@@ -10,6 +10,8 @@
 #include <GameEngine/Util/THTween.h>
 #include <GameEngine/Util/THArray.h>
 
+#include <stdlib.h>
+
 static EGLDisplay eglDisplay=EGL_NO_DISPLAY;
 static EGLSurface eglSurface=EGL_NO_SURFACE;
 static EGLContext eglContext=EGL_NO_CONTEXT;

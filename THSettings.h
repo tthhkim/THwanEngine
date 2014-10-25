@@ -6,7 +6,7 @@
 
 #define USE_PNG 1
 #define PNG_UPSIDE_DOWN 0
-#define SHOW_LOG 0
+#define SHOW_LOG 1
 #define USE_DEPTH_BUFFER 0
 
 #define GAUSSIAN_SIGMA_SQUARE 1.0f // ¥ò^2 for gaussian function

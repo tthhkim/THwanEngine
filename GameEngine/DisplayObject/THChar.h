@@ -33,9 +33,9 @@ public:
 	float scale;
 	float red,green,blue,alpha;
 
-	THString(float _scale,unsigned int cap=10):THDisplayObject(),chars(cap)
+	THString(unsigned int cap=10):THDisplayObject(),chars(cap)
 	{
-		scale=_scale;
+		scale=1.0f;
 		red=green=blue=alpha=1.0f;
 	}
 	
@@ -44,13 +44,14 @@ public:
 	*/
 	void SetString(const THChar** charArr);
 	void Draw();
+	void SetWidth(float w);
 
 	inline void Delete()
 	{
 	}
 	inline float Length() const
 	{
-		return length;
+		return length*scale;
 	}
 
 protected:

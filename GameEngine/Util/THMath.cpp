@@ -2,6 +2,9 @@
 #include "THMath3D.h"
 #include <THPrivate.h>
 
+//For Random
+extern double InvRandomMax=0.0;
+
 THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 {
 	  const THMatrix33 ux

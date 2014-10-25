@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <string.h>
 #include <malloc.h>
+#include <time.h>
 
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/DisplayObject/THFrame.h>
@@ -44,7 +45,22 @@ void SetFrameRate(float _frameRate)
 }
 #endif
 
+//randomize random field
+static void Randomize()
+{
+	unsigned int rv=time(0);
+	unsigned int cv=0;
+	while(rv)
+	{
+		cv=cv*10+rv%10;
+		rv*=0.1f;
+	}
+	srand(cv);
 
+
+	extern double InvRandomMax;
+	InvRandomMax=1.0/RAND_MAX;
+}
 
 
 static THTimeType THLastNanosec;
@@ -229,6 +245,8 @@ void android_main(struct android_app* state)
 
 	SetFrameRate(60.0f);
 
+	Randomize();
+
 	OnCreate(state);
 #ifndef NDEBUG
 	if(currentFrame==0)
@@ -405,6 +423,8 @@ static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeW
 
 int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
 {
+	Randomize();
+
 	SetFrameRate(60.0f);
 	AllocConsole();
 	using namespace std;

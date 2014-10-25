@@ -27,8 +27,10 @@ void THString::SetString(const THChar** charArr)
 		chars.Push(charArr[i]);
 		++i;
 	}
-
-	length*=scale;
+}
+void THString::SetWidth(float w)
+{
+	scale=w/length;
 }
 void THString::Draw()
 {
