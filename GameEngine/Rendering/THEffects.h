@@ -175,6 +175,7 @@ class THLinearWaveEffect
 public:
 	THProgram program;
 	const GLfloat* vertex;
+	float time;
 	
 	THLinearWaveEffect(){time=0.0f;vertex=defaultFullVertices;}
 
@@ -200,7 +201,6 @@ public:
 	}
 
 protected:
-	float time;
 	float freqI;
 
 	GLuint timeHandler;

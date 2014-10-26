@@ -60,10 +60,10 @@ class THImage
 {
 public:
 	GLuint textureID;
-	THVector2 size;
-	GLsizei width,height;
+	const THVector2 size;
+	const GLsizei width,height;
 
-	THImage(GLsizei w,GLsizei h):size((float)w,(float)h){width=w;height=h;}
+	THImage(GLsizei w,GLsizei h):size((float)w,(float)h),width(w),height(h){}
 
 	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 
