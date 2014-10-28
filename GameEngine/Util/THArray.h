@@ -90,6 +90,14 @@ public:
 	{
 		num=0;
 	}
+
+	void FreeAll()
+	{
+		for(unsigned int i=0;i<num;++i)
+		{
+			free(arr[i]);
+		}
+	}
 };
 
 #endif
