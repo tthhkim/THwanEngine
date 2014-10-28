@@ -47,33 +47,27 @@ public:
 
 
 	void DrawObjects() const;
-	void AddChild(THDisplayObject* object)
+	inline void AddChild(THDisplayObject* object)
 	{
-		assert(object->frame==0);
-		object->frame=this;
 		objectList.Push(object);
 	}
-	void ReAddChild(THDisplayObject* object)
+	inline void ReAddChild(THDisplayObject* object)
 	{
-		assert(object->frame==this);
 		objectList.Repush(object);
 	}
-	void AddButton(THButton* button)
+	inline void AddButton(THButton* button)
 	{
-		assert(button->frame==0);
-		button->frame=this;
 		buttonList.Push(button);
 	}
-	void ReAddButton(THButton* button)
+	inline void ReAddButton(THButton* button)
 	{
-		assert(button->frame==this);
 		buttonList.Repush(button);
 	}
-	void RemoveChild(THDisplayObject* object)
+	inline void RemoveChild(THDisplayObject* object)
 	{
 		objectList.Delete(object);
 	}
-	void RemoveButton(THButton* button)
+	inline void RemoveButton(THButton* button)
 	{
 		buttonList.Delete(button);
 	}

@@ -4,6 +4,7 @@
 
 //For Random
 extern double InvRandomMax=0.0;
+extern const THVector2 THVector_zero=THVector2(0.0f,0.0f);
 
 THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 {

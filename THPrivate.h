@@ -55,6 +55,7 @@ class THTween;
 
 extern const GLfloat defaultFullVertices[];
 extern GLfloat fullScreenVertices[];
+extern const THVector2 THVector_zero;
 
 #ifndef NDEBUG
 extern float cFPS;

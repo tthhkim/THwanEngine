@@ -7,15 +7,31 @@
 #include <malloc.h>
 #include <assert.h>
 
+THVector2 tempVector;
 
+void THGroupClip::Draw()
+{
+	THDisplayObject* obj;
+	for(unsigned int i=0;i<objectList.num;++i)
+	{
+		obj=objectList.arr[i];
+
+		if(obj->visible)
+		{
+			obj->Draw();
+		}
+	}
+}
 void THMovieClip::Draw()
 {
+	tempVector=GetWorldPosition();
+
 	glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
 	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertexBuffer);
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,texture->textureBuffer);
 
 	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&rotation);
-	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&position);
+	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&tempVector);
 
 	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
 	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
@@ -42,7 +58,8 @@ void THButton::Synchronize(const THVector2& extraBound)
 
 	const THVector2 minc=arrs[0];
 	const THVector2 maxc=arrs[3];
+	const THVector2 mp=clip->GetWorldPosition();
 
-	minBound=clip->position+minc-extraBound;
-	maxBound=clip->position+maxc+extraBound;
+	minBound=mp+minc-extraBound;
+	maxBound=mp+maxc+extraBound;
 }

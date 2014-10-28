@@ -55,7 +55,7 @@ void OnLoadInstanceState(saved_state* loaded)
 const GLfloat myver[]=MAKE_CENTER_VERTEX(360.0f,640.0f);
 class MyFrame :public THFrame
 {
-	void Draw(float dt)
+	void Draw()
 	{
 		glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
 		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,myver);

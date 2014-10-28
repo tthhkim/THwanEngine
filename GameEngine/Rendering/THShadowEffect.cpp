@@ -68,7 +68,7 @@ void THShadowEffect::Draw()
 		
 		glBindTexture(GL_TEXTURE_2D,so.mc->texture->image->textureID);
 
-		const THVector2& pos=so.mc->position;
+		const THVector2 pos=so.mc->GetWorldPosition();
 		glVertexAttrib3f(positionHandler,pos.x,pos.y,so.z);
 		glVertexAttrib4fv(rotationHandler,(const GLfloat*)&so.mc->rotation);
 

@@ -9,6 +9,7 @@
 
 
 class THTexture;
+class THGroupClip;
 
 //THDisplayObject-----------------------------------------
 
@@ -16,24 +17,57 @@ class THDisplayObject
 {
 public:
 	bool visible;
-	void* frame;
 	void* userData;
+	THGroupClip* group;
+	THVector2 position;
 
 	virtual void Draw()=0;
 
-	THDisplayObject()
+	THDisplayObject():position(0.0f,0.0f)
 	{
 		visible=true;
-		frame=0;
 		userData=0;
+		group=0;
 	}
+
+	THVector2 GetWorldPosition();
 };
+
+class THGroupClip : public THDisplayObject
+{
+public:
+	THArray<THDisplayObject*> objectList;
+
+	THGroupClip(unsigned int capacity=5):THDisplayObject(),objectList(capacity)
+	{
+	}
+	void Add(THDisplayObject* obj)
+	{
+		objectList.Push(obj);
+		obj->group=this;
+	}
+	void Remove(THDisplayObject* obj)
+	{
+		assert(obj->group==this);
+		objectList.Delete(obj);
+		obj->group=0;
+	}
+	void Draw();
+};
+
+inline THVector2 THDisplayObject::GetWorldPosition()
+{
+	if(group)
+	{
+		return position+group->GetWorldPosition();
+	}
+	return position;
+}
 
 class THMovieClip : public THDisplayObject
 {
 public:
 	THTexture* texture;
-	THVector2 position;
 	THRot rotation;
 	const GLfloat* vertexBuffer;
 	
@@ -52,7 +86,6 @@ class THButton
 {
 public:
 	THMovieClip* clip;
-	void* frame;
 	bool enable;
 
 	THTexture* downed;
@@ -63,7 +96,6 @@ public:
 
 	THButton(float w,float h):minBound(),maxBound(w,h)
 	{
-		frame=0;
 		enable=true;
 
 		downed=0;

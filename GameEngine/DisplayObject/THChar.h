@@ -58,7 +58,6 @@ protected:
 	THArray<const THChar*> chars;
 	float length;
 	float positionOffset;
-	THVector2 position;
 };
 
 class THChar : public THTexture
