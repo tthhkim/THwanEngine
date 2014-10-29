@@ -34,13 +34,24 @@ void THString::SetWidth(float w)
 	scale=w/length;
 	SetPosition(cp,positionOffset);
 }
-void THString::Draw()
+
+void DrawTHString(const THString* obj)
 {
-	float cl=position.x;
+	THVector2 pos=obj->position;
+
+	const float scale=obj->scale;
 	const THChar* ch;
-	for(unsigned int i=0;i<chars.num;++i)
+	const unsigned int cn=obj->chars.num;
+	const THChar **carrs=obj->chars.arr;
+
+	const float r=obj->red;
+	const float g=obj->green;
+	const float b=obj->blue;
+	const float a=obj->alpha;
+	
+	for(unsigned int i=0;i<cn;++i)
 	{
-		ch=chars.arr[i];
+		ch=carrs[i];
 
 		glBindTexture(GL_TEXTURE_2D,ch->image->textureID);
 
@@ -48,14 +59,14 @@ void THString::Draw()
 		glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,ch->textureBuffer);
 
 		glVertexAttrib4f(THDefaultProgram.rotationHandler,scale,0.0f,0.0f,scale);
-		glVertexAttrib2f(THDefaultProgram.positionHandler,cl,position.y);
+		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&pos);
 
 		glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
 		glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
-		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,red,green,blue,alpha);
+		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,r,g,b,a);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		cl+=ch->length*scale;
+		pos.x+=ch->length*scale;
 	}
 }

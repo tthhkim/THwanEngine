@@ -9,9 +9,13 @@
 
 
 class THTexture;
-class THGroupClip;
 
 //THDisplayObject-----------------------------------------
+
+class THDisplayObject;
+static void DrawNothing(const THDisplayObject* obj){}
+
+typedef void (*THDrawingFunction)(const THDisplayObject*);
 
 class THDisplayObject
 {
@@ -20,14 +24,16 @@ public:
 	void* userData;
 	THDisplayObject* parent;
 	THVector2 position;
-	
-	virtual void Draw(){}
 
-	THDisplayObject():position(0.0f,0.0f),worldPosition(0.0f,0.0f)
+	void (*Draw)(const THDisplayObject*);
+
+	THDisplayObject(THDrawingFunction drawfunction=DrawNothing):position(0.0f,0.0f),worldPosition(0.0f,0.0f)
 	{
 		visible=true;
 		userData=0;
 		parent=0;
+
+		Draw=drawfunction;
 	}
 
 	inline void CalcWorldPosition()
@@ -36,14 +42,16 @@ public:
 		else{worldPosition=position;}
 	}
 
-	inline THVector2& GetWorldPosition()
+	inline const THVector2& GetWorldPosition() const
 	{
 		return worldPosition;
 	}
 	inline void DrawObject()
 	{
 		CalcWorldPosition();
-		Draw();
+
+		assert(Draw);
+		Draw(this);
 	}
 
 protected:
@@ -55,7 +63,7 @@ class THGroupClip : public THDisplayObject
 public:
 	THArray<THDisplayObject*> objectList;
 
-	THGroupClip(unsigned int capacity=5):THDisplayObject(),objectList(capacity)
+	THGroupClip(unsigned int capacity=5):THDisplayObject((THDrawingFunction)DrawTHGroupClip),objectList(capacity)
 	{
 	}
 	void Add(THDisplayObject* obj)
@@ -69,9 +77,9 @@ public:
 		objectList.Delete(obj);
 		obj->parent=0;
 	}
-	void Draw();
-};
 
+	friend void DrawTHGroupClip(const THGroupClip* obj);
+};
 
 
 class THMovieClip : public THDisplayObject
@@ -82,13 +90,13 @@ public:
 	const GLfloat* vertexBuffer;
 	
 
-	THMovieClip(const GLfloat* vertex,THTexture* _texture):THDisplayObject()
+	THMovieClip(const GLfloat* vertex,THTexture* _texture):THDisplayObject((THDrawingFunction)DrawTHMovieClip)
 	{
 		texture=_texture;
 		vertexBuffer=vertex;
 	}
 
-	void Draw();
+	friend void DrawTHMovieClip(const THMovieClip* obj);
 };
 
 

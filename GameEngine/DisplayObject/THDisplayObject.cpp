@@ -7,29 +7,31 @@
 #include <malloc.h>
 #include <assert.h>
 
-THVector2 tempVector;
-
-void THGroupClip::Draw()
+void DrawTHGroupClip(const THGroupClip* obj)
 {
-	THDisplayObject* obj;
-	for(unsigned int i=0;i<objectList.num;++i)
-	{
-		obj=objectList.arr[i];
+	THDisplayObject* displayobj;
+	const unsigned int gnum=obj->objectList.num;
+	THDisplayObject **oarrs=obj->objectList.arr;
 
-		if(obj->visible)
+	for(unsigned int i=0;i<gnum;++i)
+	{
+		displayobj=oarrs[i];
+
+		if(displayobj->visible)
 		{
-			obj->DrawObject();
+			displayobj->DrawObject();
 		}
 	}
 }
-void THMovieClip::Draw()
-{
-	glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
-	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertexBuffer);
-	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,texture->textureBuffer);
 
-	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&rotation);
-	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&worldPosition);
+void DrawTHMovieClip(const THMovieClip* obj)
+{
+	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
+	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
+	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
+
+	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
+	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&obj->worldPosition);
 
 	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
 	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);

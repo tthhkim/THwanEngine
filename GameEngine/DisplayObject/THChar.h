@@ -11,6 +11,7 @@
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 
 class THChar;
+
 class THString : public THDisplayObject
 {
 public:
@@ -19,7 +20,7 @@ public:
 	float red,green,blue,alpha;
 	//relative offset of text
 
-	THString(unsigned int cap=10):THDisplayObject(),chars(cap)
+	THString(unsigned int cap=10):THDisplayObject((THDrawingFunction)DrawTHString),chars(cap)
 	{
 		scale=1.0f;
 		red=green=blue=alpha=1.0f;
@@ -30,8 +31,8 @@ public:
 		Last char must be 0
 	*/
 	void SetString(const THChar** charArr);
-	void Draw();
 	void SetWidth(float w);
+	friend void DrawTHString(const THString* obj);
 
 	inline float Length() const
 	{
@@ -60,6 +61,7 @@ protected:
 class THChar : public THTexture
 {
 	friend class THString;
+	friend void DrawTHString(const THString* obj);
 public:
 	THVector2 vertexBuffer[4];
 
