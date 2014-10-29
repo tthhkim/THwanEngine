@@ -18,19 +18,36 @@ class THDisplayObject
 public:
 	bool visible;
 	void* userData;
-	THGroupClip* group;
+	THDisplayObject* parent;
 	THVector2 position;
-
+	
 	virtual void Draw()=0;
 
-	THDisplayObject():position(0.0f,0.0f)
+	THDisplayObject():position(0.0f,0.0f),worldPosition(0.0f,0.0f)
 	{
 		visible=true;
 		userData=0;
-		group=0;
+		parent=0;
 	}
 
-	THVector2 GetWorldPosition();
+	inline void CalcWorldPosition()
+	{
+		if(parent){worldPosition=position+parent->worldPosition;}
+		else{worldPosition=position;}
+	}
+
+	inline THVector2& GetWorldPosition()
+	{
+		return worldPosition;
+	}
+	inline void DrawObject()
+	{
+		CalcWorldPosition();
+		Draw();
+	}
+
+protected:
+	THVector2 worldPosition;
 };
 
 class THGroupClip : public THDisplayObject
@@ -44,25 +61,18 @@ public:
 	void Add(THDisplayObject* obj)
 	{
 		objectList.Push(obj);
-		obj->group=this;
+		obj->parent=this;
 	}
 	void Remove(THDisplayObject* obj)
 	{
-		assert(obj->group==this);
+		assert(obj->parent==this);
 		objectList.Delete(obj);
-		obj->group=0;
+		obj->parent=0;
 	}
 	void Draw();
 };
 
-inline THVector2 THDisplayObject::GetWorldPosition()
-{
-	if(group)
-	{
-		return position+group->GetWorldPosition();
-	}
-	return position;
-}
+
 
 class THMovieClip : public THDisplayObject
 {

@@ -18,20 +18,18 @@ void THGroupClip::Draw()
 
 		if(obj->visible)
 		{
-			obj->Draw();
+			obj->DrawObject();
 		}
 	}
 }
 void THMovieClip::Draw()
 {
-	tempVector=GetWorldPosition();
-
 	glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
 	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertexBuffer);
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,texture->textureBuffer);
 
 	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&rotation);
-	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&tempVector);
+	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&worldPosition);
 
 	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
 	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
@@ -56,8 +54,8 @@ void THButton::Synchronize(const THVector2& extraBound)
 
 	const THVector2* arrs=(const THVector2*)clip->vertexBuffer;
 
-	const THVector2 minc=arrs[0];
-	const THVector2 maxc=arrs[3];
+	const THVector2& minc=arrs[0];
+	const THVector2& maxc=arrs[3];
 	const THVector2 mp=clip->GetWorldPosition();
 
 	minBound=mp+minc-extraBound;

@@ -15,7 +15,7 @@ void THFrame::DrawObjects() const
 		object=objectList.arr[i];
 		if(object->visible)
 		{
-			object->Draw();
+			object->DrawObject();
 		}
 	}
 	glDisableVertexAttribArray(THDefaultProgram.textureHandler);

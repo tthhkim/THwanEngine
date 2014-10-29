@@ -10,9 +10,6 @@
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 
-#define THSTRING_LEFT 0
-#define THSTRING_RIGHT 1
-#define THSTRING_CENTER 2
 class THChar;
 class THString : public THDisplayObject
 {
