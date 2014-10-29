@@ -21,7 +21,7 @@ public:
 	THDisplayObject* parent;
 	THVector2 position;
 	
-	virtual void Draw()=0;
+	virtual void Draw(){}
 
 	THDisplayObject():position(0.0f,0.0f),worldPosition(0.0f,0.0f)
 	{
