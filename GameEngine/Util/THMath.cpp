@@ -99,8 +99,8 @@ void GetCirclePolygonVertices(THVector2* arr,int count,float radius)
 {
 	THVector2 last(radius,0.0f);
 
-	const THVector2 rotv=THAngleVector(TH_2PI/(float)count);
-	const THRot rot(rotv.x,rotv.y);
+	const float angle=TH_2PI/(float)count;
+	const THRot2 rot(cosf(angle),sinf(angle));
 	for(int i=0;i<count-1;++i)
 	{
 		arr[i]=last;

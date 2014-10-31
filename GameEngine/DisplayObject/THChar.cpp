@@ -58,7 +58,7 @@ void DrawTHString(const THString* obj)
 		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,ch->vertexBuffer);
 		glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,ch->textureBuffer);
 
-		glVertexAttrib4f(THDefaultProgram.rotationHandler,scale,0.0f,0.0f,scale);
+		glVertexAttrib2f(THDefaultProgram.rotationHandler,scale,0.0f);
 		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&pos);
 
 		glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);

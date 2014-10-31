@@ -86,7 +86,7 @@ class THMovieClip : public THDisplayObject
 {
 public:
 	THTexture* texture;
-	THRot rotation;
+	THRot2 rotation;
 	const GLfloat* vertexBuffer;
 	
 
@@ -170,7 +170,7 @@ public:
 		};
 
 		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
-		glVertexAttrib4f(THDefaultProgram.rotationHandler,1.0f,0.0f,0.0f,1.0f);
+		glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
 		glVertexAttrib2f(THDefaultProgram.positionHandler,0.0f,0.0f);
 
 		glVertexAttrib1f(THDefaultProgram.hasColorHandler,1.0f);

@@ -22,7 +22,12 @@ public:
 		y=0.0f;
 	}
 	
-	void Set(const float _x,const float _y)
+	inline void SetZero()
+	{
+		x=0.0f;
+		y=0.0f;
+	}
+	inline void Set(const float _x,const float _y)
 	{
 		x=_x;
 		y=_y;
@@ -79,10 +84,6 @@ inline THVector2 THMax(const THVector2& a,const THVector2& b)
 {
 	return THVector2(a.x<b.x?b.x:a.x , a.y<b.y?b.y:a.y);
 }
-inline THVector2 THAngleVector(float angle)
-{
-	return THVector2(cosf(angle),sinf(angle));
-}
 
 
 inline THVector2 operator +(const THVector2& a,const THVector2& b)
@@ -132,21 +133,67 @@ inline bool operator ==(const THVector2& a, const THVector2& b)
 }
 
 
+class THRot2
+{
+public:
+	float c,s;
+
+	THRot2(const float _c=1.0f,const float _s=0.0f)
+	{
+	}
+	THRot2(const float angle)
+	{
+		Set(angle);
+	}
+
+	inline void Set(const float _c,const float _s)
+	{
+		c=_c;
+		s=_s;
+	}
+	inline void SetIdentity()
+	{
+		c=1.0f;
+		s=0.0f;
+	}
+	void Set(const float angle)
+	{
+		const float _c=cosf(angle);
+		const float _s=sinf(angle);
+		Set(_c,_s);
+	}
+	
+	inline THRot2 Inverse() const
+	{
+		return THRot2(c,-s);
+	}
+	inline void Rotate(const float _c,const float _s)
+	{
+		Set(c*_c - s*_s , c*_s + s*_c);
+	}
+	void Rotate(const float angle)
+	{
+		const float _c=cosf(angle);
+		const float _s=sinf(angle);
+
+		Rotate(_c,_s);
+	}
+};
 class THMatrix22
 {
 public:
 	THVector2 row1,row2;
 
-	THMatrix22():row1(1.0f,0.0f),row2(0.0f,1.0f)
-	{
-	}
-	THMatrix22(float _r1c1,float _r1c2,float _r2c1,float _r2c2):row1(_r1c1,_r1c2),row2(_r2c1,_r2c2)
+	THMatrix22(float _r1c1=1.0f,float _r1c2=0.0f,float _r2c1=0.0f,float _r2c2=1.0f):row1(_r1c1,_r1c2),row2(_r2c1,_r2c2)
 	{
 	}
 	THMatrix22(const THVector2& r1,const THVector2& r2)
 	{
 		row1=r1;
 		row2=r2;
+	}
+	THMatrix22(const THRot2& rot):row1(rot.c,-rot.s),row2(rot.s,rot.c)
+	{
 	}
 
 	void operator +=(const THMatrix22& m)
@@ -206,51 +253,7 @@ public:
 			-row2.x*a , row1.x*a);
 	}
 };
-class THRot : public THMatrix22
-{
-public:
-	THRot():THMatrix22()
-	{
-	}
-	THRot(const float c,const float s):THMatrix22(c,-s,s,c)
-	{
-	}
-	THRot(const float angle)
-	{
-		const float c=cosf(angle);
-		const float s=sinf(angle);
-		THMatrix22::Set(c,-s,s,c);
-	}
 
-	inline void Set(const float c,const float s)
-	{
-		THMatrix22::Set(c,-s,s,c);
-	}
-	void Set(const float angle)
-	{
-		const float c=cosf(angle);
-		const float s=sinf(angle);
-		Set(c,s);
-	}
-	
-	inline THRot Inverse()
-	{
-		return THRot(row1.x,row1.y);
-	}
-	void Rotate(const float c,const float s)
-	{
-		const float mc=c;
-
-		Set(row1.x*mc - row2.x*s , row1.x*s + row2.x*mc);
-	}
-	inline void Rotate(const float angle)
-	{
-		const float c=cosf(angle);
-		const float s=sinf(angle);
-
-		Rotate(c,s);
-	}
-};
 
 inline bool operator ==(const THMatrix22& a,const THMatrix22& b)
 {
@@ -284,6 +287,51 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 		a.row2.x*b.row1.x + a.row2.y*b.row2.x , a.row2.x*b.row1.y + a.row2.y*b.row2.y
 		);
 }
+
+inline bool operator ==(const THRot2& a,const THRot2& b)
+{
+	return a.c==b.c && a.s==b.s;
+}
+inline bool operator ==(const THRot2& a,const THMatrix22& b)
+{
+	return b.row1.x==a.c && b.row1.y==-a.s && b.row2.x==a.s && b.row2.y==a.c;
+}
+inline bool operator ==(const THMatrix22& b,const THRot2& a)
+{
+	return b.row1.x==a.c && b.row1.y==-a.s && b.row2.x==a.s && b.row2.y==a.c;
+}
+
+
+inline THMatrix22 operator *(const THMatrix22& a,const THRot2& b)
+{
+	return THMatrix22(
+		a.row1.x*b.c+a.row1.y*b.s , a.row1.x*-b.s+a.row1.y*b.c,
+		a.row2.x*b.c+a.row2.y*b.s , a.row2.x*-b.s+a.row2.y*b.c
+		);
+}
+inline THMatrix22 operator *(const THRot2& b,const THMatrix22& a)
+{
+	return THMatrix22(
+		a.row1.x*b.c+a.row1.y*b.s , a.row1.x*-b.s+a.row1.y*b.c,
+		a.row2.x*b.c+a.row2.y*b.s , a.row2.x*-b.s+a.row2.y*b.c
+		);
+}
+inline THRot2 operator *(const THRot2& a,const THRot2& b)
+{
+	return THRot2(
+		a.c*b.c - a.s*b.s,
+		a.c*b.s + a.s*b.c
+		);
+}
+
+inline THVector2 operator *(const THRot2& a,const THVector2& v)
+{
+	return THVector2(
+		a.c*v.x - a.s*v.y,
+		a.s*v.x + a.c*v.y
+		);
+}
+
 
 
 void GetNormals(const THVector2 *points,THVector2* normals,int count);

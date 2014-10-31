@@ -30,7 +30,7 @@ void DrawTHMovieClip(const THMovieClip* obj)
 	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
 
-	glVertexAttrib4fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
+	glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
 	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&obj->worldPosition);
 
 	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
