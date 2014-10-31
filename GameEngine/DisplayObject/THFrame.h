@@ -48,25 +48,7 @@ public:
 
 	void DrawObjects() const;
 
-#ifndef NDEBUG
-	bool ParentCheck(THDisplayObject *object) const
-	{
-		if(object->parent)
-		{
-			THDisplayObject *par=object->parent;
-			while(par)
-			{
-				if(objectList.Find(par)==-1)
-				{
-					return true;
-				}
-				par=par->parent;
-			}
-		}
-		return false;
-	}
-#endif
-	inline void AddChild(THDisplayObject* object)
+	void AddChild(THDisplayObject* object)
 	{
 #ifndef NDEBUG
 		if(ParentCheck(object))
@@ -75,10 +57,17 @@ public:
 			assert(0);
 		}
 #endif
-
 		objectList.Push(object);
 	}
-	inline void ReAddChild(THDisplayObject* object)
+
+	// offset position from last pushed displayobject
+	inline void AddChild(THDisplayObject *object,const THVector2& posOffsetLast)
+	{
+		object->position=objectList.GetLast()->position+posOffsetLast;
+		AddChild(object);
+	}
+
+	void ReAddChild(THDisplayObject* object)
 	{
 #ifndef NDEBUG
 		if(ParentCheck(object))
@@ -106,7 +95,25 @@ public:
 		buttonList.Delete(button);
 	}
 
-	
+private:
+	#ifndef NDEBUG
+	bool ParentCheck(THDisplayObject *object) const
+	{
+		if(object->parent)
+		{
+			THDisplayObject *par=object->parent;
+			while(par)
+			{
+				if(objectList.Find(par)==-1)
+				{
+					return true;
+				}
+				par=par->parent;
+			}
+		}
+		return false;
+	}
+#endif
 };
 
 #endif

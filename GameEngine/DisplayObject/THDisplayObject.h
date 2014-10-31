@@ -58,30 +58,6 @@ protected:
 	THVector2 worldPosition;
 };
 
-class THGroupClip : public THDisplayObject
-{
-public:
-	THArray<THDisplayObject*> objectList;
-
-	THGroupClip(unsigned int capacity=5):THDisplayObject((THDrawingFunction)DrawTHGroupClip),objectList(capacity)
-	{
-	}
-	void Add(THDisplayObject* obj)
-	{
-		objectList.Push(obj);
-		obj->parent=this;
-	}
-	void Remove(THDisplayObject* obj)
-	{
-		assert(obj->parent==this);
-		objectList.Delete(obj);
-		obj->parent=0;
-	}
-
-	friend void DrawTHGroupClip(const THGroupClip* obj);
-};
-
-
 class THMovieClip : public THDisplayObject
 {
 public:

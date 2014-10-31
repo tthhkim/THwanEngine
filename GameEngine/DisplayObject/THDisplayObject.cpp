@@ -7,23 +7,6 @@
 #include <malloc.h>
 #include <assert.h>
 
-void DrawTHGroupClip(const THGroupClip* obj)
-{
-	THDisplayObject* displayobj;
-	const unsigned int gnum=obj->objectList.num;
-	THDisplayObject **oarrs=obj->objectList.arr;
-
-	for(unsigned int i=0;i<gnum;++i)
-	{
-		displayobj=oarrs[i];
-
-		if(displayobj->visible)
-		{
-			displayobj->DrawObject();
-		}
-	}
-}
-
 void DrawTHMovieClip(const THMovieClip* obj)
 {
 	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
