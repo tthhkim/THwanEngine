@@ -10,13 +10,11 @@
 
 class THMovieClip;
 
-struct _THShadowObject
+typedef struct
 {
 	THMovieClip* mc;
 	float z;
-};
-
-typedef struct _THShadowObject THShadowObject;
+} THShadowObject;
 
 class THShadowEffect
 {
@@ -24,7 +22,7 @@ public:
 	THProgram program;
 	THArray<THShadowObject> objects;
 
-	THShadowEffect(unsigned int objectCap):objects(objectCap)
+	THShadowEffect(unsigned int objectCapacity):objects(objectCapacity)
 	{
 	}
 	void SetOrtho(const THVector2& minp=gameMinBound,const THVector2& maxp=gameMaxBound);
