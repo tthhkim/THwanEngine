@@ -63,6 +63,7 @@ class THMovieClip : public THDisplayObject
 public:
 	THTexture* texture;
 	THRot2 rotation;
+	float width,height;
 	const GLfloat* vertexBuffer;
 	
 

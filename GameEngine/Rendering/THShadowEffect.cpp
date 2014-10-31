@@ -21,11 +21,13 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 		"attribute vec2 vert;"
 		"attribute vec3 pos;"
 		"attribute vec2 rot;"
+		"attribute vec2 scale;"
 		"attribute vec2 aTex;"
 		"varying vec2 vTex;"
 		"void main(){"
 		"vTex=aTex;"
-		"vec2 cp=vec2( dot(vert, vec2(rot.x,-rot.y) ) , dot(vert, vec2(rot.y,rot.x) ))+pos.xy;"
+		"vec2 svert=vert*scale;"
+		"vec2 cp=vec2( dot(svert, vec2(rot.x,-rot.y) ) , dot(svert, vec2(rot.y,rot.x) ))+pos.xy;"
 		"vec2 lxy=lightPos.xy;"
 		"if(pos.z==lightPos.z){return;}"
 		"vec2 lp=lxy + ((-lightPos.z/(pos.z-lightPos.z))*(cp-lxy));"
@@ -52,6 +54,7 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 	textureHandler=program.GetAttribLocation("aTex");
 	positionHandler=program.GetAttribLocation("pos");
 	rotationHandler=program.GetAttribLocation("rot");
+	scaleHandler=program.GetAttribLocation("scale");
 
 	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
@@ -71,6 +74,7 @@ void THShadowEffect::Draw()
 		const THVector2& pos=so.mc->GetWorldPosition();
 		glVertexAttrib3f(positionHandler,pos.x,pos.y,so.z);
 		glVertexAttrib2fv(rotationHandler,(const GLfloat*)&so.mc->rotation);
+		glVertexAttrib2f(scaleHandler,so.mc->width,so.mc->height);
 
 		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
 		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->texture->textureBuffer);

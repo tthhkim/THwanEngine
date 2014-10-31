@@ -78,6 +78,7 @@ struct THDPS
 	THProgram defaultProgram;
 	GLuint vertexHandler;
 	GLuint rotationHandler;
+	GLuint scaleHandler;
 	GLuint positionHandler;
 	GLuint textureHandler;
 	GLuint projectMatrixHandler;

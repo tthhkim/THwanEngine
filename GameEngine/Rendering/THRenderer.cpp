@@ -131,6 +131,7 @@ void THGLInit()
 			"uniform vec3 projectionMat[2];"
 			"attribute vec2 vert;"
 			"attribute vec2 rot;"
+			"attribute vec2 sScale;"
 			"attribute vec2 pos;"
 			"attribute vec2 aTex;"
 			"varying vec2 vTex;"
@@ -141,8 +142,9 @@ void THGLInit()
 			"attribute vec4 aColorM;"
 			"varying vec4 vColorM;"
 			"void main(){"
+			"vec2 svert=vert*sScale;"
 			"vec3 lastP=vec3("
-			"dot(vec2(rot.x,-rot.y),vert)+pos.x , dot(vec2(rot.y,rot.x),vert)+pos.y"
+			"dot(vec2(rot.x,-rot.y),svert)+pos.x , dot(vec2(rot.y,rot.x),svert)+pos.y"
 			",1.0);"
 			"gl_Position=vec4(dot(projectionMat[0],lastP),dot(projectionMat[1],lastP),0.0,1.0);"
 			"vTex=aTex;"
@@ -172,6 +174,7 @@ void THGLInit()
 
 	THDefaultProgram.vertexHandler=mprogram.GetAttribLocation("vert");
 	THDefaultProgram.rotationHandler=mprogram.GetAttribLocation("rot");
+	THDefaultProgram.scaleHandler=mprogram.GetAttribLocation("sScale");
 	THDefaultProgram.positionHandler=mprogram.GetAttribLocation("pos");
 	THDefaultProgram.textureHandler=mprogram.GetAttribLocation("aTex");
 	THDefaultProgram.colorHandler=mprogram.GetAttribLocation("aColor");

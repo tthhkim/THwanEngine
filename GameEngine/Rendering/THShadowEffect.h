@@ -72,6 +72,7 @@ protected:
 	GLuint vertexHandler,textureHandler;
 	GLuint positionHandler;
 	GLuint rotationHandler;
+	GLuint scaleHandler;
 };
 
 
