@@ -71,7 +71,7 @@ extern THVector2 gameMinBound;
 
 extern THFrame* currentFrame;
 
-extern float deltaTime;
+extern float THDeltaTime;
 
 struct THDPS
 {

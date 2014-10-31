@@ -112,7 +112,7 @@ public:
 	void (*onDown)(float,float,THButton*);
 	void (*onRelease)(float,float,THButton*);
 
-	THButton(float w,float h):minBound(),maxBound(w,h)
+	THButton(float w,float h):minBound(0.0f,0.0f),maxBound(w,h)
 	{
 		enable=true;
 

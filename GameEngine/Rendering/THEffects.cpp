@@ -328,7 +328,7 @@ void THLinearWaveEffect::Load(THTexture* src)
 
 void THLinearWaveEffect::Draw()
 {
-	time+=deltaTime;
+	time+=THDeltaTime;
 	if(time>=freqI){time-=freqI;}
 	program.Use();
 
@@ -393,7 +393,7 @@ void THAngularWaveEffect::Load(THTexture* src)
 
 void THAngularWaveEffect::Draw()
 {
-	time+=deltaTime;
+	time+=THDeltaTime;
 	if(time>=timeLimit){time-=timeLimit;}
 	program.Use();
 

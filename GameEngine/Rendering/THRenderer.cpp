@@ -31,7 +31,7 @@ extern THButton* downedButton=0;
 extern const GLfloat defaultFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
 extern GLfloat fullScreenVertices[8]={0.0};
 
-extern float deltaTime=0.0f;
+extern float THDeltaTime=0.0f;
 
 void OnDrawFrame()
 {
@@ -450,7 +450,7 @@ void MainEnterFrame()
 	struct THTimerDef* timer;
 	for(timer=timerList;timer;timer=timer->next)
 	{
-		timer->timeSkip-=deltaTime;
+		timer->timeSkip-=THDeltaTime;
 		if(timer->timeSkip<=0.0f)
 		{
 			THLog("Timer End");

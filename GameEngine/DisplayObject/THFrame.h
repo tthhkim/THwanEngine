@@ -47,12 +47,46 @@ public:
 
 
 	void DrawObjects() const;
+
+#ifndef NDEBUG
+	bool ParentCheck(THDisplayObject *object) const
+	{
+		if(object->parent)
+		{
+			THDisplayObject *par=object->parent;
+			while(par)
+			{
+				if(objectList.Find(par)==-1)
+				{
+					return true;
+				}
+				par=par->parent;
+			}
+		}
+		return false;
+	}
+#endif
 	inline void AddChild(THDisplayObject* object)
 	{
+#ifndef NDEBUG
+		if(ParentCheck(object))
+		{
+			THError("Parent Not Included first");
+			assert(0);
+		}
+#endif
+
 		objectList.Push(object);
 	}
 	inline void ReAddChild(THDisplayObject* object)
 	{
+#ifndef NDEBUG
+		if(ParentCheck(object))
+		{
+			THError("Parent Not Included first");
+			assert(0);
+		}
+#endif
 		objectList.Repush(object);
 	}
 	inline void AddButton(THButton* button)

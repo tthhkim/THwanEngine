@@ -62,7 +62,7 @@ public:
 
 	bool step()
 	{
-		ct+=deltaTime;
+		ct+=THDeltaTime;
 		if(ct<time)
 		{
 			*src=src0+0.5f*accel*ct*ct + v0*ct;

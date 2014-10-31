@@ -86,7 +86,7 @@ static void RenderEnterFrame()
 
 	if(gap>THFrameRate)
 	{
-		deltaTime=(float)((double)gap*1e-9);
+		THDeltaTime=(float)((double)gap*1e-9);
 		if(THisRunning){MainEnterFrame();}
 		OnDrawFrame();
 		THLastNanosec=ct;
@@ -106,7 +106,7 @@ static void RenderEnterFrame()
 
 	if(gap>THFrameRate)
 	{
-		deltaTime=(float)((double)gap*1e-6);
+		THDeltaTime=(float)((double)gap*1e-6);
 		if(THisRunning){MainEnterFrame();}
 		OnDrawFrame();
 		THLastNanosec=ct;

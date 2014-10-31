@@ -11,15 +11,10 @@ class THVector2
 public:
 	float x,y;
 
-	THVector2(const float _x,const float _y)
+	THVector2(const float _x=0.0f,const float _y=0.0f)
 	{
 		x=_x;
 		y=_y;
-	}
-	THVector2()
-	{
-		x=0.0f;
-		y=0.0f;
 	}
 	
 	inline void SetZero()

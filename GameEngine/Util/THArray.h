@@ -35,7 +35,20 @@ public:
 		arr[num]=object;
 		++num;
 	}
-	int Find(const T& object)
+	void PushAt(const T& obj,unsigned int i)
+	{
+		if(i>=num)
+		{
+			arr[num]=obj;
+		}
+		else
+		{
+			memmove(arr+(i+1),arr+i,sizeof(T)*(num-i));
+			arr[i]=obj;
+		}
+		++num;
+	}
+	int Find(const T& object) const
 	{
 		for(unsigned int i=0;i<num;++i)
 		{
@@ -46,7 +59,7 @@ public:
 		}
 		return -1;
 	}
-	int FindBack(const T& object)
+	int FindBack(const T& object) const
 	{
 		unsigned int i=num;
 		while(i)
@@ -86,6 +99,10 @@ public:
 		}
 	}
 	
+	inline T& GetLast() const
+	{
+		return arr[num-1];
+	}
 	inline void Clear()
 	{
 		num=0;
