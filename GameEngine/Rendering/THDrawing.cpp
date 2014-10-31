@@ -76,11 +76,9 @@ void THTexture::UpsideDown()
 }
 
 
-void THVertexBuffer::Load(GLuint _attribHandler,void* data,GLuint bytes,GLenum usage)
+void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
 {
 	THLog("VertexBuffer Generation; %d Bytes",bytes);
-
-	attribHandler=_attribHandler;
 
 	glGenBuffers(1,&vboHandler);
 

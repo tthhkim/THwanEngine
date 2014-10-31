@@ -108,7 +108,6 @@ class THVertexBuffer
 {
 public:
 	GLuint vboHandler;
-	GLuint attribHandler;
 	/*
 GL_STATIC_DRAW The buffer object data will be specified once by the
 application and used many times to draw primitives.
@@ -119,19 +118,19 @@ application and used many times to draw primitives.
 GL_STREAM_DRAW The buffer object data will be specified once by the
 application and used a few times to draw primitives.
 */
-	void Load(GLuint _attribHandler,void* data,GLuint bytes,GLenum usage);
-	inline void Load(GLuint _attribHandler,GLfloat* vertices,GLuint count)
+	void Load(void* data,GLuint bytes,GLenum usage);
+	inline void Load(GLfloat* vertices,GLuint count)
 	{
-		Load(_attribHandler,vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
+		Load(vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
 	}
 	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
 
-	inline void BeginDrawing() const
+	inline void BeginDrawing(GLuint attribHandler) const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
 		glEnableVertexAttribArray(attribHandler);
 	}
-	inline void EndDrawing() const
+	inline void EndDrawing(GLuint attribHandler) const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 		glDisableVertexAttribArray(attribHandler);

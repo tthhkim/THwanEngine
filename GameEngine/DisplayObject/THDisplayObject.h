@@ -72,6 +72,15 @@ public:
 		vertexBuffer=vertex;
 	}
 
+	inline float GetWidth() const
+	{
+		return vertexBuffer[6]-vertexBuffer[0];
+	}
+	inline float GetHeight() const
+	{
+		return vertexBuffer[7]-vertexBuffer[1];
+	}
+
 	friend void DrawTHMovieClip(const THMovieClip* obj);
 };
 
