@@ -135,6 +135,8 @@ public:
 
 	THRot2(const float _c=1.0f,const float _s=0.0f)
 	{
+		c=_c;
+		s=_s;
 	}
 	THRot2(const float angle)
 	{

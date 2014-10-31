@@ -144,7 +144,7 @@ void THGLInit()
 			"void main(){"
 			"vec2 svert=vert*sScale;"
 			"vec3 lastP=vec3("
-			"dot(vec2(rot.x,-rot.y),svert)+pos.x , dot(vec2(rot.y,rot.x),svert)+pos.y"
+			"dot( vec2(rot.x,-rot.y) , svert )+pos.x , dot( vec2(rot.y,rot.x) , svert )+pos.y"
 			",1.0);"
 			"gl_Position=vec4(dot(projectionMat[0],lastP),dot(projectionMat[1],lastP),0.0,1.0);"
 			"vTex=aTex;"
