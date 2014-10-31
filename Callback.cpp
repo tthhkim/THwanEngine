@@ -17,25 +17,13 @@
 #include <unistd.h>
 #endif
 
-const GLfloat ver[]=MAKE_CENTER_VERTEX(0.5f,0.5f);
-
-THFrame f;
-THTexture tex;
-THMovieClip mc(ver,&tex);
-
 void OnCreate(THApplicaation* state)
 {
-	GoFrame(&f);
-	f.AddChild(&mc);
-	mc.width=30.0f;
-	mc.height=30.0f;
-	mc.position.Set(36.0f,64.0f);
+	//GoFrame();
 }
 void OnSurfaceCreated()
 {
-	SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
-	THImage img=LoadTexture("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
-	tex.Set(&img);
+	//SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
 	//TextureLoading
 }
 
@@ -90,5 +78,44 @@ void OnCreate(THApplicaation* state)
 void OnSurfaceCreated()
 {
 	SetOrtho( THVector2() , THVector2(720.0f,1280.0f) );
+}
+*/
+
+/*
+THFrame f;
+THTexture tex;
+THTexture t2;
+THMovieClip mc(&tex);
+THButton btn(1.0f,1.0f);
+THDisplayObject par;
+
+void OnCreate(THApplicaation* state)
+{
+	GoFrame(&f);
+	f.AddChild(&par);
+	f.AddChild(&mc);
+	f.AddButton(&btn);
+
+	mc.parent=&par;
+	mc.width=50.0f;
+	mc.rotation.Set(0.2f);
+	mc.height=30.0f;
+	mc.position.Set(36.0f,64.0f);
+
+	par.position.Set(10.0f,0.0f);
+	par.CalcWorldPosition();
+	btn.clip=&mc;
+	mc.CalcWorldPosition();
+	btn.Synchronize(THVector_zero);
+	btn.downed=&t2;
+}
+void OnSurfaceCreated()
+{
+	SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
+	THImage img=LoadTexture("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
+	tex.Set(&img);
+	t2.Set(&img);
+	t2.UpsideDown();
+	//TextureLoading
 }
 */

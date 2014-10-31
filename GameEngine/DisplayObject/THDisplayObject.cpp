@@ -10,17 +10,32 @@
 void DrawTHMovieClip(const THMovieClip* obj)
 {
 	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
-	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
+	
+	//glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
+	
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
 
+	if(obj->vertexBuffer)
+	{
+		glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
+		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
+	}
+	else
+	{
+		THHalfVertices.BeginDrawing(THDefaultProgram.vertexHandler);
+		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
+	}
+
 	glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
-	glVertexAttrib2f(THDefaultProgram.scaleHandler,obj->width,obj->height);
+	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&obj->size);
 	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&obj->worldPosition);
 
 	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
 	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
 	glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	THHalfVertices.EndDrawing(THDefaultProgram.vertexHandler);
 }
 
 
@@ -38,12 +53,19 @@ void THButton::Synchronize(const THVector2& extraBound)
 {
 	assert(clip);
 
-	const THVector2* arrs=(const THVector2*)clip->vertexBuffer;
-
-	const THVector2& minc=arrs[0];
-	const THVector2& maxc=arrs[3];
 	const THVector2 mp=clip->GetWorldPosition();
 
-	minBound=mp+minc-extraBound;
-	maxBound=mp+maxc+extraBound;
+	if(clip->vertexBuffer)
+	{
+		const THVector2 minc=((THVector2*)clip->vertexBuffer)[0]*clip->size;
+		const THVector2 maxc=((THVector2*)clip->vertexBuffer)[3]*clip->size;
+
+		minBound=mp+minc-extraBound;
+		maxBound=mp+maxc+extraBound;
+	}else
+	{
+		const THVector2 bc=clip->size*0.5f;
+		minBound=mp-bc-extraBound;
+		maxBound=mp+bc+extraBound;
+	}
 }

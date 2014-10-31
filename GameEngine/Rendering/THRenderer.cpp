@@ -28,8 +28,10 @@ extern struct THDPS THDefaultProgram={THProgram(),0,0,0,0,0,0,0,0};
 extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
 
-extern const GLfloat defaultFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
-extern GLfloat fullScreenVertices[8]={0.0};
+extern const GLfloat THFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
+extern GLfloat THGameFullVertices[8]={0.0};
+
+extern THVertexBuffer THHalfVertices=THVertexBuffer();
 
 extern float THDeltaTime=0.0f;
 
@@ -68,7 +70,7 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 	glUniform3fv(THDefaultProgram.projectMatrixHandler,2,matx);
 
 	const GLfloat fv[]=MAKE_VERTEX(minp.x,minp.y,maxp.x,maxp.y);
-	memcpy(fullScreenVertices,fv,sizeof(GLfloat)*8);
+	memcpy(THGameFullVertices,fv,sizeof(GLfloat)*8);
 
 	THLog("Set Ortho : %.1f , %.1f / %.1f , %.1f",minp.x,minp.y,maxp.x,maxp.y);
 }
@@ -197,6 +199,9 @@ void THGLInit()
 	glDepthMask(GL_FALSE);
 #endif
 	glViewport(0, 0, (GLsizei)windowSize.x,(GLsizei)windowSize.y);
+
+	const GLfloat halfVerts[]=MAKE_CENTER_VERTEX(0.5f,0.5f);
+	THHalfVertices.Load((void*)halfVerts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 
 	OnSurfaceCreated();
 #ifndef NDEBUG

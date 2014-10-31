@@ -12,7 +12,7 @@ public:
 	THProgram program;
 	THTexture *destTexture,*srcTexture;
 	const GLfloat *vertex;
-	THLightEffect(){ vertex=defaultFullVertices; }
+	THLightEffect(){ vertex=THFullVertices; }
 
 	void Load(THTexture* dest,THTexture* src);
 	void SetAmbient(float r,float g,float b) const
@@ -43,7 +43,7 @@ public:
 	{
 		assert(steps<=20);
 		stepCount=steps;
-		vertex=defaultFullVertices;
+		vertex=THFullVertices;
 	}
 
 	void Load(THTexture* src);
@@ -124,7 +124,7 @@ public:
 
 	THSwirlEffect()
 	{
-		vertex=defaultFullVertices;
+		vertex=THFullVertices;
 	}
 
 	void Load(THTexture* src);
@@ -177,7 +177,7 @@ public:
 	const GLfloat* vertex;
 	float time;
 	
-	THLinearWaveEffect(){time=0.0f;vertex=defaultFullVertices;}
+	THLinearWaveEffect(){time=0.0f;vertex=THFullVertices;}
 
 	void Load(THTexture* src);
 	void Draw();
@@ -216,7 +216,7 @@ public:
 	THProgram program;
 	const GLfloat* vertex;
 
-	THAngularWaveEffect():time(0.0f){vertex=defaultFullVertices;}
+	THAngularWaveEffect():time(0.0f){vertex=THFullVertices;}
 
 	void Load(THTexture* src);
 	void Draw();

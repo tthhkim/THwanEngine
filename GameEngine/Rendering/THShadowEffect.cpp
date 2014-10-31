@@ -56,7 +56,6 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 	rotationHandler=program.GetAttribLocation("rot");
 	scaleHandler=program.GetAttribLocation("scale");
 
-	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
 
 	SetOrtho(minp,maxp);
@@ -74,11 +73,14 @@ void THShadowEffect::Draw()
 		const THVector2& pos=so.mc->GetWorldPosition();
 		glVertexAttrib3f(positionHandler,pos.x,pos.y,so.z);
 		glVertexAttrib2fv(rotationHandler,(const GLfloat*)&so.mc->rotation);
-		glVertexAttrib2f(scaleHandler,so.mc->width,so.mc->height);
+		glVertexAttrib2fv(scaleHandler,(const GLfloat*)&so.mc->size);
 
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
+		
 		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->texture->textureBuffer);
+		THHalfVertices.BeginDrawing(vertexHandler);
+		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		THHalfVertices.EndDrawing(vertexHandler);
 	}
 }

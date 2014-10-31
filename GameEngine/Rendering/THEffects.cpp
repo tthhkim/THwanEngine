@@ -214,7 +214,7 @@ void THLightBaseCircle::Load(const THVector2& resolution)
 void THLightBaseCircle::Draw()
 {
 	program.Use();
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,defaultFullVertices);
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,THFullVertices);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 

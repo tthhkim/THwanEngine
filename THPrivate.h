@@ -53,8 +53,10 @@ class THTween;
 #define MAKE_VERTEX(left,bottom,right,top) \
 	{left, bottom,right, bottom,left,top,right,top}
 
-extern const GLfloat defaultFullVertices[];
-extern GLfloat fullScreenVertices[];
+extern const GLfloat THFullVertices[];
+extern GLfloat THGameFullVertices[];
+extern THVertexBuffer THHalfVertices;
+
 extern const THVector2 THVector_zero;
 
 #ifndef NDEBUG

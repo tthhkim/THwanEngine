@@ -63,23 +63,15 @@ class THMovieClip : public THDisplayObject
 public:
 	THTexture* texture;
 	THRot2 rotation;
-	float width,height;
-	const GLfloat* vertexBuffer;
+	THVector2 size;
+	const GLfloat *vertexBuffer;
 	
 
-	THMovieClip(const GLfloat* vertex,THTexture* _texture):THDisplayObject((THDrawingFunction)DrawTHMovieClip)
+	THMovieClip(const THVector2& _size,THTexture* _texture):THDisplayObject((THDrawingFunction)DrawTHMovieClip)
 	{
 		texture=_texture;
-		vertexBuffer=vertex;
-	}
-
-	inline float GetWidth() const
-	{
-		return vertexBuffer[6]-vertexBuffer[0];
-	}
-	inline float GetHeight() const
-	{
-		return vertexBuffer[7]-vertexBuffer[1];
+		size=_size;
+		vertexBuffer=0;
 	}
 
 	friend void DrawTHMovieClip(const THMovieClip* obj);
