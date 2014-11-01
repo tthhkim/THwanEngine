@@ -107,8 +107,8 @@ void THBlurEffect::Load(THTexture* src)
 		"for(i=1;i<=20;++i){"
 		"if(i>stepCount){break;}"
 		"vec2 ccoord=float(i)*blur*dir;"
-		"cSum += texture2D( sTexture , vTex - dir ) * weights[i];"
-		"cSum += texture2D( sTexture , vTex + dir ) * weights[i];"
+		"cSum += texture2D( sTexture , vTex - ccoord ) * weights[i];"
+		"cSum += texture2D( sTexture , vTex + ccoord ) * weights[i];"
 		"}"
 
 		"}"

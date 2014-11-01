@@ -524,7 +524,7 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 
 	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
 }
-void THImage::LoadTexture(const char* name,GLfloat filter,bool isRepeat)
+void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 {
 	THLog("Texture Generation : %s",name);
 #ifndef NDEBUG
@@ -591,7 +591,7 @@ void THImage::LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
-void THImage::Load(const char* name,GLfloat filter,bool isRepeat)
+void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 {
 	FILE* filep=fopen(name,"rb");
 	fseek(filep,0,SEEK_END);
