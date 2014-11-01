@@ -53,7 +53,7 @@ void THTexture::Set(THImage* _image)
 {
 	image=_image;
 
-	position.Set(0.0f,0.0f);
+	position.SetZero();
 	size=image->size;
 
 	SetBuffer(THVector2(0.0f,0.0f),THVector2(1.0f,1.0f));
