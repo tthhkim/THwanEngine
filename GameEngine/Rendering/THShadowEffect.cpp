@@ -1,18 +1,11 @@
 #include "THShadowEffect.h"
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 
-void THShadowEffect::SetOrtho(const THVector2& minp,const THVector2& maxp)
+void THShadowEffect::SyncProjection()
 {
-	const THVector2 sizeI=1.0f/(maxp-minp);
-	const THVector2 mid=(minp+maxp);
-	const GLfloat matx[]={
-		sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
-		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
-	};
-
-	glUniform3fv(program.GetUniformLocation("ndcMat"),2,matx);
+	glUniform3fv(program.GetUniformLocation("ndcMat"),2,THProjectMatrix);
 }
-void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
+void THShadowEffect::Load()
 {
 	const GLchar* vs=
 		"precision mediump float;"
@@ -58,7 +51,8 @@ void THShadowEffect::Load(const THVector2& minp,const THVector2& maxp)
 
 	glEnableVertexAttribArray(textureHandler);
 
-	SetOrtho(minp,maxp);
+	SyncProjection();
+	//SetOrtho(minp,maxp);
 }
 void THShadowEffect::Draw()
 {
@@ -75,10 +69,18 @@ void THShadowEffect::Draw()
 		glVertexAttrib2fv(rotationHandler,(const GLfloat*)&so.mc->rotation);
 		glVertexAttrib2fv(scaleHandler,(const GLfloat*)&so.mc->size);
 
-		
 		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->texture->textureBuffer);
-		THHalfVertices.BeginDrawing(vertexHandler);
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
+
+		if(so.mc->vertexBuffer)
+		{
+			glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
+			glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
+		}
+		else
+		{
+			THHalfVertices.BeginDrawing(vertexHandler);
+			glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
+		}
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		THHalfVertices.EndDrawing(vertexHandler);

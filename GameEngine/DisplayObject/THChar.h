@@ -16,14 +16,10 @@ class THString : public THDisplayObject
 {
 public:
 	float scale;
-	//color of text
-	float red,green,blue,alpha;
-	//relative offset of text
 
 	THString(unsigned int cap=10):THDisplayObject((THDrawingFunction)DrawTHString),chars(cap)
 	{
 		scale=1.0f;
-		red=green=blue=alpha=1.0f;
 		positionOffset=0.0f;
 	}
 	

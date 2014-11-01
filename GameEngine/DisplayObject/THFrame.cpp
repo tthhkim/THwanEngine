@@ -8,7 +8,6 @@ void THFrame::DrawObjects() const
 	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
 	glEnableVertexAttribArray(THDefaultProgram.textureHandler);
 
-
 	THDisplayObject* object;
 	for(unsigned int i=0;i<objectList.num;++i)
 	{
@@ -18,23 +17,8 @@ void THFrame::DrawObjects() const
 			object->DrawObject();
 		}
 	}
+
 	glDisableVertexAttribArray(THDefaultProgram.textureHandler);
-
-#ifndef NDEBUG
-	THButton* btn;
-	for(unsigned int i=0;i<buttonList.num;++i)
-	{
-		btn=buttonList.arr[i];
-		if(btn->enable)
-		{
-			btn->DrawDebug(0.1f,0.3f,0.9f);
-		}else
-		{
-			btn->DrawDebug(0.9f,0.3f,0.1f);
-		}
-	}
-#endif
-
 	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
 	
 }

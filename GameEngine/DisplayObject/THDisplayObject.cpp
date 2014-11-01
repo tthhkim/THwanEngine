@@ -30,9 +30,6 @@ void DrawTHMovieClip(const THMovieClip* obj)
 	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&obj->size);
 	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&obj->worldPosition);
 
-	glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
-	glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
-	glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	THHalfVertices.EndDrawing(THDefaultProgram.vertexHandler);

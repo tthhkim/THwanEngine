@@ -251,6 +251,7 @@ public:
 	}
 };
 
+void THOrthoMatrix33(float *mat,const THVector2& min,const THVector2& max);
 
 inline bool operator ==(const THMatrix22& a,const THMatrix22& b)
 {

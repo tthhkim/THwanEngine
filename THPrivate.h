@@ -55,6 +55,7 @@ class THTween;
 
 extern const GLfloat THFullVertices[];
 extern GLfloat THGameFullVertices[];
+extern GLfloat THProjectMatrix[];
 extern THVertexBuffer THHalfVertices;
 
 extern const THVector2 THVector_zero;
@@ -84,8 +85,7 @@ struct THDPS
 	GLuint positionHandler;
 	GLuint textureHandler;
 	GLuint projectMatrixHandler;
-	GLuint hasColorHandler,colorHandler;
-	GLuint colorMultiplyHandler;
+	GLuint colorAddHandler,colorMultiplyHandler;
 };
 extern struct THDPS THDefaultProgram;
 
@@ -106,7 +106,6 @@ typedef long long THTimeType;
 #endif
 
 void OnCreate(THApplicaation* state);
-THImage LoadTexture(const char* name,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 void OnSurfaceCreated();
 //void OnSaveInstanceState(saved_state* saved);
 //void OnLoadInstanceState(saved_state* loaded);
@@ -115,6 +114,14 @@ void OnPause();
 void OnDestroy();
 void SetFrameRate(float rate);
 
+static inline void SetColorAdd(float r,float g,float b,float a)
+{
+	glUniform4f(THDefaultProgram.colorAddHandler,r,g,b,a);
+}
+static inline void SetColorMultiply(float r,float g,float b,float a)
+{
+	glUniform4f(THDefaultProgram.colorMultiplyHandler,r,g,b,a);
+}
 
 THTimeType GetCurrentTimeMicro();
 

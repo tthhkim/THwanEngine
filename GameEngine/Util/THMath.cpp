@@ -48,6 +48,17 @@ void EyeTrnsformMatrix(float* mat,const THVector2& yrot,const THVector2& xrot)
 	mat[3]=xrot.y*yrot.y;	mat[4]=xrot.x;	mat[5]=-xrot.y*yrot.x;
 	mat[6]=-xrot.x*yrot.y;	mat[7]=xrot.y;  mat[8]=xrot.x*yrot.x;
 }
+void THOrthoMatrix33(float *mat,const THVector2& minp,const THVector2& maxp)
+{
+	const THVector2 sizeI=1.0f/(maxp-minp);
+	const THVector2 midI=(minp+maxp)*sizeI;
+	/*
+	sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
+		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
+		*/
+	mat[0]=sizeI.x*2.0f;	mat[1]=0.0f;			mat[2]=-midI.x;
+	mat[3]=0.0f;			mat[4]=sizeI.y*2.0f;	mat[5]=-midI.y;
+}
 void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max)
 {
 	const THVector3 sizeI=1.0f/(max-min);

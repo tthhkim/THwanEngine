@@ -22,6 +22,7 @@ extern GLsizei windowHeighti=0;
 extern THVector2 gameScale(0.0f,0.0f);
 extern THVector2 gameMinBound(0.0f,0.0f);
 extern THVector2 gameMaxBound(0.0f,0.0f);
+extern GLfloat THProjectMatrix[6]={0.0f};
 
 extern struct THDPS THDefaultProgram={THProgram(),0,0,0,0,0,0,0,0};
 
@@ -57,17 +58,10 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 	gameMinBound=minp;
 	gameMaxBound=maxp;
 
-	const THVector2 size=maxp-minp;
+	gameScale=(maxp-minp) / windowSize;
 
-	gameScale=size / windowSize;
-
-	const THVector2 sizeI=1.0f/size;
-	const THVector2 mid=(minp+maxp);
-	const GLfloat matx[]={
-		sizeI.x*2.0f , 0.0f , -mid.x*sizeI.x,
-		0.0f , 2.0f*sizeI.y , -mid.y*sizeI.y
-	};
-	glUniform3fv(THDefaultProgram.projectMatrixHandler,2,matx);
+	THOrthoMatrix33(THProjectMatrix,minp,maxp);
+	glUniform3fv(THDefaultProgram.projectMatrixHandler,2,THProjectMatrix);
 
 	const GLfloat fv[]=MAKE_VERTEX(minp.x,minp.y,maxp.x,maxp.y);
 	memcpy(THGameFullVertices,fv,sizeof(GLfloat)*8);
@@ -137,12 +131,6 @@ void THGLInit()
 			"attribute vec2 pos;"
 			"attribute vec2 aTex;"
 			"varying vec2 vTex;"
-			"attribute float aHasColor;"
-			"varying float vHasColor;"
-			"attribute vec4 aColor;"
-			"varying vec4 vColor;"
-			"attribute vec4 aColorM;"
-			"varying vec4 vColorM;"
 			"void main(){"
 			"vec2 svert=vert*sScale;"
 			"vec3 lastP=vec3("
@@ -150,25 +138,16 @@ void THGLInit()
 			",1.0);"
 			"gl_Position=vec4(dot(projectionMat[0],lastP),dot(projectionMat[1],lastP),0.0,1.0);"
 			"vTex=aTex;"
-			"vHasColor=aHasColor;"
-			"vColor=aColor;"
-			"vColorM=aColorM;"
 			"}";
 
 	const GLchar* fs=
 			"precision mediump float;"
 			"varying vec2 vTex;"
-			"varying mediump vec4 vColor;"
-			"varying vec4 vColorM;"
-			"varying float vHasColor;"
 			"uniform sampler2D sTexture;"
+			"uniform vec4 aColor;"
+			"uniform vec4 mColor;"
 			"void main(){"
-			"vec4 cColor;"
-			"if(vHasColor>0.5){"
-			"gl_FragColor=vColor*vColorM;"
-			"}else{"
-			"gl_FragColor=texture2D(sTexture,vTex)*vColorM + vColor;"
-			"}"
+			"gl_FragColor=texture2D(sTexture,vTex)*mColor + aColor;"
 			"}";
 	THDefaultProgram.defaultProgram.Load(vs,fs);
 
@@ -179,10 +158,9 @@ void THGLInit()
 	THDefaultProgram.scaleHandler=mprogram.GetAttribLocation("sScale");
 	THDefaultProgram.positionHandler=mprogram.GetAttribLocation("pos");
 	THDefaultProgram.textureHandler=mprogram.GetAttribLocation("aTex");
-	THDefaultProgram.colorHandler=mprogram.GetAttribLocation("aColor");
-	THDefaultProgram.colorMultiplyHandler=mprogram.GetAttribLocation("aColorM");
-	THDefaultProgram.hasColorHandler=mprogram.GetAttribLocation("aHasColor");
 	THDefaultProgram.projectMatrixHandler=mprogram.GetUniformLocation("projectionMat");
+	THDefaultProgram.colorAddHandler=mprogram.GetUniformLocation("aColor");
+	THDefaultProgram.colorMultiplyHandler=mprogram.GetUniformLocation("mColor");
 
     //glClearColor(0.7f,0.6f,0.5f,1.0f);
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
@@ -199,6 +177,9 @@ void THGLInit()
 	glDepthMask(GL_FALSE);
 #endif
 	glViewport(0, 0, (GLsizei)windowSize.x,(GLsizei)windowSize.y);
+
+	glUniform4f(THDefaultProgram.colorAddHandler,0.0f,0.0f,0.0f,0.0f);
+	glUniform4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
 
 	const GLfloat halfVerts[]=MAKE_CENTER_VERTEX(0.5f,0.5f);
 	THHalfVertices.Load((void*)halfVerts,sizeof(GLfloat)*8,GL_STATIC_DRAW);

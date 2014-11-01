@@ -25,10 +25,10 @@ public:
 	THShadowEffect(unsigned int objectCapacity):objects(objectCapacity)
 	{
 	}
-	void SetOrtho(const THVector2& minp=gameMinBound,const THVector2& maxp=gameMaxBound);
-	void Load(const THVector2& minp=gameMinBound,const THVector2& maxp=gameMaxBound);
+	void Load();
 	void Draw();
 
+	void SyncProjection();
 	inline void SetLightPosition(float x,float y,float z) const
 	{
 		glUniform3f(lightPositionHandler,x,y,z);

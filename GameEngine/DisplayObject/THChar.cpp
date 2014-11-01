@@ -43,11 +43,6 @@ void DrawTHString(const THString* obj)
 	const THChar* ch;
 	const unsigned int cn=obj->chars.num;
 	const THChar **carrs=obj->chars.arr;
-
-	const float r=obj->red;
-	const float g=obj->green;
-	const float b=obj->blue;
-	const float a=obj->alpha;
 	
 	for(unsigned int i=0;i<cn;++i)
 	{
@@ -61,10 +56,6 @@ void DrawTHString(const THString* obj)
 		glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
 		glVertexAttrib2f(THDefaultProgram.scaleHandler,scale,scale);
 		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&pos);
-
-		glVertexAttrib1f(THDefaultProgram.hasColorHandler,0.0f);
-		glVertexAttrib4f(THDefaultProgram.colorHandler,0.0f,0.0f,0.0f,0.0f);
-		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,r,g,b,a);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

@@ -60,12 +60,20 @@ class THImage
 {
 public:
 	GLuint textureID;
-	const THVector2 size;
-	const GLsizei width,height;
+	THVector2 size;
+	GLsizei width,height;
 
+	THImage(){}
 	THImage(GLsizei w,GLsizei h):size((float)w,(float)h),width(w),height(h){}
 
 	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void Load(const char* name,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void SetSize(GLsizei w,GLsizei h)
+	{
+		width=w;
+		height=h;
+		size.Set((float)w,(float)h);
+	}
 
 	inline void DeleteTexture() const
 	{

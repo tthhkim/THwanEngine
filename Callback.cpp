@@ -83,9 +83,10 @@ void OnSurfaceCreated()
 
 /*
 THFrame f;
+IHImage img;
 THTexture tex;
 THTexture t2;
-THMovieClip mc(&tex);
+THMovieClip mc(THVector2(30.0f,30.0f),&tex);
 THButton btn(1.0f,1.0f);
 THDisplayObject par;
 
@@ -97,9 +98,7 @@ void OnCreate(THApplicaation* state)
 	f.AddButton(&btn);
 
 	mc.parent=&par;
-	mc.width=50.0f;
 	mc.rotation.Set(0.2f);
-	mc.height=30.0f;
 	mc.position.Set(36.0f,64.0f);
 
 	par.position.Set(10.0f,0.0f);
@@ -112,7 +111,7 @@ void OnCreate(THApplicaation* state)
 void OnSurfaceCreated()
 {
 	SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
-	THImage img=LoadTexture("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
+	img.Load("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
 	tex.Set(&img);
 	t2.Set(&img);
 	t2.UpsideDown();

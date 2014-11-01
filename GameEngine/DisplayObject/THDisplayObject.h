@@ -136,28 +136,6 @@ public:
 		}
 	}
 
-#ifndef NDEBUG
-	void DrawDebug(float r,float g,float b) const
-	{
-		const GLfloat vertic[]=
-		{
-			minBound.x,minBound.y,
-			maxBound.x,minBound.y,
-			maxBound.x,maxBound.y,
-			minBound.x,maxBound.y
-		};
-
-		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertic);
-		glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
-		glVertexAttrib2f(THDefaultProgram.positionHandler,0.0f,0.0f);
-
-		glVertexAttrib1f(THDefaultProgram.hasColorHandler,1.0f);
-		glVertexAttrib4f(THDefaultProgram.colorHandler,r,g,b,1.0f);
-		glVertexAttrib4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
-	}
-#endif
-
 protected:
 	THVector2 minBound,maxBound;
 	THTexture* normal;

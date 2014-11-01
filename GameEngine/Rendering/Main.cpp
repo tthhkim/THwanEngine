@@ -524,7 +524,7 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 
 	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
 }
-THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
+void THImage::LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 {
 	THLog("Texture Generation : %s",name);
 #ifndef NDEBUG
@@ -550,28 +550,28 @@ THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 
 	png_read_info(png_ptr, info_ptr);
 
-	png_uint_32 width,height;
+	png_uint_32 widthi,heighti;
 	int bitDepth;
 	int colorType;
 	png_get_IHDR(png_ptr, info_ptr,
-	   &width,
-	   &height,
+	   &widthi,
+	   &heighti,
 	   &bitDepth,
 	   &colorType,
 	   NULL, NULL, NULL);
-	THLog("LibPNG // Width : %d , Height : %d",width,height);
+	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
 #ifndef NDEBUG
-		st=width&(width-1);
+		st=widthi&(widthi-1);
 		assert(st==0);
-		st=height&(height-1);
+		st=heighti&(heighti-1);
 		assert(st==0);
 #endif
 
 	const png_uint_32 bytesPerRow = png_get_rowbytes(png_ptr, info_ptr);
-	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*height);
-	png_bytep* rowBytes=(png_bytep*)malloc(height*sizeof(png_bytep));
+	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*heighti);
+	png_bytep* rowBytes=(png_bytep*)malloc(heighti*sizeof(png_bytep));
 	
-	unsigned int i=height;
+	unsigned int i=heighti;
 	while(i)
 	{
 		--i;
@@ -583,16 +583,15 @@ THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	AAsset_close(aasset);
 
-	THImage img(width,height);
-	img.Load(colorBuf,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
-	free(colorBuf);
+	SetSize(widthi,heighti);
 
-	return img;
+	Load(colorBuf,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
+	free(colorBuf);
 }
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
-THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
+void THImage::Load(const char* name,GLfloat filter,bool isRepeat)
 {
 	FILE* filep=fopen(name,"rb");
 	fseek(filep,0,SEEK_END);
@@ -603,24 +602,23 @@ THImage LoadTexture(const char* name,GLfloat filter,bool isRepeat)
 	fread(mem,size,1,filep);
 
 	unsigned char* colorBuf;
-	unsigned width=0,height=0;
+	unsigned widthi=0,heighti=0;
 
-	lodepng_decode_memory(&colorBuf, &width,&height,
+	lodepng_decode_memory(&colorBuf, &widthi,&heighti,
                                mem, size,
                                LCT_RGBA, 8);
-	THLog("LibPNG // Width : %d , Height : %d",width,height);
+	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
 #ifndef NDEBUG
-	
-		unsigned int st=width&(width-1);
+		unsigned int st=widthi&(widthi-1);
 		assert(st==0);
-		st=height&(height-1);
+		st=heighti&(heighti-1);
 		assert(st==0);
 #endif
-	THImage img(width,height);
-	img.Load(colorBuf,GL_RGBA,filter,isRepeat);
-	free(colorBuf);
 
-	return img;
+	SetSize(widthi,heighti);
+
+	Load(colorBuf,GL_RGBA,filter,isRepeat);
+	free(colorBuf);
 }
 #endif
 #endif
