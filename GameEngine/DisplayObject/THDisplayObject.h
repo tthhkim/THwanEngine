@@ -36,6 +36,7 @@ public:
 		Draw=drawfunction;
 	}
 
+	void CalcWorldPositionParent();
 	inline void CalcWorldPosition()
 	{
 		if(parent){worldPosition=position+parent->worldPosition;}

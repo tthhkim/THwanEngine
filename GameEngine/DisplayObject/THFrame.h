@@ -46,7 +46,11 @@ public:
 	virtual void Draw();
 
 
-	void DrawObjects() const;
+	void DrawObjects(unsigned int start,unsigned int end) const;
+	inline void DrawObjects() const
+	{
+		DrawObjects(0,objectList.num);
+	}
 
 	void AddChild(THDisplayObject* object)
 	{

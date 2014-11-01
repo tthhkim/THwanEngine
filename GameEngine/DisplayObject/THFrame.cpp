@@ -2,14 +2,15 @@
 #include <GameEngine/Rendering/THDrawing.h>
 #include <THPrivate.h>
 
-void THFrame::DrawObjects() const
+void THFrame::DrawObjects(unsigned int start,unsigned int end) const
 {
+	assert(start<objectList.num && end>start && end<=objectList.num);
 	THDefaultProgram.defaultProgram.Use();
 	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
 	glEnableVertexAttribArray(THDefaultProgram.textureHandler);
 
 	THDisplayObject* object;
-	for(unsigned int i=0;i<objectList.num;++i)
+	for(unsigned int i=start;i<end;++i)
 	{
 		object=objectList.arr[i];
 		if(object->visible)

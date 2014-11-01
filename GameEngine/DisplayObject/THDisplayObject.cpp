@@ -7,6 +7,17 @@
 #include <malloc.h>
 #include <assert.h>
 
+void THDisplayObject::CalcWorldPositionParent()
+{
+	if(parent)
+	{
+		parent->CalcWorldPositionParent();
+		worldPosition=position+parent->worldPosition;
+	}else
+	{
+		worldPosition=position;
+	}
+}
 void DrawTHMovieClip(const THMovieClip* obj)
 {
 	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
