@@ -352,7 +352,6 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	case WM_LBUTTONDOWN:
 	{
 		if(currentFrame->canTouch==false){return 0;}
-		if(isMouseDown){return 0;}
 		isMouseDown=true;
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
 		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
@@ -482,9 +481,11 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 	{
 		// Check for messages from the windowing system. These will pass through the callback registered earlier.
 		MSG eventMessage;
-		PeekMessage(&eventMessage, nativeWindow, NULL, NULL, PM_REMOVE);
-		TranslateMessage(&eventMessage);
-		DispatchMessage(&eventMessage);
+		while(PeekMessage(&eventMessage, nativeWindow, NULL, NULL, PM_REMOVE))
+		{
+			TranslateMessage(&eventMessage);
+			DispatchMessage(&eventMessage);
+		}
 
 		RenderEnterFrame();
 	}
