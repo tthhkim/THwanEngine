@@ -49,6 +49,7 @@ void THShadowEffect::Load()
 	rotationHandler=program.GetAttribLocation("rot");
 	scaleHandler=program.GetAttribLocation("scale");
 
+	glEnableVertexAttribArray(vertexHandler);
 	glEnableVertexAttribArray(textureHandler);
 
 	SyncProjection();
@@ -71,18 +72,13 @@ void THShadowEffect::Draw()
 
 		glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->texture->textureBuffer);
 
-		if(so.mc->vertexBuffer)
-		{
-			glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
-			glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
-		}
-		else
-		{
-			THHalfVertices.BeginDrawing(vertexHandler);
-			glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
-		}
+		if(so.mc->vertexBuffer==0){ THHalfVertices.BeginDrawing(); }
+
+		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,so.mc->vertexBuffer);
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-		THHalfVertices.EndDrawing(vertexHandler);
+
+		if(so.mc->vertexBuffer==0){ THHalfVertices.EndDrawing(); }
+		
 	}
 }

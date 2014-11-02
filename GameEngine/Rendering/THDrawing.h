@@ -127,21 +127,15 @@ GL_STREAM_DRAW The buffer object data will be specified once by the
 application and used a few times to draw primitives.
 */
 	void Load(void* data,GLuint bytes,GLenum usage);
-	inline void Load(GLfloat* vertices,GLuint count)
-	{
-		Load(vertices,sizeof(GLfloat)*count,GL_STATIC_DRAW);
-	}
 	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
 
-	inline void BeginDrawing(GLuint attribHandler) const
+	inline void BeginDrawing() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-		glEnableVertexAttribArray(attribHandler);
 	}
-	inline void EndDrawing(GLuint attribHandler) const
+	inline void EndDrawing() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,0);
-		glDisableVertexAttribArray(attribHandler);
 		//ToDo Returning to default vertexbuffer
 	}
 	inline void DeleteVBO() const

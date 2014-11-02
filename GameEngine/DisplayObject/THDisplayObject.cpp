@@ -22,20 +22,10 @@ void DrawTHMovieClip(const THMovieClip* obj)
 {
 	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
 	
-	//glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
-	
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
 
-	if(obj->vertexBuffer)
-	{
-		glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
-		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
-	}
-	else
-	{
-		THHalfVertices.BeginDrawing(THDefaultProgram.vertexHandler);
-		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
-	}
+	if(obj->vertexBuffer==0){ THHalfVertices.BeginDrawing(); }
+	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
 
 	glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
 	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&obj->size);
@@ -43,7 +33,7 @@ void DrawTHMovieClip(const THMovieClip* obj)
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-	THHalfVertices.EndDrawing(THDefaultProgram.vertexHandler);
+	if(obj->vertexBuffer==0){ THHalfVertices.EndDrawing(); }
 }
 
 

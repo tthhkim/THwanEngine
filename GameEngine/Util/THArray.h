@@ -101,6 +101,7 @@ public:
 	
 	inline T& GetLast() const
 	{
+		assert(num>0);
 		return arr[num-1];
 	}
 	inline void Clear()
