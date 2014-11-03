@@ -52,7 +52,7 @@ class THLinearTween : public THTween
 {
 public:
 	THLinearTween(THVector2 *_src,const THLinearTweenDef& tweenDef):THTween(tweenDef.time),
-		src0(*src),src(src),
+		src0(*_src),src(_src),
 		delta(tweenDef.delta),v0(tweenDef.v0),accel(tweenDef.accel)
 	{
 		//THLog("New Tween Added : %d Frames , %.2f Seconds",frames,(float)frames/(float)GLTHREAD_FRAMERATE);

@@ -6,9 +6,9 @@
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 
 #if THPLATFORM==THPLATFORM_ANDROID
-typedef AMotionEvent THMotionEvent;
-typedef int32_t THActionType
 #include <android/input.h>
+typedef AInputEvent THMotionEvent;
+typedef int32_t THActionType;
 #elif THPLATFORM==THPLATFORM_WINDOWS
 #include <Windows.h>
 typedef UINT THMotionEvent;

@@ -40,7 +40,8 @@ public:
 
 	void Push(THMovieClip* mc,float z)
 	{
-		objects.Push(THShadowObject{mc,z});
+		THShadowObject obj={mc,z};
+		objects.Push(obj);
 	}
 	void SetZ(THMovieClip* mc,float z)
 	{

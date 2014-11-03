@@ -88,7 +88,7 @@ static void RenderEnterFrame()
 	{
 		THDeltaTime=(float)((double)gap*1e-9);
 		if(THisRunning){MainEnterFrame();}
-		OnDrawFrame();
+		if(eglDisplay!=EGL_NO_DISPLAY){OnDrawFrame();}
 		THLastNanosec=ct;
 	}
 }

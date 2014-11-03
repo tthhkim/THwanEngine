@@ -97,7 +97,7 @@ void GoFrame(THFrame* f,void* data=0);
 void SetOrtho(const THVector2& minp,const THVector2& maxp);
 
 #if THPLATFORM==THPLATFORM_ANDROID
-typedef struct android_app* THApplicaation;
+typedef struct android_app THApplicaation;
 typedef long THTimeType;
 #elif THPLATFORM==THPLATFORM_WINDOWS
 #include <Windows.h>

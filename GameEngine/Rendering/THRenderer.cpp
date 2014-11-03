@@ -235,9 +235,9 @@ void THEGLInit(THApplicaation* state)
 	EGLint format;
     eglGetConfigAttrib(eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format);
 	
-    ANativeWindow_setBuffersGeometry(app->window, 0, 0, format);
+    ANativeWindow_setBuffersGeometry(state->window, 0, 0, format);
 
-    eglSurface = eglCreateWindowSurface(eglDisplay, config, (EGLNativeWindowType)(app->window), NULL);
+    eglSurface = eglCreateWindowSurface(eglDisplay, config, (EGLNativeWindowType)(state->window), NULL);
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 	eglSurface = eglCreateWindowSurface(eglDisplay, config, *state, NULL);
