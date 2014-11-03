@@ -75,7 +75,7 @@ public:
 		vertexBuffer=0;
 	}
 
-	friend void DrawTHMovieClip(const THMovieClip* obj);
+	static void DrawTHMovieClip(const THMovieClip* obj);
 };
 
 

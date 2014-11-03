@@ -47,6 +47,7 @@ public:
 	{
 		return positionOffset;
 	}
+	static void DrawTHString(const THString* obj);
 
 protected:
 	THArray<const THChar*> chars;
@@ -57,7 +58,6 @@ protected:
 class THChar : public THTexture
 {
 	friend class THString;
-	friend void DrawTHString(const THString* obj);
 public:
 	THVector2 vertexBuffer[4];
 

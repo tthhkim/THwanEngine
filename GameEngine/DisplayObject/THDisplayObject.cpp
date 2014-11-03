@@ -18,7 +18,7 @@ void THDisplayObject::CalcWorldPositionParent()
 		worldPosition=position;
 	}
 }
-void DrawTHMovieClip(const THMovieClip* obj)
+void THMovieClip::DrawTHMovieClip(const THMovieClip* obj)
 {
 	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
 	

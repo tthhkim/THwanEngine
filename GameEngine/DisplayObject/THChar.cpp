@@ -35,7 +35,7 @@ void THString::SetWidth(float w)
 	SetPosition(cp,positionOffset);
 }
 
-void DrawTHString(const THString* obj)
+void THString::DrawTHString(const THString* obj)
 {
 	THVector2 pos=obj->position;
 
