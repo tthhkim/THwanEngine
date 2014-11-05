@@ -26,7 +26,7 @@ public:
 	{
 	}
 	void Load();
-	void Draw();
+	void Draw() const;
 
 	void SyncProjection();
 	inline void SetLightPosition(float x,float y,float z) const
@@ -74,6 +74,41 @@ protected:
 	GLuint positionHandler;
 	GLuint rotationHandler;
 	GLuint scaleHandler;
+};
+
+class THShadowBlurEffect
+{
+public:
+	THProgram program;
+	THTexture *srcTexture;
+	const GLfloat *vertex;
+	THVector2 direction;
+	
+
+	THShadowBlurEffect():direction(1.0f,0.0f)
+	{
+		vertex=THFullVertices;
+	}
+	void Load(THTexture *src);
+	void Draw() const;
+
+	void SetTexture(THTexture *src)
+	{
+		srcTexture=src;
+
+		const THVector2 invTex=1.0f/src->image->size;
+		program.SetUniform("textureInvert",invTex.x,invTex.y);
+	}
+
+	void SetRadius(float r)
+	{
+		glUniform1f(radiusHandler,1.0f/r);
+		glUniform1i(stepHandler,(int)r);
+	}
+
+protected:
+	GLuint vertexHandler,textureHandler;
+	GLuint radiusHandler,stepHandler,directionHandler;
 };
 
 

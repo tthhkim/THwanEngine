@@ -55,7 +55,7 @@ void THShadowEffect::Load()
 	SyncProjection();
 	//SetOrtho(minp,maxp);
 }
-void THShadowEffect::Draw()
+void THShadowEffect::Draw() const
 {
 	program.Use();
 
@@ -81,4 +81,78 @@ void THShadowEffect::Draw()
 		if(so.mc->vertexBuffer==0){ THHalfVertices.EndDrawing(); }
 		
 	}
+}
+
+void THShadowBlurEffect::Load(THTexture *src)
+{
+	const GLchar* vs=
+		"precision mediump float;"
+		"attribute vec2 vert;"
+		"attribute vec2 aTex;"
+		"varying vec2 vTex;"
+		"attribute vec2 aDir;"
+		"varying vec2 vDir;"
+		"void main(){"
+		"vTex=aTex;"
+		"vDir=aDir;"
+		"gl_Position=vec4(vert,0.0,1.0);"
+		"}"
+		;
+	const GLchar* fs=
+		"precision mediump float;"
+		"uniform vec2 textureInvert;"
+		"uniform float radiusi;"
+		"uniform lowp int stepCount;"
+		"uniform sampler2D sTexture;"
+		
+		"varying vec2 vTex;"
+		"varying vec2 vDir;"
+		"void main(){"
+
+		"vec4 cSum=texture2D(sTexture,vTex)*radiusi;"
+
+		"lowp int i=1;"
+		"while(true){"
+		"if(i==stepCount){break;}"
+
+		"float len=float(i);"
+		"float kern=radiusi-len*radiusi*radiusi;"
+
+		"vec2 ccoord=len*vDir*textureInvert;"
+		"cSum+=kern*texture2D(sTexture,vTex+ccoord);"
+		"cSum+=kern*texture2D(sTexture,vTex-ccoord);"
+
+		"++i;"
+		"}"
+		
+
+		"gl_FragColor=cSum;"
+		"}"
+		;
+
+	program.Load(vs,fs);
+
+	vertexHandler=program.GetAttribLocation("vert");
+	textureHandler=program.GetAttribLocation("aTex");
+	directionHandler=program.GetAttribLocation("aDir");
+
+	radiusHandler=program.GetUniformLocation("radiusi");
+	stepHandler=program.GetUniformLocation("stepCount");
+
+	SetTexture(src);
+
+	glEnableVertexAttribArray(vertexHandler);
+	glEnableVertexAttribArray(textureHandler);
+}
+void THShadowBlurEffect::Draw() const
+{
+	program.Use();
+
+	glBindTexture(GL_TEXTURE_2D,srcTexture->image->textureID);
+
+	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,vertex);
+	glVertexAttribPointer(textureHandler,2,GL_FLOAT,GL_FALSE,0,srcTexture->textureBuffer);
+	glVertexAttrib2fv(directionHandler,(const GLfloat*)&direction);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
