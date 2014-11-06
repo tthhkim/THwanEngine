@@ -6,6 +6,55 @@
 #define TH_PI 3.14159265359f
 #define TH_2PI 6.28318530718f
 
+class THRot2
+{
+public:
+	float c,s;
+
+	THRot2(const float _c=1.0f,const float _s=0.0f)
+	{
+		c=_c;
+		s=_s;
+	}
+	THRot2(const float angle)
+	{
+		Set(angle);
+	}
+
+	inline void Set(const float _c,const float _s)
+	{
+		c=_c;
+		s=_s;
+	}
+	inline void SetIdentity()
+	{
+		c=1.0f;
+		s=0.0f;
+	}
+	void Set(const float angle)
+	{
+		const float _c=cosf(angle);
+		const float _s=sinf(angle);
+		Set(_c,_s);
+	}
+	
+	inline THRot2 Inverse() const
+	{
+		return THRot2(c,-s);
+	}
+	inline void Rotate(const float _c,const float _s)
+	{
+		Set(c*_c - s*_s , c*_s + s*_c);
+	}
+	void Rotate(const float angle)
+	{
+		const float _c=cosf(angle);
+		const float _s=sinf(angle);
+
+		Rotate(_c,_s);
+	}
+};
+
 class THVector2
 {
 public:
@@ -15,6 +64,11 @@ public:
 	{
 		x=_x;
 		y=_y;
+	}
+	THVector2(const THRot2& r)
+	{
+		x=r.c;
+		y=r.s;
 	}
 	
 	inline void SetZero()
@@ -128,54 +182,7 @@ inline bool operator ==(const THVector2& a, const THVector2& b)
 }
 
 
-class THRot2
-{
-public:
-	float c,s;
 
-	THRot2(const float _c=1.0f,const float _s=0.0f)
-	{
-		c=_c;
-		s=_s;
-	}
-	THRot2(const float angle)
-	{
-		Set(angle);
-	}
-
-	inline void Set(const float _c,const float _s)
-	{
-		c=_c;
-		s=_s;
-	}
-	inline void SetIdentity()
-	{
-		c=1.0f;
-		s=0.0f;
-	}
-	void Set(const float angle)
-	{
-		const float _c=cosf(angle);
-		const float _s=sinf(angle);
-		Set(_c,_s);
-	}
-	
-	inline THRot2 Inverse() const
-	{
-		return THRot2(c,-s);
-	}
-	inline void Rotate(const float _c,const float _s)
-	{
-		Set(c*_c - s*_s , c*_s + s*_c);
-	}
-	void Rotate(const float angle)
-	{
-		const float _c=cosf(angle);
-		const float _s=sinf(angle);
-
-		Rotate(_c,_s);
-	}
-};
 class THMatrix22
 {
 public:
