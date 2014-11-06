@@ -15,6 +15,8 @@ protected:
 public:
 	GLuint program;
 
+	THProgram(){}
+
 	void Load(const GLchar* vs,const GLchar* fs);
 
 	inline void SetUniform(const char* name,float f1) const

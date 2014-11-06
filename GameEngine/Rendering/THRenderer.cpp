@@ -71,55 +71,7 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 
 
 
-static GLuint InitShader(const GLchar* source,GLenum type)
-{
-	GLuint shader=glCreateShader(type);
-	glShaderSource(shader,1,&source,NULL);
-	glCompileShader(shader);
 
-#ifndef NDEBUG
-	//Shader Error Checking
-	const char* shaderName=0;
-	switch(type)
-	{
-	case GL_VERTEX_SHADER:
-		shaderName="Vertex";
-		break;
-	case GL_FRAGMENT_SHADER:
-		shaderName="Fragment";
-		break;
-	}
-
-	GLint compileSt;
-	glGetShaderiv(shader,GL_COMPILE_STATUS,&compileSt);
-	THLog("%sShader Compile : %s",shaderName,compileSt==GL_TRUE?"SUCCESS":"FAIL");
-
-	GLint buflen;
-	glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&buflen);
-
-	if(buflen>12)
-	{
-		GLchar* log_string=new char[buflen+3];
-		glGetShaderInfoLog(shader,buflen,0,log_string);
-
-		THError("%sShader Log : \n%s",shaderName,log_string);
-
-		delete[] log_string;
-	}
-#endif
-
-	return shader;
-}
-void THProgram::Load(const GLchar* vs,const GLchar* fs)
-{
-	vertex=InitShader(vs,GL_VERTEX_SHADER);
-	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
-	program=glCreateProgram();
-	glAttachShader(program,vertex);
-	glAttachShader(program,fragment);
-	glLinkProgram(program);
-	glUseProgram(program);
-}
 void THGLInit()
 {
 	const GLchar* vs=
@@ -176,7 +128,7 @@ void THGLInit()
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
 #endif
-	glViewport(0, 0, (GLsizei)windowSize.x,(GLsizei)windowSize.y);
+	glViewport(0, 0, windowWidthi,windowHeighti);
 
 	glUniform4f(THDefaultProgram.colorAddHandler,0.0f,0.0f,0.0f,0.0f);
 	glUniform4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);

@@ -109,7 +109,7 @@ void THShadowBlurEffect::Load(THTexture *src)
 		"varying vec2 vDir;"
 		"void main(){"
 
-		"vec4 cSum=texture2D(sTexture,vTex)*radiusi;"
+		"vec4 cSum=texture2D(sTexture,vTex)*(radiusi-0.25*radiusi*radiusi);"
 
 		"lowp int i=1;"
 		"while(true){"

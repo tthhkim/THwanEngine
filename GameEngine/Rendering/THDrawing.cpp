@@ -4,6 +4,55 @@
 #include <malloc.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
+static GLuint InitShader(const GLchar* source,GLenum type)
+{
+	GLuint shader=glCreateShader(type);
+	glShaderSource(shader,1,&source,NULL);
+	glCompileShader(shader);
+
+#ifndef NDEBUG
+	//Shader Error Checking
+	const char* shaderName=0;
+	switch(type)
+	{
+	case GL_VERTEX_SHADER:
+		shaderName="Vertex";
+		break;
+	case GL_FRAGMENT_SHADER:
+		shaderName="Fragment";
+		break;
+	}
+
+	GLint compileSt;
+	glGetShaderiv(shader,GL_COMPILE_STATUS,&compileSt);
+	THLog("%sShader Compile : %s",shaderName,compileSt==GL_TRUE?"SUCCESS":"FAIL");
+
+	GLint buflen;
+	glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&buflen);
+
+	if(buflen>12)
+	{
+		GLchar* log_string=new char[buflen+3];
+		glGetShaderInfoLog(shader,buflen,0,log_string);
+
+		THError("%sShader Log : \n%s",shaderName,log_string);
+
+		delete[] log_string;
+	}
+#endif
+
+	return shader;
+}
+void THProgram::Load(const GLchar* vs,const GLchar* fs)
+{
+	vertex=InitShader(vs,GL_VERTEX_SHADER);
+	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
+	program=glCreateProgram();
+	glAttachShader(program,vertex);
+	glAttachShader(program,fragment);
+	glLinkProgram(program);
+	glUseProgram(program);
+}
 void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 {
 	glGenTextures(1, &textureID);
