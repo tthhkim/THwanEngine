@@ -202,10 +202,6 @@ public:
 
 
 	float Discriminant() const;
-	inline bool HasInverse() const
-	{
-		return Discriminant()!=0.0f;
-	}
 	THMatrix33 Inverse() const;
 
 	static THMatrix33 RotateAxis(const THVector3& axis,float c,float s);
