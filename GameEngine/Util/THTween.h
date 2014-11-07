@@ -85,26 +85,4 @@ protected:
 	const THInterpolater interpolater;
 };
 
-/*
-class THBezierTween : public THTween;
-{
-public:
-	THBezierTween():THTween()
-	{
-	}
-	~THBezierTween()
-	{
-	}
-
-	bool step()
-	{
-	}
-
-protected:
-	float ct;
-	const unsigned int step;
-
-};
-*/
-
 #endif

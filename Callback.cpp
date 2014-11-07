@@ -84,7 +84,7 @@ void OnSurfaceCreated()
 
 /*
 THFrame f;
-IHImage img;
+THImage img;
 THTexture tex;
 THTexture t2;
 THMovieClip mc(THVector2(30.0f,30.0f),&tex);
@@ -112,7 +112,7 @@ void OnCreate(THApplicaation* state)
 void OnSurfaceCreated()
 {
 	SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
-	img.Load("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
+	img.LoadFile("D:/Program/Workspace/THwanEngine/THwanEngine/qq.png");
 	tex.Set(&img);
 	t2.Set(&img);
 	t2.UpsideDown();
