@@ -3,6 +3,7 @@
 #include <THPrivate.h>
 
 #include <GameEngine/Util/THMath3D.h>
+#include <GameEngine/Util/THTween.h>
 
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/Rendering/THEffects.h>

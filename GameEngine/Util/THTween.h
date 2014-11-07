@@ -28,35 +28,34 @@ public:
 	}
 };
 
-class THLinearTweenDef
+//return accelated value between [0,1]
+class THInterpolater
 {
 public:
-	THVector2 v0;
-	THVector2 accel;
-	THVector2 delta;
+	float accel,v0;
 	const float time;
 
-	THLinearTweenDef(const THVector2& deltaPos,float seconds,float coeff):time(seconds)
+	THInterpolater(float seconds,float coeff):time(seconds)
 	{
-		delta=deltaPos;
-		const float inv_time=1.0f/seconds;
-		const THVector2 vel=deltaPos*inv_time;
-		const THVector2 vc=vel*coeff;
-
-		accel=(2.0f*inv_time)*vc;
+		const float vel=1.0f/seconds;
+		const float vc=vel*coeff;
+		accel=2.0f*vel*vc;
 		v0=vel-vc;
+	}
+	inline float GetValue(float ct) const
+	{
+		return 0.5f*accel*ct*ct + v0*ct;
 	}
 };
 
 class THLinearTween : public THTween
 {
 public:
-	THLinearTween(THVector2 *_src,const THLinearTweenDef& tweenDef):THTween(tweenDef.time),
+	THLinearTween(THVector2 *_src,const THVector2& deltaPos,const THInterpolater& interpolator):THTween(interpolator.time),
 		src0(*_src),src(_src),
-		delta(tweenDef.delta),v0(tweenDef.v0),accel(tweenDef.accel)
+		delta(deltaPos),
+		interpolater(interpolator)
 	{
-		//THLog("New Tween Added : %d Frames , %.2f Seconds",frames,(float)frames/(float)GLTHREAD_FRAMERATE);
-
 		ct=0.0f;
 	}
 
@@ -65,7 +64,7 @@ public:
 		ct+=THDeltaTime;
 		if(ct<time)
 		{
-			*src=src0+0.5f*accel*ct*ct + v0*ct;
+			*src=src0+(interpolater.GetValue(ct)*delta);
 			return false;
 		}
 		*src=src0+delta;
@@ -74,14 +73,38 @@ public:
 
 protected:
 	float ct;
+
+	//Source
 	const THVector2 src0;
 	THVector2* const src;
-	//Source
-	const THVector2 delta;
+
 	//Destination
-	const THVector2 v0;
-	//Velocity Per Sec
-	const THVector2 accel;
+	const THVector2 delta;
+
+	//Interpolater
+	const THInterpolater interpolater;
 };
+
+/*
+class THBezierTween : public THTween;
+{
+public:
+	THBezierTween():THTween()
+	{
+	}
+	~THBezierTween()
+	{
+	}
+
+	bool step()
+	{
+	}
+
+protected:
+	float ct;
+	const unsigned int step;
+
+};
+*/
 
 #endif
