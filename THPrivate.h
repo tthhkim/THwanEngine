@@ -122,6 +122,10 @@ static inline void SetColorMultiply(float r,float g,float b,float a)
 {
 	glUniform4f(THDefaultProgram.colorMultiplyHandler,r,g,b,a);
 }
+static inline THVector2 ProjectVector(const THVector2& v)
+{
+	return THVector2( v.x*THProjectMatrix[0]+THProjectMatrix[2] , v.y*THProjectMatrix[3]+THProjectMatrix[5] );
+}
 
 THTimeType GetCurrentTimeMicro();
 
