@@ -27,9 +27,9 @@ void THLightEffect::Load(THTexture* dest,THTexture* src)
 		"varying vec2 vDestTex;"
 		"varying vec2 vSrcTex;"
 		"void main(){"
-		"vec3 lColor=texture2D(sSrcTex,vSrcTex).rgb;"
+		"vec4 lColor=texture2D(sSrcTex,vSrcTex);"
 		"vec4 dColor=texture2D(sDestTex,vDestTex);"
-		"gl_FragColor=vec4(dColor.rgb*(ambient +(lightAmpli*lColor)),dColor.a);"
+		"gl_FragColor=vec4(dColor.rgb*(ambient +((lightAmpli*lColor.a)*lColor.rgb)),dColor.a);"
 		"}"
 		;
 	program.Load(vs,fs);
