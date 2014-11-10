@@ -25,7 +25,7 @@ void THMovieClip::DrawTHMovieClip(const THMovieClip* obj)
 	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
 
 	if(obj->vertexBuffer==0){ THHalfVertices.BeginDrawing(); }
-	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
+	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
 
 	glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
 	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&obj->size);
