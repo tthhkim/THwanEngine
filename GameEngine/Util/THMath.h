@@ -256,6 +256,28 @@ public:
 			row2.y*a , -row1.y*a,
 			-row2.x*a , row1.x*a);
 	}
+	THMatrix22 Inverse(float invD) const//unsafe division by zero
+	{
+		return THMatrix22(
+			row2.y*invD , -row1.y*invD,
+			-row2.x*invD , row1.x*invD);
+	}
+
+	THVector2 Solve(const THVector2& v) const
+	{
+		const float a=1.0f/Discriminant();
+		return THVector2(
+			a*(row2.y*v.x - row1.y*v.y),
+			a*(row1.x*v.y - row2.x*v.x)
+			);
+	}
+	THVector2 Solve(float invD,const THVector2& v) const
+	{
+		return THVector2(
+			invD*(row2.y*v.x - row1.y*v.y),
+			invD*(row1.x*v.y - row2.x*v.x)
+			);
+	}
 };
 
 void THOrthoMatrix33(float *mat,const THVector2& min,const THVector2& max);
