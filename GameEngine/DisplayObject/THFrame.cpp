@@ -23,6 +23,36 @@ void THFrame::DrawObjects(unsigned int start,unsigned int end) const
 	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
 	
 }
+#ifndef NDEBUG
+
+static const GLfloat THZeroVertices[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
+
+void THFrame::DrawButtonDebug(const THColor& color) const
+{
+	THDefaultProgram.defaultProgram.Use();
+	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
+
+	SetColorMultiply(0.0f,0.0f,0.0f,0.0f);
+	SetColorAdd(color.red,color.green,color.blue,color.alpha);
+
+	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,THZeroVertices);
+	glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
+
+	for(unsigned int i=0;i<buttonList.num;++i)
+	{
+		const THButton const *btn=buttonList.arr[i];
+
+		glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&btn->GetSize());
+		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&btn->minBound);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
+
+	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
+
+	SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
+	SetColorAdd(0.0f,0.0f,0.0f,0.0f);
+}
+#endif
 void THFrame::Draw()
 {
 	DrawObjects();

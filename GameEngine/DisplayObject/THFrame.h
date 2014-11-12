@@ -51,6 +51,9 @@ public:
 	{
 		DrawObjects(0,objectList.num);
 	}
+#ifndef NDEBUG
+	void DrawButtonDebug(const THColor& color) const;
+#endif
 
 	void AddChild(THDisplayObject* object)
 	{

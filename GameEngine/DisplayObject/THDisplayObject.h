@@ -78,9 +78,11 @@ public:
 	static void DrawTHMovieClip(const THMovieClip* obj);
 };
 
+class THFrame;
 
 class THButton
 {
+	friend class THFrame;
 public:
 	THMovieClip* clip;
 	bool enable;
@@ -135,6 +137,10 @@ public:
 			downed=normal;
 			normal=0;
 		}
+	}
+	THVector2 GetSize() const
+	{
+		return maxBound-minBound;
 	}
 
 protected:
