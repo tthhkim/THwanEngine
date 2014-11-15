@@ -40,7 +40,7 @@ void THFrame::DrawButtonDebug(const THColor& color) const
 
 	for(unsigned int i=0;i<buttonList.num;++i)
 	{
-		const THButton const *btn=buttonList.arr[i];
+		const THButton *btn=buttonList.arr[i];
 
 		glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&btn->GetSize());
 		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&btn->minBound);
