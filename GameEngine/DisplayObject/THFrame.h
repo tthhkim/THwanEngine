@@ -95,11 +95,19 @@ public:
 	}
 	inline void RemoveChild(THDisplayObject* object)
 	{
-		objectList.Delete(object);
+		int ind=objectList.Find(object);
+		if(ind!=-1)
+		{
+			objectList.Delete(ind);
+		}
 	}
 	inline void RemoveButton(THButton* button)
 	{
-		buttonList.Delete(button);
+		int ind=buttonList.Find(button);
+		if(ind!=-1)
+		{
+			buttonList.Delete(ind);
+		}
 	}
 
 private:
