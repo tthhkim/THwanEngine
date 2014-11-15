@@ -78,12 +78,13 @@ public:
 		--num;
 		memmove(arr+index,arr+(index+1),(num-index)*sizeof(T));
 	}
-	void Delete(const T& object)
+	void DeleteBack(unsigned int index)
 	{
-		int ind=Find(object);
-		if(ind!=-1)
+		assert(index<num);
+		--num;
+		if(index!=num)
 		{
-			Delete(ind);
+			arr[index]=arr[num];
 		}
 	}
 	void Repush(const T& object)
