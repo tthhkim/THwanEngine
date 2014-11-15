@@ -31,6 +31,7 @@ extern THButton* downedButton=0;
 
 extern const GLfloat THFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
 extern GLfloat THGameFullVertices[8]={0.0};
+extern const GLfloat THZeroVertices[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
 
 extern THVertexBuffer THHalfVertices=THVertexBuffer();
 

@@ -55,6 +55,7 @@ class THTween;
 
 extern const GLfloat THFullVertices[];
 extern GLfloat THGameFullVertices[];
+extern const GLfloat THZeroVertices[];
 extern GLfloat THProjectMatrix[];
 extern THVertexBuffer THHalfVertices;
 
