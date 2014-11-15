@@ -57,7 +57,7 @@ static void Randomize()
 		rv=rv>>1;
 		cvm*=rv?rv:1;
 	}
-	srand((unsigned int)((cvp+cvm)*0.5f));
+	srand( (unsigned int)((cvp>>1) + (cvm>>1)) );
 
 
 	extern double InvRandomMax;
