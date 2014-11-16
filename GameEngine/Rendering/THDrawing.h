@@ -7,10 +7,28 @@
 #include <GameEngine/Util/THMath.h>
 
 
-typedef struct
+class THColor
 {
+public:
 	float red,green,blue,alpha;
-} THColor;
+
+	THColor(float r,float g,float b,float a=1.0f)
+	{
+		red=r;
+		green=g;
+		blue=b;
+		alpha=a;
+	}
+	THColor(){}
+
+	void Set(float r,float g,float b,float a=1.0f)
+	{
+		red=r;
+		green=g;
+		blue=b;
+		alpha=a;
+	}
+};
 class THProgram
 {
 protected:
