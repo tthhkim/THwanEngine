@@ -36,6 +36,10 @@ public:
 	virtual void OnTouchUp(float x,float y){}
 	virtual void OnTouchMove(float x,float y,float deltaX,float deltaY){}
 
+	#if THPLATFORM==THPLATFORM_WINDOWS
+	virtual void OnRightTouchDown(float x,float y){}
+	#endif
+
 	virtual int OnBackReleased(){return 0;}
 	virtual void OnEnterFrame(){}
 	virtual void Action(THFrame* callFrame,void* data){}

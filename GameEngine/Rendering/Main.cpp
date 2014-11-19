@@ -377,7 +377,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		return 1;
 	}
 		break;
-	case WM_KEYDOWN:
+	case WM_KEYUP:
 		if(windowParameters==VK_BACK)
 		{
 			if(currentFrame->OnBackReleased()==0)
@@ -391,21 +391,13 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 			}
 		}
 		break;
-		/*
-	case WM_RBUTTONUP:
+	case WM_RBUTTONDOWN:
 	{
-		if(currentFrame->OnBackReleased()==0)
-		{
-			destroyRequested = true;
-
-			// Post a quit message
-			PostQuitMessage(0);
-
-			return 1;
-		}
+		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
+		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
+		currentFrame->OnRightTouchDown(px,py);
 	}
 		break;
-		*/
 	}
 	return DefWindowProc(nativeWindow, message, windowParameters, longWindowParameters);
 }
