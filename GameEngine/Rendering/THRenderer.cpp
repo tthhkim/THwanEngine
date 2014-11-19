@@ -308,7 +308,7 @@ THArray<struct THTimerDef*> timerDeleteList(TIMER_DELETE_LIST_SIZE);
 
 void AddTween(THTween* tween)
 {
-	THLog("Tween Adding %.2f Seconds",tween->time);
+	//THLog("Tween Adding %.2f Seconds",tween->time);
 	tween->next=tweenList;
 	if(tweenList)
 	{
@@ -362,7 +362,7 @@ void AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 	assert(_timeSkip>0.0f);
 	assert(_action);
 
-	THLog("Timer Adding %.2f Seconds",_timeSkip);
+	//THLog("Timer Adding %.2f Seconds",_timeSkip);
 
 	struct THTimerDef* timer=(struct THTimerDef*)malloc(sizeof(struct THTimerDef));
 	
@@ -385,7 +385,7 @@ void MainEnterFrame()
 	{
 		if(tween->step())
 		{
-			THLog("Tween End");
+			//THLog("Tween End");
 			tweenDeleteList.Push(tween);
 		}
 	}
@@ -395,7 +395,7 @@ void MainEnterFrame()
 		timer->timeSkip-=THDeltaTime;
 		if(timer->timeSkip<=0.0f)
 		{
-			THLog("Timer End");
+			//THLog("Timer End");
 			timerDeleteList.Push(timer);
 		}
 	}

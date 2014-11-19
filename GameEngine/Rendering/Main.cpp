@@ -377,6 +377,21 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		return 1;
 	}
 		break;
+	case WM_KEYDOWN:
+		if(windowParameters==VK_BACK)
+		{
+			if(currentFrame->OnBackReleased()==0)
+			{
+				destroyRequested = true;
+
+				// Post a quit message
+				PostQuitMessage(0);
+
+				return 1;
+			}
+		}
+		break;
+		/*
 	case WM_RBUTTONUP:
 	{
 		if(currentFrame->OnBackReleased()==0)
@@ -390,6 +405,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		}
 	}
 		break;
+		*/
 	}
 	return DefWindowProc(nativeWindow, message, windowParameters, longWindowParameters);
 }
