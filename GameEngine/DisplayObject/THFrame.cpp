@@ -25,8 +25,6 @@ void THFrame::DrawObjects(unsigned int start,unsigned int end) const
 }
 #ifndef NDEBUG
 
-static const GLfloat THZeroVertices[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
-
 void THFrame::DrawButtonDebug(const THColor& color) const
 {
 	THDefaultProgram.defaultProgram.Use();
