@@ -59,7 +59,7 @@ void THOrthoMatrix33(float *mat,const THVector2& minp,const THVector2& maxp)
 	mat[0]=sizeI.x*2.0f;	mat[1]=0.0f;			mat[2]=-midI.x;
 	mat[3]=0.0f;			mat[4]=sizeI.y*2.0f;	mat[5]=-midI.y;
 }
-void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max)
+void THPerspectiveMatrix44(float* mat,const THVector3& min,const THVector3& max)
 {
 	const THVector3 sizeI=1.0f/(max-min);
 	const THVector3 mmid=(max+min)*sizeI;

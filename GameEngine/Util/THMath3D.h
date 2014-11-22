@@ -124,8 +124,9 @@ inline bool operator ==(const THVector3& a, const THVector3& b)
 	return (a.x==b.x)&&(a.y==b.y)&&(a.z==b.z);
 }
 
+void THOrthoMatrix44(float *mat,const THVector3& min,const THVector3& max);
 // W input componet must be z*z
-void THOrthoMatrix44(float* mat,const THVector3& min,const THVector3& max);
+void THPerspectiveMatrix44(float* mat,const THVector3& min,const THVector3& max);
 /*
 	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
 	In Radian
