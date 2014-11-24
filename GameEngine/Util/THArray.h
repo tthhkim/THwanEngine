@@ -18,11 +18,35 @@ public:
 		maxNum=cap;
 		arr=(T*)malloc(sizeof(T)*cap);
 	}
+	THArray()
+	{
+		arr=0;
+		num=0;
+		maxNum=0;
+	}
 	~THArray()
 	{
-		free(arr);
+		if(arr){free(arr);}
 	}
 
+	void Load(unsigned int cap)
+	{
+		if(arr==0)
+		{
+			arr=(T*)malloc(sizeof(T)*cap);
+			num=0;
+			maxNum=cap;
+		}
+	}
+	void Free()
+	{
+		if(arr)
+		{
+			free(arr);
+			num=0;
+			maxNum=0;
+		}
+	}
 	void Push(const T& object)
 	{		
 		if(num==maxNum)
