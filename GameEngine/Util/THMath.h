@@ -60,7 +60,11 @@ class THVector2
 public:
 	float x,y;
 
-	THVector2(const float _x=0.0f,const float _y=0.0f)
+	
+	THVector2()
+	{
+	}
+	THVector2(const float _x,const float _y)
 	{
 		x=_x;
 		y=_y;
@@ -191,10 +195,8 @@ public:
 	THMatrix22(float _r1c1=1.0f,float _r1c2=0.0f,float _r2c1=0.0f,float _r2c2=1.0f):row1(_r1c1,_r1c2),row2(_r2c1,_r2c2)
 	{
 	}
-	THMatrix22(const THVector2& r1,const THVector2& r2)
+	THMatrix22(const THVector2& r1,const THVector2& r2):row1(r1),row2(r2)
 	{
-		row1=r1;
-		row2=r2;
 	}
 	THMatrix22(const THRot2& rot):row1(rot.c,-rot.s),row2(rot.s,rot.c)
 	{

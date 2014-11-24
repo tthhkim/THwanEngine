@@ -8,13 +8,14 @@ class THVector3
 public:
 	float x,y,z;
 
-	THVector3(const float _x=0.0f,const float _y=0.0f,const float _z=0.0f)
+	THVector3(){}
+	THVector3(const float _x,const float _y,const float _z)
 	{
 		x=_x;
 		y=_y;
 		z=_z;
 	}
-	THVector3(const THVector2& v2,const float _z=0.0f)
+	THVector3(const THVector2& v2,const float _z)
 	{
 		x=v2.x;
 		y=v2.y;
