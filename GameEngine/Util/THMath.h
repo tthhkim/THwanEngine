@@ -6,6 +6,66 @@
 #define TH_PI 3.14159265359f
 #define TH_2PI 6.28318530718f
 
+class THVector2
+{
+public:
+	float x,y;
+
+	
+	THVector2()
+	{
+	}
+	THVector2(const float _x,const float _y)
+	{
+		x=_x;
+		y=_y;
+	}
+	
+	inline void SetZero()
+	{
+		x=0.0f;
+		y=0.0f;
+	}
+	inline void Set(const float _x,const float _y)
+	{
+		x=_x;
+		y=_y;
+	}
+	THVector2 operator -() {return THVector2(-x,-y);}
+	void operator +=(const THVector2& v){ x+=v.x; y+=v.y; }
+	void operator -=(const THVector2& v){ x-=v.x; y-=v.y; }
+	void operator *=(float& a){ x*=a; y*=a; }
+	void operator /=(float& a){const float ai=1.0f/a;x*=ai;y*=ai;}
+
+	void operator +=(float& a){x+=a; y+=a;}
+	void operator -=(float& a){x-=a; y-=a;}
+
+	void Skew()
+	{
+		const float tx=x;
+		x=-y;
+		y=tx;
+	}
+	float LengthSquared() const 
+	{
+		return x*x + y*y;
+	}
+	float Length() const
+	{
+		return sqrtf(x*x + y*y);
+	}
+
+	float Normalize()
+	{
+		const float length=Length();
+		const float invL=1.0f/length;
+
+		x*=invL;
+		y*=invL;
+
+		return length;
+	}
+};
 class THRot2
 {
 public:
@@ -52,72 +112,6 @@ public:
 		const float _s=sinf(angle);
 
 		Rotate(_c,_s);
-	}
-};
-
-class THVector2
-{
-public:
-	float x,y;
-
-	
-	THVector2()
-	{
-	}
-	THVector2(const float _x,const float _y)
-	{
-		x=_x;
-		y=_y;
-	}
-	THVector2(const THRot2& r)
-	{
-		x=r.c;
-		y=r.s;
-	}
-	
-	inline void SetZero()
-	{
-		x=0.0f;
-		y=0.0f;
-	}
-	inline void Set(const float _x,const float _y)
-	{
-		x=_x;
-		y=_y;
-	}
-	THVector2 operator -() {return THVector2(-x,-y);}
-	void operator +=(const THVector2& v){ x+=v.x; y+=v.y; }
-	void operator -=(const THVector2& v){ x-=v.x; y-=v.y; }
-	void operator *=(float& a){ x*=a; y*=a; }
-	void operator /=(float& a){const float ai=1.0f/a;x*=ai;y*=ai;}
-
-	void operator +=(float& a){x+=a; y+=a;}
-	void operator -=(float& a){x-=a; y-=a;}
-
-	void Skew()
-	{
-		const float tx=x;
-		x=-y;
-		y=tx;
-	}
-	float LengthSquared() const 
-	{
-		return x*x + y*y;
-	}
-	float Length() const
-	{
-		return sqrtf(x*x + y*y);
-	}
-
-	float Normalize()
-	{
-		const float length=Length();
-		const float invL=1.0f/length;
-
-		x*=invL;
-		y*=invL;
-
-		return length;
 	}
 };
 
@@ -341,8 +335,8 @@ inline THMatrix22 operator *(const THMatrix22& a,const THRot2& b)
 inline THMatrix22 operator *(const THRot2& b,const THMatrix22& a)
 {
 	return THMatrix22(
-		a.row1.x*b.c+a.row1.y*b.s , a.row1.x*-b.s+a.row1.y*b.c,
-		a.row2.x*b.c+a.row2.y*b.s , a.row2.x*-b.s+a.row2.y*b.c
+		a.row1.x*b.c-a.row2.x*b.s , a.row1.y*b.c-a.row2.y*b.s,
+		a.row1.x*b.s+a.row2.x*b.c , a.row1.y*b.s+a.row2.y*b.c
 		);
 }
 inline THRot2 operator *(const THRot2& a,const THRot2& b)
