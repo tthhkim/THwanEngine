@@ -178,6 +178,14 @@ inline bool operator ==(const THVector2& a, const THVector2& b)
 {
 	return (a.x==b.x)&&(a.y==b.y);
 }
+inline THVector2 Reflect(const THVector2& in,const THVector2& n,float e)
+{
+	return in-((1.0f+e)*THDot(n,in))*n;
+}
+inline THVector2 Reflect(const THVector2& in,const THVector2& n)
+{
+	return in-(2.0f*THDot(n,in))*n;
+}
 
 
 
