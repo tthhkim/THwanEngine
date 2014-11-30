@@ -129,6 +129,12 @@ public:
 		assert(num>0);
 		return arr[num-1];
 	}
+	T& Pop()
+	{
+		assert(num>0);
+		--num;
+		return arr[num];
+	}
 	inline void Clear()
 	{
 		num=0;
