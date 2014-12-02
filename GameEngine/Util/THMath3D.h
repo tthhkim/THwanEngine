@@ -135,7 +135,7 @@ void THPerspectiveMatrix44(float* mat,const THVector3& min,const THVector3& max)
 	positive right for yRotation
 	positive down for xRotation
 	*/
-void EyeTrnsformMatrix(float* mat,const THVector2& yrot,const THVector2& xrot);
+void EyeTrnsformMatrix(float* mat,const THRot2& yrot,const THRot2& xrot);
 
 class THMatrix33
 {
