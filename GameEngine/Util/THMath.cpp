@@ -4,7 +4,6 @@
 
 //For Random
 extern double InvRandomMax=0.0;
-extern const THVector2 THVector_zero=THVector2(0.0f,0.0f);
 
 THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 {
@@ -112,10 +111,10 @@ void GetCirclePolygonVertices(THVector2* arr,int count,float radius)
 
 	const float angle=TH_2PI/(float)count;
 	const THRot2 rot(cosf(angle),sinf(angle));
-	for(int i=0;i<count-1;++i)
+	arr[0]=last;
+	for(int i=1;i<count;++i)
 	{
-		arr[i]=last;
 		last=rot*last;
+		arr[i]=last;
 	}
-	arr[count-1]=last;
 }

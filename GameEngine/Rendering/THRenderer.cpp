@@ -40,7 +40,6 @@ extern float THDeltaTime=0.0f;
 void OnDrawFrame()
 {
 	//Draw Start
-	//glUseProgram(program);
 	
 	glClear(
 		GL_COLOR_BUFFER_BIT

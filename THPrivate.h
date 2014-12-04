@@ -59,8 +59,6 @@ extern const GLfloat THZeroVertices[];
 extern GLfloat THProjectMatrix[];
 extern THVertexBuffer THHalfVertices;
 
-extern const THVector2 THVector_zero;
-
 #ifndef NDEBUG
 extern float cFPS;
 #endif
