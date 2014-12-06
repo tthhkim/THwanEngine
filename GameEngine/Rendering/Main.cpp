@@ -533,12 +533,8 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 
 	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
 }
-void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height)
 {
-	THLog("Texture Generation : %s",name);
-#ifndef NDEBUG
-	unsigned int st;
-#endif
 	AAsset* aasset=AAssetManager_open(assetManager, name, AASSET_MODE_STREAMING);
 	{
 	char pngSig[8];
@@ -575,6 +571,8 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 		st=heighti&(heighti-1);
 		assert(st==0);
 #endif
+		width=widthi;
+		height=heighti;
 
 	const png_uint_32 bytesPerRow = png_get_rowbytes(png_ptr, info_ptr);
 	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*heighti);
@@ -592,6 +590,13 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	AAsset_close(aasset);
 
+	return colorBuf;
+}
+void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
+{
+	size_t widthi,heighti;
+	void* colorBuf=LoadImageBuffer(name,widthi,heighti);
+
 	SetSize(widthi,heighti);
 
 	Load(colorBuf,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
@@ -600,9 +605,9 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
-void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height)
 {
-	FILE* filep=fopen(name,"rb");
+	FILE* filep=fopen(filename,"rb");
 	fseek(filep,0,SEEK_END);
 
 	long size=ftell(filep);
@@ -613,16 +618,18 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 	unsigned char* colorBuf;
 	unsigned widthi=0,heighti=0;
 
-	lodepng_decode_memory(&colorBuf, &widthi,&heighti,
+	lodepng_decode_memory(&colorBuf, &width,&height,
                                mem, size,
                                LCT_RGBA, 8);
+	delete[] mem;
 	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
-#ifndef NDEBUG
-		unsigned int st=widthi&(widthi-1);
-		assert(st==0);
-		st=heighti&(heighti-1);
-		assert(st==0);
-#endif
+
+	return colorBuf;
+}
+void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
+{
+	size_t widthi,heighti;
+	void* colorBuf=LoadImageBuffer(name,widthi,heighti);
 
 	SetSize(widthi,heighti);
 
