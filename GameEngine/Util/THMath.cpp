@@ -5,7 +5,7 @@
 //For Random
 extern double InvRandomMax=0.0;
 
-THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
+THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,const THRot2& rot)
 {
 	  const THMatrix33 ux
 		  (
@@ -21,7 +21,7 @@ THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,float c,float s)
 		  );
 	  const THMatrix33 Ident;
 
-	  return (c*Ident) + (s*ux) + ((1.0f-c)*uxu);
+	  return (rot.c*Ident) + (rot.s*ux) + ((1.0f-rot.c)*uxu);
 }
 THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 {
@@ -39,7 +39,16 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 	const float c=THDot(p1,p2)*leni;
 	const float s=axis.Normalize()*leni;
 
-	return THMatrix33::RotateAxis(axis,c,s);
+	return THMatrix33::RotateAxis(axis,THRot2(c,s));
+}
+THMatrix33 THMatrix33::EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot)
+{
+	return THMatrix33
+		(
+		THVector3(yrot.c , 0.0f , yrot.s),
+		THVector3(xrot.s*yrot.s , xrot.c , -xrot.s*yrot.c),
+		THVector3(-xrot.c*yrot.s , xrot.s , xrot.c*yrot.c)
+		);
 }
 void EyeTrnsformMatrix(float* mat,const THRot2& yrot,const THRot2& xrot)
 {

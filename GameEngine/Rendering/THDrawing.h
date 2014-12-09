@@ -57,11 +57,11 @@ public:
 	{
 		glUniform4f(glGetUniformLocation(program,name),f1,f2,f3,f4);
 	}
-	inline GLuint GetUniformLocation(const GLchar* name) const
+	inline GLint GetUniformLocation(const GLchar* name) const
 	{
 		return glGetUniformLocation(program,name);
 	}
-	inline GLuint GetAttribLocation(const GLchar* name) const
+	inline GLint GetAttribLocation(const GLchar* name) const
 	{
 		return glGetAttribLocation(program,name);
 	}

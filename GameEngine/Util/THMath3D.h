@@ -206,13 +206,15 @@ public:
 	float Discriminant() const;
 	THMatrix33 Inverse() const;
 
-	static THMatrix33 RotateAxis(const THVector3& axis,float c,float s);
+	static THMatrix33 RotateAxis(const THVector3& axis,const THRot2& rot);
 
 
 	/*
 	returns 3 by 3 matrix which has rotation from p1 to p2
 	*/
 	static THMatrix33 RotatePoint(const THVector3& p1,const THVector3& p2);
+
+	static THMatrix33 EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot);
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)
