@@ -112,7 +112,7 @@ void OnResume();
 void OnPause();
 void OnDestroy();
 void SetFrameRate(float rate);
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height);
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType);
 
 static inline void SetColorAdd(float r,float g,float b,float a)
 {

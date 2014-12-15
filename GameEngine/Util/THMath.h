@@ -71,7 +71,12 @@ class THRot2
 public:
 	float c,s;
 
-	THRot2(const float _c=1.0f,const float _s=0.0f)
+	THRot2()
+	{
+		c=1.0f;
+		s=1.0f;
+	}
+	THRot2(const float _c,const float _s)
 	{
 		c=_c;
 		s=_s;

@@ -533,7 +533,7 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 
 	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
 }
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height)
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType)
 {
 	AAsset* aasset=AAssetManager_open(assetManager, name, AASSET_MODE_STREAMING);
 	{
@@ -557,7 +557,6 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 
 	png_uint_32 widthi,heighti;
 	int bitDepth;
-	int colorType;
 	png_get_IHDR(png_ptr, info_ptr,
 	   &widthi,
 	   &heighti,
@@ -595,7 +594,8 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 {
 	size_t widthi,heighti;
-	void* colorBuf=LoadImageBuffer(name,widthi,heighti);
+	int colorType;
+	void* colorBuf=LoadImageBuffer(name,widthi,heighti,colorType);
 
 	SetSize(widthi,heighti);
 
@@ -605,7 +605,7 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height)
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType)
 {
 	FILE* filep=fopen(filename,"rb");
 	fseek(filep,0,SEEK_END);
@@ -621,6 +621,7 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 	lodepng_decode_memory(&colorBuf, &width,&height,
                                mem, size,
                                LCT_RGBA, 8);
+	colorType=LCT_RGBA;
 	delete[] mem;
 	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
 
@@ -629,7 +630,8 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 {
 	size_t widthi,heighti;
-	void* colorBuf=LoadImageBuffer(name,widthi,heighti);
+	int colorType;
+	void* colorBuf=LoadImageBuffer(name,widthi,heighti,colorType);
 
 	SetSize(widthi,heighti);
 
