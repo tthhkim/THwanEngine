@@ -74,7 +74,7 @@ public:
 	THRot2()
 	{
 		c=1.0f;
-		s=1.0f;
+		s=0.0f;
 	}
 	THRot2(const float _c,const float _s)
 	{
