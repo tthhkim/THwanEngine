@@ -11,6 +11,16 @@ static inline bool THPowerOfTwo(int x)
 	const int st=x&(x-1);
 	return st==0;
 }
+static inline int THBitCount(int x)
+{
+	int b=0;
+	while((x&1)==0)
+	{
+		x>>=1;
+		++b;
+	}
+	return b;
+}
 
 class THVector2
 {
