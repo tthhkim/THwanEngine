@@ -41,20 +41,20 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 
 	return THMatrix33::RotateAxis(axis,THRot2(c,s));
 }
-THMatrix33 THMatrix33::EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot)
+THMatrix33 THMatrix33::EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot,THVector3* eyenorm)
 {
+	if(eyenorm)
+	{
+		eyenorm->x=xrot.c*yrot.s;
+		eyenorm->y=-xrot.s;
+		eyenorm->z=-xrot.c*yrot.c;
+	}
 	return THMatrix33
 		(
 		THVector3(yrot.c , 0.0f , yrot.s),
 		THVector3(xrot.s*yrot.s , xrot.c , -xrot.s*yrot.c),
 		THVector3(-xrot.c*yrot.s , xrot.s , xrot.c*yrot.c)
 		);
-}
-void EyeTrnsformMatrix(float* mat,const THRot2& yrot,const THRot2& xrot)
-{
-	mat[0]=yrot.c;	mat[1]=0.0f;	mat[2]=yrot.s;
-	mat[3]=xrot.s*yrot.s;	mat[4]=xrot.c;	mat[5]=-xrot.s*yrot.c;
-	mat[6]=-xrot.c*yrot.s;	mat[7]=xrot.s;  mat[8]=xrot.c*yrot.c;
 }
 void THOrthoMatrix33(float *mat,const THVector2& minp,const THVector2& maxp)
 {

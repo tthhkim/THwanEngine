@@ -128,14 +128,6 @@ inline bool operator ==(const THVector3& a, const THVector3& b)
 void THOrthoMatrix44(float *mat,const THVector3& min,const THVector3& max);
 // W input componet must be z*z
 void THPerspectiveMatrix44(float* mat,const THVector3& min,const THVector3& max);
-/*
-	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
-	In Radian
-
-	positive right for yRotation
-	positive down for xRotation
-	*/
-void EyeTrnsformMatrix(float* mat,const THRot2& yrot,const THRot2& xrot);
 
 class THMatrix33
 {
@@ -227,8 +219,14 @@ public:
 	returns 3 by 3 matrix which has rotation from p1 to p2
 	*/
 	static THMatrix33 RotatePoint(const THVector3& p1,const THVector3& p2);
+	/*
+	multiply this matrix with vec3 object, will transform into normal coordinate from eye-looking eyenormal vector
+	In Radian
 
-	static THMatrix33 EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot);
+	positive right for yRotation
+	positive down for xRotation
+	*/
+	static THMatrix33 EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot,THVector3* eyenorm);
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)
