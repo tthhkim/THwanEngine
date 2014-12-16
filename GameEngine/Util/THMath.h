@@ -6,6 +6,12 @@
 #define TH_PI 3.14159265359f
 #define TH_2PI 6.28318530718f
 
+static inline bool THPowerOfTwo(int x)
+{
+	const int st=x&(x-1);
+	return st==0;
+}
+
 class THVector2
 {
 public:
