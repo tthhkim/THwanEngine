@@ -271,6 +271,12 @@ public:
 			row2.y*invD , -row1.y*invD,
 			-row2.x*invD , row1.x*invD);
 	}
+	void Transpose()
+	{
+		const float t=row1.y;
+		row1.y=row2.x;
+		row2.x=t;
+	}
 
 	THVector2 Solve(const THVector2& v) const
 	{

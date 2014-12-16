@@ -200,6 +200,20 @@ public:
 		row2=r2;
 		row3=r3;
 	}
+	void Transpose()
+	{
+		const THVector3 t1=row1;
+		const THVector3 t2=row2;
+
+		row1.y=row2.x;
+		row1.z=row3.x;
+
+		row2.x=t1.y;
+		row2.z=row3.y;
+
+		row3.x=t1.z;
+		row3.y=t2.z;
+	}
 
 
 
