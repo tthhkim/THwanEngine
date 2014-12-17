@@ -389,6 +389,10 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 
 				return 1;
 			}
+		}else
+		{
+			currentFrame->OnKeyUp(windowParameters);
+			return 1;
 		}
 		break;
 	case WM_RBUTTONDOWN:
