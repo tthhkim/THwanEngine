@@ -192,25 +192,21 @@ public:
 		row2=r2;
 		row3=r3;
 	}
-	void Transpose()
+	THMatrix33 Transpose() const
 	{
-		const THVector3 t1=row1;
-		const THVector3 t2=row2;
-
-		row1.y=row2.x;
-		row1.z=row3.x;
-
-		row2.x=t1.y;
-		row2.z=row3.y;
-
-		row3.x=t1.z;
-		row3.y=t2.z;
+		return THMatrix33
+			(
+			THVector3(row1.x,row2.x,row3.x),
+			THVector3(row1.y,row2.y,row3.y),
+			THVector3(row1.z,row2.z,row3.z)
+			);
 	}
-
-
 
 	float Discriminant() const;
 	THMatrix33 Inverse() const;
+
+	THVector3 Solve(const THVector3& v) const;
+	THVector3 Solve(const THVector3& v,float invD) const;
 
 	static THMatrix33 RotateAxis(const THVector3& axis,const THRot2& rot);
 
@@ -227,6 +223,67 @@ public:
 	positive down for xRotation
 	*/
 	static THMatrix33 EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot,THVector3* eyenorm);
+};
+#define THROT_AXIS_X 1
+#define THROT_AXIS_Y 2
+#define THROT_AXIS_Z 3
+class THRot3 : public THMatrix33
+{
+public:
+	THRot3():THMatrix33(){}
+	THRot3(const THRot2& rot,int axis)
+	{
+		switch(axis)
+		{
+		case THROT_AXIS_X:
+			SetX(rot);
+			return;
+		case THROT_AXIS_Y:
+			SetY(rot);
+			return;
+		case THROT_AXIS_Z:
+			SetZ(rot);
+			return;
+		}
+	}
+	THRot3(float angle,int axis)
+	{
+		switch(axis)
+		{
+		case THROT_AXIS_X:
+			SetX(THRot2(angle));
+			return;
+		case THROT_AXIS_Y:
+			SetY(THRot2(angle));
+			return;
+		case THROT_AXIS_Z:
+			SetZ(THRot2(angle));
+			return;
+		}
+	}
+	
+	void SetX(const THRot2& rot)
+	{
+			row1.Set(1.0f,0.0f,0.0f);
+			row2.Set(0.0f,rot.c,-rot.s);
+			row3.Set(0.f,rot.s,rot.c);
+	}
+	void SetY(const THRot2& rot)
+	{
+			row1.Set(rot.s,0.0f,rot.c);
+			row2.Set(0.0f,1.0f,0.0f);
+			row3.Set(rot.c,0.0f,-rot.s);
+	}
+	void SetZ(const THRot2& rot)
+	{
+			row1.Set(rot.c,-rot.s,0.0f);
+			row2.Set(rot.s,rot.c,0.0f);
+			row3.Set(0.0f,0.0f,1.0f);
+	}
+	THMatrix33 Inverse() const
+	{
+		return Transpose();
+	}
 };
 
 inline bool operator ==(const THMatrix33& a,const THMatrix33& b)

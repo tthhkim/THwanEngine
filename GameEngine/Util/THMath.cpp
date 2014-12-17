@@ -95,6 +95,23 @@ THMatrix33 THMatrix33::Inverse() const
 		THVector3( c23.z*det , -c13.z*det , c12.z*det )
 		);
 }
+THVector3 THMatrix33::Solve(const THVector3& v,float invD) const
+{
+	const THVector3 c12=THCross(row1,row2);
+	const THVector3 c13=THCross(row1,row3);
+	const THVector3 c23=THCross(row2,row3);
+
+	return THVector3
+		(
+		invD*(c23.x*v.x - c13.x*v.y + c12.x*v.z),
+		invD*(c23.y*v.x - c13.y*v.y + c12.y*v.z),
+		invD*(c23.z*v.x - c13.z*v.y + c12.z*v.z)
+		);
+}
+THVector3 THMatrix33::Solve(const THVector3& v) const
+{
+	return Solve(v,1.0f/Discriminant());
+}
 
 
 void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count)
