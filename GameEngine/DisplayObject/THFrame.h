@@ -39,6 +39,7 @@ public:
 	#if THPLATFORM==THPLATFORM_WINDOWS
 	virtual void OnRightTouchDown(float x,float y){}
 	virtual void OnKeyUp(WPARAM key){}
+	virtual void OnKeyDown(WPARAM key){}
 	#endif
 
 	virtual int OnBackReleased(){return 0;}

@@ -395,6 +395,13 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 			return 1;
 		}
 		break;
+	case WM_KEYDOWN:
+		if(windowParameters!=VK_BACK)
+		{
+			currentFrame->OnKeyUp(windowParameters);
+			return 1;
+		}
+		break;
 	case WM_RBUTTONDOWN:
 	{
 		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
@@ -620,14 +627,13 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 	fread(mem,size,1,filep);
 
 	unsigned char* colorBuf;
-	unsigned widthi=0,heighti=0;
 
 	lodepng_decode_memory(&colorBuf, &width,&height,
                                mem, size,
                                LCT_RGBA, 8);
 	colorType=LCT_RGBA;
 	delete[] mem;
-	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
+	THLog("LibPNG // Width : %d , Height : %d",width,height);
 
 	return colorBuf;
 }
