@@ -398,7 +398,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	case WM_KEYDOWN:
 		if(windowParameters!=VK_BACK)
 		{
-			currentFrame->OnKeyUp(windowParameters);
+			currentFrame->OnKeyDown(windowParameters);
 			return 1;
 		}
 		break;
