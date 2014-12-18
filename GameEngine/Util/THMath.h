@@ -5,6 +5,7 @@
 
 #define TH_PI 3.14159265359f
 #define TH_2PI 6.28318530718f
+#define TH_HPI 1.57079632679f
 
 static inline bool THPowerOfTwo(int x)
 {
