@@ -26,7 +26,7 @@ public:
 	}
 	~THArray()
 	{
-		if(arr){free(arr);}
+		Free();
 	}
 
 	void Load(unsigned int cap)
@@ -43,6 +43,7 @@ public:
 		if(arr)
 		{
 			free(arr);
+			arr=0;
 			num=0;
 			maxNum=0;
 		}
