@@ -195,10 +195,10 @@ void THLightBaseCircle::Load(const THVector2& resolution)
 		"vec2 light2vert=(vVert-cPosition)*lRadiusi;"
 		"float dpos=length(light2vert);"
 		"if(dpos>1.0){gl_FragColor=vec4(0.0);return;}"
-		"if(dpos<=cRadius*lRadiusi){gl_FragColor=vec4(1.0,1.0,1.0,1.0);return;}"
+		"if(dpos<=cRadius*lRadiusi){gl_FragColor=vec4(1.0);return;}"
 		"if(cRadius==lRadius){return;}"
 		"float factor=1.0-(dpos*lRadius-cRadius)*lcGapi;"
-		"gl_FragColor=vec4(1.0,factor);"
+		"gl_FragColor=vec4(1.0,1.0,1.0,factor);"
 		"}"
 		;
 	program.Load(vs,fs);

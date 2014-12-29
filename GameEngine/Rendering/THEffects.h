@@ -99,14 +99,14 @@ public:
 		glUniform2f(positionHandler,x,y);
 	}
 
-	void SetRadius(float lightRadius,float circleRadius) const
+	void SetRadius(float bigRadius,float smallRadius) const
 	{
-		program.SetUniform("cRadius",circleRadius);
-		program.SetUniform("lRadius",lightRadius);
-		program.SetUniform("lRadiusi",1.0f/lightRadius);
-		if(lightRadius!=circleRadius)
+		program.SetUniform("cRadius",smallRadius);
+		program.SetUniform("lRadius",bigRadius);
+		program.SetUniform("lRadiusi",1.0f/bigRadius);
+		if(bigRadius!=smallRadius)
 		{
-			program.SetUniform("lcGapi",1.0f/(lightRadius-circleRadius));
+			program.SetUniform("lcGapi",1.0f/(bigRadius-smallRadius));
 		}
 		
 	}

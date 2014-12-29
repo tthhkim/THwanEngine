@@ -175,7 +175,7 @@ public:
 	THImage* fboImage;
 
 	void Load(THImage* img);
-	inline void BeginDrawing(GLsizei viewW,GLsizei viewH) const
+	inline void BeginDrawing() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 		glBindTexture(GL_TEXTURE_2D,fboImage->textureID);
