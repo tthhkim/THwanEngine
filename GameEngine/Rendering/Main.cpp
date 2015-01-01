@@ -516,7 +516,7 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 	THLog("OnDestroy()");
 	OnDestroy();
 
-	THDefaultProgram.defaultProgram.Delete();
+	THDefaultProgram.Delete();
 	THTerm_Display();
 
 	if (deviceContext)

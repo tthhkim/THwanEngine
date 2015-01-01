@@ -75,9 +75,9 @@ extern THFrame* currentFrame;
 
 extern float THDeltaTime;
 
-struct THDPS
+class THDefProgram : public THProgram
 {
-	THProgram defaultProgram;
+public:
 	GLuint vertexHandler;
 	GLuint rotationHandler;
 	GLuint scaleHandler;
@@ -85,8 +85,58 @@ struct THDPS
 	GLuint textureHandler;
 	GLuint projectMatrixHandler;
 	GLuint colorAddHandler,colorMultiplyHandler;
+
+	inline void EnableVertex() const
+	{
+		glEnableVertexAttribArray(vertexHandler);
+	}
+	inline void EnableTexture() const
+	{
+		glEnableVertexAttribArray(textureHandler);
+	}
+	inline void DisableVertex() const
+	{
+		glDisableVertexAttribArray(vertexHandler);
+	}
+	inline void DisableTexture() const
+	{
+		glDisableVertexAttribArray(textureHandler);
+	}
+	inline void SetRotation(float c,float s) const
+	{
+		glVertexAttrib2f(rotationHandler,c,s);
+	}
+	inline void SetScale(float x,float y) const
+	{
+		glVertexAttrib2f(scaleHandler,x,y);
+	}
+	inline void SetPosition(float x,float y) const
+	{
+		glVertexAttrib2f(positionHandler,x,y);
+	}
+	inline void SetRotation(const GLfloat *v) const
+	{
+		glVertexAttrib2fv(rotationHandler,v);
+	}
+	inline void SetScale(const GLfloat *v) const
+	{
+		glVertexAttrib2fv(scaleHandler,v);
+	}
+	inline void SetPosition(const GLfloat *v) const
+	{
+		glVertexAttrib2fv(positionHandler,v);
+	}
+	inline void SetColorAdd(float r,float g,float b,float a)
+	{
+		glUniform4f(colorAddHandler,r,g,b,a);
+	}
+	inline void SetColorMultiply(float r,float g,float b,float a)
+	{
+		glUniform4f(colorMultiplyHandler,r,g,b,a);
+	}
+protected:
 };
-extern struct THDPS THDefaultProgram;
+extern THDefProgram THDefaultProgram;
 
 
 void GoFrame(THFrame* f,void* data=0);
@@ -114,14 +164,7 @@ void OnDestroy();
 void SetFrameRate(float rate);
 unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType);
 
-static inline void SetColorAdd(float r,float g,float b,float a)
-{
-	glUniform4f(THDefaultProgram.colorAddHandler,r,g,b,a);
-}
-static inline void SetColorMultiply(float r,float g,float b,float a)
-{
-	glUniform4f(THDefaultProgram.colorMultiplyHandler,r,g,b,a);
-}
+
 static inline void ViewportInit()
 {
 	glViewport(0,0,windowWidthi,windowHeighti);

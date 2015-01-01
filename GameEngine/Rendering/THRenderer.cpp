@@ -24,7 +24,7 @@ extern THVector2 gameMinBound(0.0f,0.0f);
 extern THVector2 gameMaxBound(0.0f,0.0f);
 extern GLfloat THProjectMatrix[6]={0.0f};
 
-extern struct THDPS THDefaultProgram={THProgram(),0,0,0,0,0,0,0,0};
+extern THDefProgram THDefaultProgram=THDefProgram();
 
 extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
@@ -101,9 +101,9 @@ void THGLInit()
 			"void main(){"
 			"gl_FragColor=texture2D(sTexture,vTex)*mColor + aColor;"
 			"}";
-	THDefaultProgram.defaultProgram.Load(vs,fs);
+	THDefaultProgram.Load(vs,fs);
 
-	const THProgram& mprogram=THDefaultProgram.defaultProgram;
+	const THProgram& mprogram=THDefaultProgram;
 
 	THDefaultProgram.vertexHandler=mprogram.GetAttribLocation("vert");
 	THDefaultProgram.rotationHandler=mprogram.GetAttribLocation("rot");

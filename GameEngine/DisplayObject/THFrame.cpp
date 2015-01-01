@@ -5,7 +5,7 @@
 void THFrame::DrawObjects(unsigned int start,unsigned int end) const
 {
 	assert(start<objectList.num && end>start && end<=objectList.num);
-	THDefaultProgram.defaultProgram.Use();
+	THDefaultProgram.Use();
 	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
 	glEnableVertexAttribArray(THDefaultProgram.textureHandler);
 
@@ -27,11 +27,11 @@ void THFrame::DrawObjects(unsigned int start,unsigned int end) const
 
 void THFrame::DrawButtonDebug(const THColor& color) const
 {
-	THDefaultProgram.defaultProgram.Use();
+	THDefaultProgram.Use();
 	glEnableVertexAttribArray(THDefaultProgram.vertexHandler);
 
-	SetColorMultiply(0.0f,0.0f,0.0f,0.0f);
-	SetColorAdd(color.red,color.green,color.blue,color.alpha);
+	THDefaultProgram.SetColorMultiply(0.0f,0.0f,0.0f,0.0f);
+	THDefaultProgram.SetColorAdd(color.red,color.green,color.blue,color.alpha);
 
 	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,THZeroVertices);
 	glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
@@ -47,8 +47,8 @@ void THFrame::DrawButtonDebug(const THColor& color) const
 
 	glDisableVertexAttribArray(THDefaultProgram.vertexHandler);
 
-	SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
-	SetColorAdd(0.0f,0.0f,0.0f,0.0f);
+	THDefaultProgram.SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
+	THDefaultProgram.SetColorAdd(0.0f,0.0f,0.0f,0.0f);
 }
 #endif
 void THFrame::Draw()
