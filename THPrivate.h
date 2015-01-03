@@ -78,6 +78,7 @@ extern float THDeltaTime;
 class THDefProgram : public THProgram
 {
 public:
+	void Load();
 	GLuint vertexHandler;
 	GLuint rotationHandler;
 	GLuint scaleHandler;

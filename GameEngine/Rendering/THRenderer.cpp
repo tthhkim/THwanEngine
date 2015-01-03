@@ -71,12 +71,11 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp)
 
 
 
-
-void THGLInit()
+void THDefProgram::Load()
 {
 	const GLchar* vs=
 			"precision mediump float;"
-			"uniform vec3 projectionMat[2];"
+			"uniform vec3 projMat[2];"
 			"attribute vec2 vert;"
 			"attribute vec2 rot;"
 			"attribute vec2 sScale;"
@@ -88,7 +87,7 @@ void THGLInit()
 			"vec3 lastP=vec3("
 			"dot( vec2(rot.x,-rot.y) , svert )+pos.x , dot( vec2(rot.y,rot.x) , svert )+pos.y"
 			",1.0);"
-			"gl_Position=vec4(dot(projectionMat[0],lastP),dot(projectionMat[1],lastP),0.0,1.0);"
+			"gl_Position=vec4(dot(projMat[0],lastP),dot(projMat[1],lastP),0.0,1.0);"
 			"vTex=aTex;"
 			"}";
 
@@ -101,19 +100,20 @@ void THGLInit()
 			"void main(){"
 			"gl_FragColor=texture2D(sTexture,vTex)*mColor + aColor;"
 			"}";
-	THDefaultProgram.Load(vs,fs);
+	THProgram::Load(vs,fs);
 
-	const THProgram& mprogram=THDefaultProgram;
+	vertexHandler=GetAttribLocation("vert");
+	rotationHandler=GetAttribLocation("rot");
+	scaleHandler=GetAttribLocation("sScale");
+	positionHandler=GetAttribLocation("pos");
+	textureHandler=GetAttribLocation("aTex");
 
-	THDefaultProgram.vertexHandler=mprogram.GetAttribLocation("vert");
-	THDefaultProgram.rotationHandler=mprogram.GetAttribLocation("rot");
-	THDefaultProgram.scaleHandler=mprogram.GetAttribLocation("sScale");
-	THDefaultProgram.positionHandler=mprogram.GetAttribLocation("pos");
-	THDefaultProgram.textureHandler=mprogram.GetAttribLocation("aTex");
-	THDefaultProgram.projectMatrixHandler=mprogram.GetUniformLocation("projectionMat");
-	THDefaultProgram.colorAddHandler=mprogram.GetUniformLocation("aColor");
-	THDefaultProgram.colorMultiplyHandler=mprogram.GetUniformLocation("mColor");
-
+	projectMatrixHandler=GetUniformLocation("projMat");
+	colorAddHandler=GetUniformLocation("aColor");
+	colorMultiplyHandler=GetUniformLocation("mColor");
+}
+void THGLInit()
+{
     //glClearColor(0.7f,0.6f,0.5f,1.0f);
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
@@ -130,11 +130,12 @@ void THGLInit()
 #endif
 	glViewport(0, 0, windowWidthi,windowHeighti);
 
-	glUniform4f(THDefaultProgram.colorAddHandler,0.0f,0.0f,0.0f,0.0f);
-	glUniform4f(THDefaultProgram.colorMultiplyHandler,1.0f,1.0f,1.0f,1.0f);
-
 	const GLfloat halfVerts[]=MAKE_CENTER_VERTEX(0.5f,0.5f);
 	THHalfVertices.Load((void*)halfVerts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
+
+	THDefaultProgram.Load();
+	THDefaultProgram.SetColorAdd(0.0f,0.0f,0.0f,0.0f);
+	THDefaultProgram.SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
 
 	OnSurfaceCreated();
 #ifndef NDEBUG
