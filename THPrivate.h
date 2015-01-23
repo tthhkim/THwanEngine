@@ -163,6 +163,11 @@ void OnResume();
 void OnPause();
 void OnDestroy();
 void SetFrameRate(float rate);
+#define TH_PNG_RGB 1
+#define TH_PNG_RGBA 2
+#define TH_PNG_GREY 3
+#define TH_PNG_GREY_ALPHA 4
+GLenum THImage2GLImageType(int type);
 unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType);
 
 

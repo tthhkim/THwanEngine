@@ -575,6 +575,23 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 	   &colorType,
 	   NULL, NULL, NULL);
 	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
+
+	switch(colorType)
+	{
+	case PNG_COLOR_TYPE_GRAY:
+		colorType=TH_PNG_GREY;
+		break;
+	case PNG_COLOR_TYPE_GRAY_ALPHA:
+		colorType=TH_PNG_GREY_ALPHA;
+		break;
+	case PNG_COLOR_TYPE_RGB:
+		colorType=TH_PNG_RGB;
+		break;
+	case PNG_COLOR_TYPE_RGB_ALPHA:
+		colorType=TH_PNG_RGBA;
+		break;
+	}
+
 #ifndef NDEBUG
 		st=widthi&(widthi-1);
 		assert(st==0);
@@ -602,17 +619,6 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 
 	return colorBuf;
 }
-void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
-{
-	size_t widthi,heighti;
-	int colorType;
-	void* colorBuf=LoadImageBuffer(name,widthi,heighti,colorType);
-
-	SetSize(widthi,heighti);
-
-	Load(colorBuf,(colorType&PNG_COLOR_MASK_ALPHA)?GL_RGBA:GL_RGB,filter,isRepeat);
-	free(colorBuf);
-}
 #elif THPLATFORM==THPLATFORM_WINDOWS
 
 #include <lodepng.h>
@@ -628,24 +634,54 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 
 	unsigned char* colorBuf;
 
+	LodePNGColorType ctype;
+	switch(colorType)
+	{
+	case TH_PNG_RGB:
+		ctype=LCT_RGB;
+		break;
+	case TH_PNG_RGBA:
+		ctype=LCT_RGBA;
+		break;
+	case TH_PNG_GREY:
+		ctype=LCT_GREY;
+		break;
+	case TH_PNG_GREY_ALPHA:
+		ctype=LCT_GREY_ALPHA;
+		break;
+	}
 	lodepng_decode_memory(&colorBuf, &width,&height,
                                mem, size,
-                               LCT_RGBA, 8);
-	colorType=LCT_RGBA;
+                               ctype, 8);
 	delete[] mem;
 	THLog("LibPNG // Width : %d , Height : %d",width,height);
 
 	return colorBuf;
 }
+GLenum THImage2GLImageType(int type)
+{
+	switch(type)
+	{
+	case TH_PNG_RGB:
+		return GL_RGB;
+	case TH_PNG_RGBA:
+		return GL_RGBA;
+	case TH_PNG_GREY:
+		return GL_LUMINANCE;
+	case TH_PNG_GREY_ALPHA:
+		return GL_LUMINANCE_ALPHA;
+	}
+	return 0;
+}
 void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 {
 	size_t widthi,heighti;
-	int colorType;
+	int colorType=TH_PNG_RGBA;
 	void* colorBuf=LoadImageBuffer(name,widthi,heighti,colorType);
 
 	SetSize(widthi,heighti);
 
-	Load(colorBuf,GL_RGBA,filter,isRepeat);
+	Load(colorBuf,THImage2GLImageType(colorType),filter,isRepeat);
 	free(colorBuf);
 }
 #endif
