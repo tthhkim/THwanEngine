@@ -684,5 +684,42 @@ void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
 	Load(colorBuf,THImage2GLImageType(colorType),filter,isRepeat);
 	free(colorBuf);
 }
+
+#if THPLATFORM==THPLATFORM_ANDROID
+THAsset THAsset_open(const char *name,THAssetMode mode)
+{
+	return AAssetManager_open(assetManager, name, mode);
+}
+void THAsset_close(THAsset asset)
+{
+	AAsset_close(asset);
+}
+size_t THAsset_seek(THAsset asset,size_t offset,int whence)
+{
+	return AAsset_seek(asset, offset, whence);
+}
+size_t THAsset_read(THAsset asset,void *data,size_t bytes)
+{
+	return AAsset_read(asset, data, bytes);
+}
+#elif THPLATFORM==THPLATFORM_WINDOWS
+THAsset THAsset_open(const char *name,THAssetMode mode)
+{
+	return fopen(name,mode);
+}
+void THAsset_close(THAsset asset)
+{
+	fclose(asset);
+}
+size_t THAsset_seek(THAsset asset,size_t offset,int whence)
+{
+	return fseek(asset,offset,whence);
+}
+size_t THAsset_read(THAsset asset,void *data,size_t bytes)
+{
+	return fread(data,bytes,1,asset);
+}
+#endif
+
 #endif
 #endif

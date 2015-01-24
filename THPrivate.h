@@ -149,10 +149,14 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp);
 #if THPLATFORM==THPLATFORM_ANDROID
 typedef struct android_app THApplicaation;
 typedef long THTimeType;
+typedef AAsset* THAsset;
+typedef int THAssetMode;
 #elif THPLATFORM==THPLATFORM_WINDOWS
 #include <Windows.h>
 typedef HWND THApplicaation;
 typedef long long THTimeType;
+typedef FILE* THAsset;
+typedef const char* THAssetMode;
 #endif
 
 void OnCreate(THApplicaation* state);
@@ -169,6 +173,11 @@ void SetFrameRate(float rate);
 #define TH_PNG_GREY_ALPHA 4
 GLenum THImage2GLImageType(int type);
 unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType);
+THAsset THAsset_open(const char *name,THAssetMode mode);
+void THAsset_close(THAsset asset);
+size_t THAsset_seek(THAsset asset,size_t offset,int whence);
+size_t THAsset_read(THAsset asset,void *data,size_t bytes);
+size_t THAsset_length(THAsset asset);
 
 
 static inline void ViewportInit()
