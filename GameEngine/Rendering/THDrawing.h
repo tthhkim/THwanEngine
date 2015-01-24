@@ -40,6 +40,7 @@ public:
 	THProgram(){}
 
 	void Load(const GLchar* vs,const GLchar* fs);
+	void LoadFile(const char *vs,const char *fs);
 
 	inline void SetUniform(const char* name,float f1) const
 	{

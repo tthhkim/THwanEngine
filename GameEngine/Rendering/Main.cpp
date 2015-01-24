@@ -702,6 +702,10 @@ size_t THAsset_read(THAsset asset,void *data,size_t bytes)
 {
 	return AAsset_read(asset, data, bytes);
 }
+size_t THAsset_length(THAsset asset)
+{
+	return AAsset_get(asset);
+}
 #elif THPLATFORM==THPLATFORM_WINDOWS
 THAsset THAsset_open(const char *name,THAssetMode mode)
 {
@@ -718,6 +722,14 @@ size_t THAsset_seek(THAsset asset,size_t offset,int whence)
 size_t THAsset_read(THAsset asset,void *data,size_t bytes)
 {
 	return fread(data,bytes,1,asset);
+}
+size_t THAsset_length(THAsset asset)
+{
+	long cur=ftell(asset);
+	fseek(asset,0,SEEK_END);
+	long len=ftell(asset);
+	fseek(asset,cur,SEEK_SET);
+	return len;
 }
 #endif
 

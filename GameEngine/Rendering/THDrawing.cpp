@@ -43,6 +43,35 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 
 	return shader;
 }
+void THProgram::LoadFile(const char *vs,const char *fs)
+{
+	THAsset vsf,fsf;
+#if THPLATFORM==THPLATFORM_ANDROID
+	vsf=THAsset_open(vs,AASSET_MODE_STREAMING);
+	fsf=THAsset_open(fs,AASSET_MODE_STREAMING);
+#elif THPLATFORM==THPLATFORM_WINDOWS
+	vsf=THAsset_open(vs,"rb");
+	fsf=THAsset_open(fs,"rb");
+#endif
+
+	size_t vl=THAsset_length(vsf);
+	size_t fl=THAsset_length(fsf);
+
+	GLchar *vsc=new GLchar[vl+1];
+	GLchar *fsc=new GLchar[fl+1];
+
+	THAsset_read(vsf,vsc,vl);
+	THAsset_read(fsf,fsc,fl);
+	THAsset_close(vsf);
+	THAsset_close(fsf);
+
+	vsc[vl]=0;
+	fsc[fl]=0;
+
+	Load(vsc,fsc);
+	delete[] vsc;
+	delete[] fsc;
+}
 void THProgram::Load(const GLchar* vs,const GLchar* fs)
 {
 	vertex=InitShader(vs,GL_VERTEX_SHADER);
