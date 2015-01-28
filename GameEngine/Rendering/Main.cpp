@@ -570,9 +570,14 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 		ctype=LCT_RGBA;
 		break;
 	}
-	lodepng_decode_memory(&colorBuf, &width,&height,
-                               mem, size,
-                               ctype, 8);
+	LodePNGState state;
+	lodepng_state_init(&state);
+	state.info_raw.colortype=ctype;
+	state.info_raw.bitdepth=8;
+	state.decoder.read_text_chunks=0;
+	lodepng_decode(&colorBuf,&width,&height,&state,mem,size);
+	lodepng_state_cleanup(&state);
+
 	delete[] mem;
 	THLog("LibPNG // Width : %d , Height : %d",width,height);
 
