@@ -172,7 +172,7 @@ void SetFrameRate(float rate);
 #define TH_PNG_GREY 3
 #define TH_PNG_GREY_ALPHA 4
 GLenum THImage2GLImageType(int type);
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType);
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int colorType);
 THAsset THAsset_open(const char *name,THAssetMode mode);
 void THAsset_close(THAsset asset);
 size_t THAsset_seek(THAsset asset,size_t offset,int whence);

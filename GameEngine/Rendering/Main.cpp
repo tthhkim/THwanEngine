@@ -538,122 +538,36 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 
 #if USE_PNG==1
 
-#if THPLATFORM==THPLATFORM_ANDROID
-#include <libpng/png.h>
-#include <libpng/pngstruct.h>
-static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t bytesToRead)
-{
-	assert(png_ptr->io_ptr);
-
-	AAsset_read((AAsset*)(png_ptr->io_ptr),data,bytesToRead);
-}
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType)
-{
-#ifndef NDEBUG
-    int st;
-#endif
-	AAsset* aasset=AAssetManager_open(assetManager, filename, AASSET_MODE_STREAMING);
-	{
-	char pngSig[8];
-	AAsset_read(aasset,pngSig,8);
-#ifndef NDEBUG
-	st=
-#endif
-	png_sig_cmp((png_const_bytep)pngSig,0, 8);
-	}
-	assert(st==0 && "PNG Sig Check Fail");
-	png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
-	assert(png_ptr);
-	png_infop info_ptr = png_create_info_struct(png_ptr);
-	assert(info_ptr);
-
-	png_set_read_fn(png_ptr, aasset, ReadDataFromAsset);
-	png_set_sig_bytes(png_ptr, 8);
-
-	png_read_info(png_ptr, info_ptr);
-
-	png_uint_32 widthi,heighti;
-	int bitDepth;
-	png_get_IHDR(png_ptr, info_ptr,
-	   &widthi,
-	   &heighti,
-	   &bitDepth,
-	   &colorType,
-	   NULL, NULL, NULL);
-	THLog("LibPNG // Width : %d , Height : %d",widthi,heighti);
-
-	switch(colorType)
-	{
-	case PNG_COLOR_TYPE_GRAY:
-		colorType=TH_PNG_GREY;
-		break;
-	case PNG_COLOR_TYPE_GRAY_ALPHA:
-		colorType=TH_PNG_GREY_ALPHA;
-		break;
-	case PNG_COLOR_TYPE_RGB:
-		colorType=TH_PNG_RGB;
-		break;
-	case PNG_COLOR_TYPE_RGB_ALPHA:
-		colorType=TH_PNG_RGBA;
-		break;
-	}
-
-#ifndef NDEBUG
-		st=widthi&(widthi-1);
-		assert(st==0);
-		st=heighti&(heighti-1);
-		assert(st==0);
-#endif
-		width=widthi;
-		height=heighti;
-
-	const png_uint_32 bytesPerRow = png_get_rowbytes(png_ptr, info_ptr);
-	png_bytep colorBuf=(png_bytep)malloc(bytesPerRow*heighti);
-	png_bytep* rowBytes=(png_bytep*)malloc(heighti*sizeof(png_bytep));
-	
-	unsigned int i=heighti;
-	while(i)
-	{
-		--i;
-		rowBytes[i]=colorBuf+(bytesPerRow*i);
-		//png_read_row(png_ptr, (png_bytep)colorBuf+(i*bytesPerRow), NULL);
-	}
-	png_read_image(png_ptr,rowBytes);
-	free(rowBytes);
-	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-	AAsset_close(aasset);
-
-	return colorBuf;
-}
-#elif THPLATFORM==THPLATFORM_WINDOWS
-
 #include <lodepng.h>
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType)
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int colorType)
 {
-	FILE* filep=fopen(filename,"rb");
-	fseek(filep,0,SEEK_END);
-
-	long size=ftell(filep);
-	fseek(filep,0,SEEK_SET);
+	THAsset asset=THAsset_open(filename,
+#if THPLATFORM==THPLATFORM_ANDROID
+		AASSET_MODE_STREAMING
+#elif THPLATFORM==THPLATFORM_WINDOWS
+		"rb"
+#endif
+		);
+	int size=THAsset_length(asset);
 	unsigned char* mem=new unsigned char[size];
-	fread(mem,size,1,filep);
+	THAsset_read(asset,mem,size);
 
 	unsigned char* colorBuf;
 
 	LodePNGColorType ctype;
 	switch(colorType)
 	{
-	case TH_PNG_RGB:
-		ctype=LCT_RGB;
-		break;
-	case TH_PNG_RGBA:
-		ctype=LCT_RGBA;
-		break;
 	case TH_PNG_GREY:
 		ctype=LCT_GREY;
 		break;
 	case TH_PNG_GREY_ALPHA:
 		ctype=LCT_GREY_ALPHA;
+		break;
+	case TH_PNG_RGB:
+		ctype=LCT_RGB;
+		break;
+	case TH_PNG_RGBA:
+		ctype=LCT_RGBA;
 		break;
 	}
 	lodepng_decode_memory(&colorBuf, &width,&height,
@@ -664,7 +578,6 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 
 	return colorBuf;
 }
-#endif
 
 
 GLenum THImage2GLImageType(int type)
@@ -682,10 +595,9 @@ GLenum THImage2GLImageType(int type)
 	}
 	return 0;
 }
-void THImage::LoadFile(const char* name,GLfloat filter,bool isRepeat)
+void THImage::LoadFile(const char* name,int colorType,GLfloat filter,bool isRepeat)
 {
 	size_t widthi,heighti;
-	int colorType=TH_PNG_RGBA;
 	void* colorBuf=LoadImageBuffer(name,widthi,heighti,colorType);
 
 	SetSize(widthi,heighti);
