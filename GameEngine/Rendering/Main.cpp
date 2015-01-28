@@ -11,6 +11,9 @@
 
 #include <GameEngine/Rendering/THRenderer.h>
 
+#include <EGL/egl.h>
+#include <GLES2/gl2.h>
+
 
 static THTimeType THFrameRate;
 
@@ -73,6 +76,7 @@ extern float cFPS=0.0f;
 #endif
 
 #if THPLATFORM==THPLATFORM_ANDROID
+extern EGLDisplay eglDisplay;
 static void RenderEnterFrame()
 {
 
@@ -281,7 +285,7 @@ void android_main(struct android_app* state)
     int events;
 
 	clock_gettime(CLOCK_MONOTONIC,&timesp);
-	lastNanosec=timesp.tv_sec*1000000000l + timesp.tv_nsec;
+	THLastNanosec=timesp.tv_sec*1000000000l + timesp.tv_nsec;
 	while (1) {
         while (ALooper_pollAll(0, NULL, &events,
                 (void**)&source) >= 0) {
@@ -292,7 +296,6 @@ void android_main(struct android_app* state)
             if(state->destroyRequested)
             {
                 THLog("Destroy Requested");
-				delete[] dataPath;
                 THTerm_Display();
 				return;
             }
@@ -546,7 +549,10 @@ static void ReadDataFromAsset(png_structp png_ptr, png_bytep data, png_size_t by
 }
 unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int& colorType)
 {
-	AAsset* aasset=AAssetManager_open(assetManager, name, AASSET_MODE_STREAMING);
+#ifndef NDEBUG
+    int st;
+#endif
+	AAsset* aasset=AAssetManager_open(assetManager, filename, AASSET_MODE_STREAMING);
 	{
 	char pngSig[8];
 	AAsset_read(aasset,pngSig,8);
@@ -658,6 +664,9 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 
 	return colorBuf;
 }
+#endif
+
+
 GLenum THImage2GLImageType(int type)
 {
 	switch(type)
@@ -704,7 +713,7 @@ size_t THAsset_read(THAsset asset,void *data,size_t bytes)
 }
 size_t THAsset_length(THAsset asset)
 {
-	return AAsset_get(asset);
+	return AAsset_getLength(asset);
 }
 #elif THPLATFORM==THPLATFORM_WINDOWS
 THAsset THAsset_open(const char *name,THAssetMode mode)
@@ -731,7 +740,7 @@ size_t THAsset_length(THAsset asset)
 	fseek(asset,cur,SEEK_SET);
 	return len;
 }
-#endif
+
 
 #endif
 #endif
