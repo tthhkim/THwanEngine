@@ -100,6 +100,24 @@ void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
 }
+void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
+{
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	if(isRepeat)
+	{
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+	else
+	{
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, type,0);
+}
 
 void THTexture::SetBuffer(const THVector2& minp,const THVector2& maxp)
 {

@@ -92,6 +92,7 @@ public:
 	THImage(GLsizei w,GLsizei h):size((float)w,(float)h),width(w),height(h){}
 
 	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void LoadFrameBuffer(GLenum format=GL_RGB,GLenum type=GL_UNSIGNED_SHORT_5_6_5,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 	void LoadFile(const char* name,int colorType,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 	void SetSize(GLsizei w,GLsizei h)
 	{
