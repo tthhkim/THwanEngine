@@ -173,7 +173,14 @@ void SetFrameRate(float rate);
 #define TH_PNG_GREY_ALPHA 4
 GLenum THImage2GLImageType(int type);
 unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int colorType);
-THAsset THAsset_open(const char *name,THAssetMode mode);
+THAsset THAsset_open(const char *name,
+	THAssetMode mode=
+#if THPLATFORM==THPLATFORM_ANDROID
+	AASSET_MODE_STREAMING
+#elif THPLATFORM==THPLATFORM_WINDOWS
+	"rb"
+#endif
+	);
 void THAsset_close(THAsset asset);
 size_t THAsset_seek(THAsset asset,size_t offset,int whence);
 size_t THAsset_read(THAsset asset,void *data,size_t bytes);
