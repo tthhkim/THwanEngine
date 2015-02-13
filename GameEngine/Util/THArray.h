@@ -54,24 +54,33 @@ public:
 		{
 			THError("THArray : ReAlloced()");
 			maxNum<<=1;
-			arr=(T*)realloc(arr,sizeof(T)*maxNum);
-			assert(arr);
+			Realloc();
 		}
 		arr[num]=object;
 		++num;
 	}
 	void PushAt(const T& obj,unsigned int i)
 	{
-		if(i>=num)
+		assert(i<num);
+		if(num==maxNum)
 		{
-			arr[num]=obj;
+			THError("THArray : ReAlloced()");
+			maxNum<<=1;
+			Realloc();
 		}
-		else
-		{
-			memmove(arr+(i+1),arr+i,sizeof(T)*(num-i));
-			arr[i]=obj;
-		}
+		memmove(arr+(i+1),arr+i,sizeof(T)*(num-i));
+		arr[i]=obj;
 		++num;
+	}
+	void PushArray(const T *_arr,unsigned int _count)
+	{
+		if(num+_count>maxNum)
+		{
+			maxNum=(maxNum<<1)+_count;
+			Realloc();
+		}
+		memcpy(arr+num,_arr,sizeof(T)*_count);
+		num+=_count;
 	}
 	int Find(const T& object) const
 	{
@@ -147,6 +156,12 @@ public:
 		{
 			free(arr[i]);
 		}
+	}
+protected:
+	void Realloc()
+	{
+		arr=(T*)realloc(arr,sizeof(T)*maxNum);
+		assert(arr);
 	}
 };
 
