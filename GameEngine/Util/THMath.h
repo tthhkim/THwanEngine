@@ -392,6 +392,13 @@ inline THVector2 operator *(const THRot2& a,const THVector2& v)
 		a.s*v.x + a.c*v.y
 		);
 }
+static inline THVector2 InverseMultiply(const THRot2& a,const THVector2& v)
+{
+	return THVector2(
+		a.c*v.x + a.s*v.y,
+		a.c*v.y - a.s*v.x
+		);
+}
 
 
 
