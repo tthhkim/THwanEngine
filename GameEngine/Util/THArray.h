@@ -48,6 +48,18 @@ public:
 			maxNum=0;
 		}
 	}
+	void Extend(unsigned int cap)
+	{
+		if(cap>maxNum)
+		{
+			maxNum=cap+1;
+			Realloc();
+		}
+	}
+	bool IsAllocated() const
+	{
+		return arr!=0;
+	}
 	void Push(const T& object)
 	{		
 		if(num==maxNum)
