@@ -31,13 +31,13 @@ public:
 		canTouch=true;
 	}
 
-	virtual void OnTouchEvent(THMotionEvent* event,THActionType action,float x,float y){}
-	virtual void OnTouchDown(float x,float y){}
-	virtual void OnTouchUp(float x,float y){}
-	virtual void OnTouchMove(float x,float y,float deltaX,float deltaY){}
+	virtual void OnTouchEvent(THMotionEvent* event,THActionType action,const THVector2& p){}
+	virtual void OnTouchDown(const THVector2& p){}
+	virtual void OnTouchUp(const THVector2& p){}
+	virtual void OnTouchMove(const THVector2& p,const THVector2& delta){}
 
 	#if THPLATFORM==THPLATFORM_WINDOWS
-	virtual void OnRightTouchDown(float x,float y){}
+	virtual void OnRightTouchDown(const THVector2& p){}
 	virtual void OnKeyUp(WPARAM key){}
 	virtual void OnKeyDown(WPARAM key){}
 	#endif

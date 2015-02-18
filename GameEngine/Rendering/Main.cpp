@@ -7,6 +7,7 @@
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
+#include <GameEngine/Util/THMath.h>
 #include <THPrivate.h>
 
 #include <GameEngine/Rendering/THRenderer.h>
@@ -119,7 +120,7 @@ static void RenderEnterFrame()
 
 #endif
 
-static float Touch_lastX,Touch_lastY;
+static THVector2 Touch_last;
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/input.h>
@@ -135,48 +136,25 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
 		if(currentFrame->canTouch==false){return 0;}
 		const int32_t action=AMotionEvent_getAction(event)&AMOTION_EVENT_ACTION_MASK;
 
-		const float x=getGameX(AMotionEvent_getX(event,0));
-		const float y=getGameY(AMotionEvent_getY(event,0));
+		const THVector2 p(getGameX(AMotionEvent_getX(event,0)),getGameY(AMotionEvent_getY(event,0)));
 
-		currentFrame->OnTouchEvent(event,action,x,y);
+		currentFrame->OnTouchEvent(event,action,p);
 
 		switch(action)
 		{
 		case AMOTION_EVENT_ACTION_DOWN:
-			currentFrame->OnTouchDown(x,y);
-			Touch_Point_Down(x,y);
-			Touch_lastX=x;
-			Touch_lastY=y;
+			currentFrame->OnTouchDown(p);
+			Touch_Point_Down(p.x,p.y);
+			Touch_last=p;
 			break;
 		case AMOTION_EVENT_ACTION_UP:
-			currentFrame->OnTouchUp(x,y);
-			Touch_Point_Up(x,y);
+			currentFrame->OnTouchUp(p);
+			Touch_Point_Up(p.x,p.y);
 			break;
 		case AMOTION_EVENT_ACTION_MOVE:
-			currentFrame->OnTouchMove(x,y,x-Touch_lastX,y-Touch_lastY);
-			Touch_lastX=x;
-			Touch_lastY=y;
+			currentFrame->OnTouchMove(p,p-Touch_last);
+			Touch_last=p;
 			break;
-			/*
-		case AMOTION_EVENT_ACTION_POINTER_DOWN:
-		{
-			const int32_t pointIndex=(AMotionEvent_getAction(event)&AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)>>AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-			const float px=getGameX(AMotionEvent_getX(event,pointIndex));
-			const float py=getGameY(AMotionEvent_getY(event,pointIndex));
-
-			touch_point_down(px,py);
-		}
-			break;
-		case AMOTION_EVENT_ACTION_POINTER_UP:
-		{
-			const int32_t pointIndex=(AMotionEvent_getAction(event)&AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)>>AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-			const float px=getGameX(AMotionEvent_getX(event,pointIndex));
-			const float py=getGameY(AMotionEvent_getY(event,pointIndex));
-
-			touch_point_up(px,py);
-		}
-			break;
-			*/
 		}
 		return 1;
 	}else
@@ -342,12 +320,10 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	case WM_MOUSEMOVE:
 	{
 		if(currentFrame->canTouch==false || isMouseDown==false){return 0;}
-		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
-		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
-		currentFrame->OnTouchMove(px,py,px-Touch_lastX,py-Touch_lastY);
-		Touch_lastX=px;
-		Touch_lastY=py;
+		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
+		currentFrame->OnTouchMove(p,p-Touch_last);
+		Touch_last=p;
 
 		return 1;
 	}
@@ -356,13 +332,11 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	{
 		if(currentFrame->canTouch==false){return 0;}
 		isMouseDown=true;
-		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
-		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
-		currentFrame->OnTouchDown(px,py);
-		Touch_lastX=px;
-		Touch_lastY=py;
-		Touch_Point_Down(px,py);
+		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
+		currentFrame->OnTouchDown(p);
+		Touch_last=p;
+		Touch_Point_Down(p.x,p.y);
 
 		return 1;
 	}
@@ -371,11 +345,10 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 	{
 		if(currentFrame->canTouch==false){return 0;}
 		isMouseDown=false;
-		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
-		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,px,py);
-		currentFrame->OnTouchUp(px,py);
-		Touch_Point_Up(px,py);
+		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
+		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
+		currentFrame->OnTouchUp(p);
+		Touch_Point_Up(p.x,p.y);
 
 		return 1;
 	}
@@ -407,9 +380,8 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		break;
 	case WM_RBUTTONDOWN:
 	{
-		const float px=getGameX((float)(GET_X_LPARAM(longWindowParameters)));
-		const float py=getGameY((float)(GET_Y_LPARAM(longWindowParameters)));
-		currentFrame->OnRightTouchDown(px,py);
+		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
+		currentFrame->OnRightTouchDown(p);
 	}
 		break;
 	}

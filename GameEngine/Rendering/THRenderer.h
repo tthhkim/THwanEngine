@@ -1,6 +1,7 @@
 #ifndef THKim_RENDERING
 #define THKim_RENDERING
 
+#include <GameEngine/Util/THMath.h>
 #include <THPrivate.h>
 
 void OnDrawFrame();
