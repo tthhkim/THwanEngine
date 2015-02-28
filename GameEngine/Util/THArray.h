@@ -169,6 +169,13 @@ public:
 			free(arr[i]);
 		}
 	}
+	void DeleteAll()
+	{
+		for(unsigned int i=0;i<num;++i)
+		{
+			delete arr[i];
+		}
+	}
 protected:
 	void Realloc()
 	{
