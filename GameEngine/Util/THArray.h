@@ -184,4 +184,58 @@ protected:
 	}
 };
 
+class THLinkedList;
+class THLinkedNode
+{
+	friend class THLinkedList;
+
+	THLinkedNode(){m_linkednext=0;m_linkedprev=0;}
+	inline THLinkedNode* GetLinkedNext() const{return m_linkednext;}
+	inline THLinkedNode* GetLinkedPrev() const{return m_linkedprev;}
+protected:
+	THLinkedNode *m_linkedprev,*m_linkednext;
+};
+class THLinkedList
+{
+	THLinkedList(){m_linkedlist=0;}
+
+	inline THLinkedNode* GetList() const{return m_linkedlist;}
+	void Push(THLinkedNode *node)
+	{
+		node->m_linkednext=m_linkedlist;
+		if(m_linkedlist)
+		{
+			m_linkedlist->m_linkedprev=node;
+		}
+	}
+	void Delete(THLinkedNode *node)
+	{
+		if(node->m_linkedprev)
+		{
+			node->m_linkedprev->m_linkednext=node->m_linkednext;
+			node->m_linkedprev=0;
+		}else
+		{
+			m_linkedlist=node->m_linkednext;
+		}
+		if(node->m_linkednext)
+		{
+			node->m_linkednext->m_linkedprev=node->m_linkedprev;
+			node->m_linkednext=0;
+		}
+	}
+	void PushNext(THLinkedNode *node,THLinkedNode *anchor)
+	{
+		if(anchor->m_linkednext)
+		{
+			anchor->m_linkednext->m_linkedprev=node;
+		}
+		node->m_linkednext=anchor->m_linkednext;
+		node->m_linkedprev=anchor;
+		anchor->m_linkednext=node;
+	}
+protected:
+	THLinkedNode *m_linkedlist;
+};
+
 #endif
