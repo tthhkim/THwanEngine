@@ -188,7 +188,7 @@ class THLinkedList;
 class THLinkedNode
 {
 	friend class THLinkedList;
-
+public:
 	THLinkedNode(){m_linkednext=0;m_linkedprev=0;}
 	inline THLinkedNode* GetLinkedNext() const{return m_linkednext;}
 	inline THLinkedNode* GetLinkedPrev() const{return m_linkedprev;}
@@ -197,6 +197,7 @@ protected:
 };
 class THLinkedList
 {
+public:
 	THLinkedList(){m_linkedlist=0;}
 
 	inline THLinkedNode* GetList() const{return m_linkedlist;}
