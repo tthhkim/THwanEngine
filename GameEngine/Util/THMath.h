@@ -7,20 +7,10 @@
 #define TH_2PI 6.28318530718f
 #define TH_HPI 1.57079632679f
 
-static inline bool THPowerOfTwo(int x)
+template <typename T>
+static inline bool THIsPowerOfTwo(T x)
 {
-	const int st=x&(x-1);
-	return st==0;
-}
-static inline int THBitCount(int x)
-{
-	int b=0;
-	while((x&1)==0)
-	{
-		x>>=1;
-		++b;
-	}
-	return b;
+	return (x&(x-1))==0;
 }
 
 class THVector2
@@ -51,11 +41,10 @@ public:
 	THVector2 operator -() {return THVector2(-x,-y);}
 	void operator +=(const THVector2& v){ x+=v.x; y+=v.y; }
 	void operator -=(const THVector2& v){ x-=v.x; y-=v.y; }
-	void operator *=(float& a){ x*=a; y*=a; }
-	void operator /=(float& a){const float ai=1.0f/a;x*=ai;y*=ai;}
+	void operator *=(float a){ x*=a; y*=a; }
 
-	void operator +=(float& a){x+=a; y+=a;}
-	void operator -=(float& a){x-=a; y-=a;}
+	void operator +=(float a){x+=a; y+=a;}
+	void operator -=(float a){x-=a; y-=a;}
 
 	void Skew()
 	{
@@ -83,50 +72,43 @@ public:
 		return length;
 	}
 };
-class THRot2
+class THRot2 : public THVector2
 {
 public:
-	float c,s;
-
 	THRot2()
 	{
-		c=1.0f;
-		s=0.0f;
+		x=1.0f;
+		y=0.0f;
 	}
-	THRot2(const float _c,const float _s)
+	THRot2(float c,float s)
 	{
-		c=_c;
-		s=_s;
+		x=c;
+		y=s;
 	}
 	THRot2(const float angle)
 	{
 		Set(angle);
 	}
 
-	inline void Set(const float _c,const float _s)
-	{
-		c=_c;
-		s=_s;
-	}
 	inline void SetIdentity()
 	{
-		c=1.0f;
-		s=0.0f;
+		x=1.0f;
+		y=0.0f;
 	}
 	void Set(const float angle)
 	{
 		const float _c=cosf(angle);
 		const float _s=sinf(angle);
-		Set(_c,_s);
+		THVector2::Set(_c,_s);
 	}
 	
 	inline THRot2 Inverse() const
 	{
-		return THRot2(c,-s);
+		return THRot2(x,-y);
 	}
-	inline void Rotate(const float _c,const float _s)
+	inline void Rotate(const float c,const float s)
 	{
-		Set(c*_c - s*_s , c*_s + s*_c);
+		THVector2::Set(x*c - y*s , x*s + y*c);
 	}
 	void Rotate(const float angle)
 	{
@@ -222,7 +204,7 @@ public:
 	THMatrix22(const THVector2& r1,const THVector2& r2):row1(r1),row2(r2)
 	{
 	}
-	THMatrix22(const THRot2& rot):row1(rot.c,-rot.s),row2(rot.s,rot.c)
+	THMatrix22(const THRot2& rot):row1(rot.x,-rot.y),row2(rot.y,rot.x)
 	{
 	}
 
@@ -349,60 +331,54 @@ inline THMatrix22 operator *(const THMatrix22& a,const THMatrix22& b)
 		);
 }
 
-inline bool operator ==(const THRot2& a,const THRot2& b)
-{
-	return a.c==b.c && a.s==b.s;
-}
 inline bool operator ==(const THRot2& a,const THMatrix22& b)
 {
-	return b.row1.x==a.c && b.row1.y==-a.s && b.row2.x==a.s && b.row2.y==a.c;
+	return b.row1.x==a.x && b.row1.y==-a.y && b.row2.x==a.y && b.row2.y==a.x;
 }
 inline bool operator ==(const THMatrix22& b,const THRot2& a)
 {
-	return b.row1.x==a.c && b.row1.y==-a.s && b.row2.x==a.s && b.row2.y==a.c;
+	return b.row1.x==a.x && b.row1.y==-a.y && b.row2.x==a.y && b.row2.y==a.x;
 }
 
 
 inline THMatrix22 operator *(const THMatrix22& a,const THRot2& b)
 {
 	return THMatrix22(
-		a.row1.x*b.c+a.row1.y*b.s , a.row1.x*-b.s+a.row1.y*b.c,
-		a.row2.x*b.c+a.row2.y*b.s , a.row2.x*-b.s+a.row2.y*b.c
+		a.row1.x*b.x-a.row2.x*b.y , a.row1.y*b.x-a.row2.y*b.y,
+		a.row1.x*b.y+a.row2.x*b.x , a.row1.y*b.y+a.row2.y*b.x
 		);
 }
 inline THMatrix22 operator *(const THRot2& b,const THMatrix22& a)
 {
 	return THMatrix22(
-		a.row1.x*b.c-a.row2.x*b.s , a.row1.y*b.c-a.row2.y*b.s,
-		a.row1.x*b.s+a.row2.x*b.c , a.row1.y*b.s+a.row2.y*b.c
+		a.row1.x*b.x-a.row2.x*b.y , a.row1.y*b.x-a.row2.y*b.y,
+		a.row1.x*b.y+a.row2.x*b.x , a.row1.y*b.y+a.row2.y*b.x
 		);
 }
 inline THRot2 operator *(const THRot2& a,const THRot2& b)
 {
 	return THRot2(
-		a.c*b.c - a.s*b.s,
-		a.c*b.s + a.s*b.c
+		a.x*b.x - a.y*b.y,
+		a.x*b.y + a.y*b.x
 		);
 }
 
 inline THVector2 operator *(const THRot2& a,const THVector2& v)
 {
 	return THVector2(
-		a.c*v.x - a.s*v.y,
-		a.s*v.x + a.c*v.y
+		a.x*v.x - a.y*v.y,
+		a.y*v.x + a.x*v.y
 		);
 }
 static inline THVector2 InverseMultiply(const THRot2& a,const THVector2& v)
 {
 	return THVector2(
-		a.c*v.x + a.s*v.y,
-		a.c*v.y - a.s*v.x
+		a.x*v.x + a.y*v.y,
+		a.x*v.y - a.y*v.x
 		);
 }
 
 
-
-void GetNormals(const THVector2 *points,THVector2* normals,int count);
 void GetCirclePolygonVertices(THVector2* arr,int count,float radius);
 
 #include <stdlib.h>

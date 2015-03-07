@@ -37,11 +37,10 @@ public:
 	THVector3 operator -() const {return THVector3(-x,-y,-z);}
 	void operator +=(const THVector3& v){ x+=v.x; y+=v.y; z+=v.z; }
 	void operator -=(const THVector3& v){ x-=v.x; y-=v.y; z-=v.z; }
-	void operator *=(const float& a){ x*=a; y*=a; z*=a; }
-	void operator /=(const float& a){const float ai=1.0f/a;x*=ai;y*=ai;z*=ai;}
+	void operator *=(float a){ x*=a; y*=a; z*=a; }
 
-	void operator +=(float& a){x+=a; y+=a; z+=a;}
-	void operator -=(float& a){x-=a; y-=a; z-=a;}
+	void operator +=(float a){x+=a; y+=a; z+=a;}
+	void operator -=(float a){x-=a; y-=a; z-=a;}
 
 	float LengthSquared() const 
 	{
@@ -125,8 +124,9 @@ inline bool operator ==(const THVector3& a, const THVector3& b)
 	return (a.x==b.x)&&(a.y==b.y)&&(a.z==b.z);
 }
 
-void THOrthoMatrix44(float *mat,const THVector3& min,const THVector3& max);
-// W input componet must be z*z
+/* W(4th) input componet must be z*z
+	z component must be a positive value
+*/
 void THPerspectiveMatrix44(float* mat,const THVector3& min,const THVector3& max);
 
 class THMatrix33
@@ -265,19 +265,19 @@ public:
 	void SetX(const THRot2& rot)
 	{
 			row1.Set(1.0f,0.0f,0.0f);
-			row2.Set(0.0f,rot.c,-rot.s);
-			row3.Set(0.f,rot.s,rot.c);
+			row2.Set(0.0f,rot.x,-rot.y);
+			row3.Set(0.f,rot.y,rot.x);
 	}
 	void SetY(const THRot2& rot)
 	{
-			row1.Set(rot.s,0.0f,rot.c);
+			row1.Set(rot.y,0.0f,rot.x);
 			row2.Set(0.0f,1.0f,0.0f);
-			row3.Set(rot.c,0.0f,-rot.s);
+			row3.Set(rot.x,0.0f,-rot.y);
 	}
 	void SetZ(const THRot2& rot)
 	{
-			row1.Set(rot.c,-rot.s,0.0f);
-			row2.Set(rot.s,rot.c,0.0f);
+			row1.Set(rot.x,-rot.y,0.0f);
+			row2.Set(rot.y,rot.x,0.0f);
 			row3.Set(0.0f,0.0f,1.0f);
 	}
 	THMatrix33 Inverse() const

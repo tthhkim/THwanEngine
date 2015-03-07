@@ -21,7 +21,7 @@ THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,const THRot2& rot)
 		  );
 	  const THMatrix33 Ident;
 
-	  return (rot.c*Ident) + (rot.s*ux) + ((1.0f-rot.c)*uxu);
+	  return (rot.x*Ident) + (rot.y*ux) + ((1.0f-rot.x)*uxu);
 }
 THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 {
@@ -41,19 +41,20 @@ THMatrix33 THMatrix33::RotatePoint(const THVector3& p1,const THVector3& p2)
 
 	return THMatrix33::RotateAxis(axis,THRot2(c,s));
 }
+// yrot : yaw   xrot : pitch
 THMatrix33 THMatrix33::EyeTrnsformMatrix(const THRot2& yrot,const THRot2& xrot,THVector3* eyenorm)
 {
 	if(eyenorm)
 	{
-		eyenorm->x=xrot.c*yrot.s;
-		eyenorm->y=-xrot.s;
-		eyenorm->z=-xrot.c*yrot.c;
+		eyenorm->x=xrot.x*yrot.y;
+		eyenorm->y=-xrot.y;
+		eyenorm->z=-xrot.x*yrot.x;
 	}
 	return THMatrix33
 		(
-		THVector3(yrot.c , 0.0f , yrot.s),
-		THVector3(xrot.s*yrot.s , xrot.c , -xrot.s*yrot.c),
-		THVector3(-xrot.c*yrot.s , xrot.s , xrot.c*yrot.c)
+		THVector3(yrot.x , 0.0f , yrot.y),
+		THVector3(xrot.y*yrot.y , xrot.x , -xrot.y*yrot.x),
+		THVector3(-xrot.x*yrot.y , xrot.y , xrot.x*yrot.x)
 		);
 }
 void THOrthoMatrix33(float *mat,const THVector2& minp,const THVector2& maxp)
@@ -98,38 +99,19 @@ THMatrix33 THMatrix33::Inverse() const
 THVector3 THMatrix33::Solve(const THVector3& v,float invD) const
 {
 	const THVector3 c12=THCross(row1,row2);
-	const THVector3 c13=THCross(row1,row3);
 	const THVector3 c23=THCross(row2,row3);
+	const THVector3 c31=THCross(row3,row1);
 
 	return THVector3
 		(
-		invD*(c23.x*v.x - c13.x*v.y + c12.x*v.z),
-		invD*(c23.y*v.x - c13.y*v.y + c12.y*v.z),
-		invD*(c23.z*v.x - c13.z*v.y + c12.z*v.z)
+		invD*(c23.x*v.x + c31.x*v.y + c12.x*v.z),
+		invD*(c23.y*v.x + c31.y*v.y + c12.y*v.z),
+		invD*(c23.z*v.x + c31.z*v.y + c12.z*v.z)
 		);
 }
 THVector3 THMatrix33::Solve(const THVector3& v) const
 {
 	return Solve(v,1.0f/Discriminant());
-}
-
-
-void GetNormals(const THVector2 *points,THVector2* normals,unsigned int count)
-{
-	for(unsigned int i=0;i<count-1;++i)
-	{
-		THVector2 vect=points[i+1]-points[i];
-		vect.Normalize();
-		vect.Skew();
-
-		normals[i]=vect;
-	}
-
-	THVector2 vect=points[0]-points[count-1];
-	vect.Normalize();
-	vect.Skew();
-
-	normals[count-1]=vect;
 }
 void GetCirclePolygonVertices(THVector2* arr,int count,float radius)
 {
