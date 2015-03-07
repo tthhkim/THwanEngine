@@ -7,7 +7,6 @@
 #include <GameEngine/DisplayObject/THFrame.h>
 
 #include <GameEngine/Util/THMath.h>
-#include <GameEngine/Util/THTween.h>
 #include <GameEngine/Util/THArray.h>
 
 #include <stdlib.h>
@@ -284,79 +283,17 @@ void GoFrame(THFrame* f,void* data)
 	currentFrame = f;
 }
 
-
-
-THTween* tweenList;
-THArray<THTween*> tweenDeleteList(TWEEN_DELETE_LIST_SIZE);
-
 //Timer Function Definition
-struct THTimerDef
+class THTimerDef : public THLinkedNode
 {
+public:
 	void (*action)(void* data);
 	float timeSkip;
 	void* data;
-
-	struct THTimerDef *prev,*next;
 };
 
-struct THTimerDef *timerList;
-THArray<struct THTimerDef*> timerDeleteList(TIMER_DELETE_LIST_SIZE);
+THLinkedList m_timerlist;
 
-
-
-
-
-void AddTween(THTween* tween)
-{
-	//THLog("Tween Adding %.2f Seconds",tween->time);
-	tween->next=tweenList;
-	if(tweenList)
-	{
-		tweenList->prev=tween;
-	}
-	tweenList=tween;
-}
-static void DeleteTween(THTween* tween)
-{
-	if(tween->prev)
-	{
-		tween->prev->next=tween->next;
-	}
-	if(tween->next)
-	{
-		tween->next->prev=tween->prev;
-	}
-	if(tween==tweenList)
-	{
-		tweenList=tween->next;
-	}
-}
-
-
-static void AddTimerToList(struct THTimerDef* timer)
-{
-	timer->next=timerList;
-	if(timerList)
-	{
-		timerList->prev=timer;
-	}
-	timerList=timer;
-}
-static void DeleteTimer(struct THTimerDef* timer)
-{
-	if(timer->prev)
-	{
-		timer->prev->next=timer->next;
-	}
-	if(timer->next)
-	{
-		timer->next->prev=timer->prev;
-	}
-	if(timer==timerList)
-	{
-		timerList=timer->next;
-	}
-}
 void AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 {
 	assert(_timeSkip>0.0f);
@@ -364,63 +301,34 @@ void AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 
 	//THLog("Timer Adding %.2f Seconds",_timeSkip);
 
-	struct THTimerDef* timer=(struct THTimerDef*)malloc(sizeof(struct THTimerDef));
+	THTimerDef* timer=new THTimerDef;
 	
 	timer->action=_action;
 	timer->data=_data;
 	timer->timeSkip=_timeSkip;
 
-	timer->next=0;
-	timer->prev=0;
-
-	AddTimerToList(timer);
+	m_timerlist.Push(timer);
 }
 
 
 
 void MainEnterFrame()
 {
-	THTween* tween;
-	for(tween=tweenList;tween;tween=tween->next)
+	THTimerDef *timer=(THTimerDef*)m_timerlist.GetList(),*tnext;
+	while(timer)
 	{
-		if(tween->step())
-		{
-			//THLog("Tween End");
-			tweenDeleteList.Push(tween);
-		}
-	}
-	struct THTimerDef* timer;
-	for(timer=timerList;timer;timer=timer->next)
-	{
+		tnext=(THTimerDef*)timer->GetLinkedNext();
+
 		timer->timeSkip-=THDeltaTime;
 		if(timer->timeSkip<=0.0f)
 		{
-			//THLog("Timer End");
-			timerDeleteList.Push(timer);
+			timer->action(timer->data);
+			m_timerlist.Delete(timer);
+			delete timer;
 		}
-	}
 
-	//Deleting, Destruction
-	unsigned int i;
-	for(i=0;i<tweenDeleteList.num;++i)
-	{
-		tween=(THTween*)tweenDeleteList.arr[i];
-		if(tween->onEndTween)
-		{
-			tween->onEndTween(tween->data);
-		}
-		DeleteTween(tween);
-		if(tween->autoDelete){delete tween;}
+		timer=tnext;
 	}
-	tweenDeleteList.Clear();
-	for(i=0;i<timerDeleteList.num;++i)
-	{
-		timer=(struct THTimerDef*)timerDeleteList.arr[i];
-		timer->action(timer->data);
-		DeleteTimer(timer);
-		free(timer);
-	}
-	timerDeleteList.Clear();
 
 	currentFrame->OnEnterFrame();
 }

@@ -199,7 +199,6 @@ static inline THVector2 ProjectVector(const THVector2& v)
 THTimeType GetCurrentTimeMicro();
 
 void AddTimer(float timeSkip,void (*action)(void*),void* data);
-void AddTween(THTween* tween);
 
 static inline float getGameX(float _x)
 {

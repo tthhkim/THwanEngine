@@ -3,86 +3,59 @@
 
 #include <GameEngine/Util/THMath.h>
 
-class THTween
-{
-public:
-	THTween *next,*prev;
-
-	//Callback when tween ends;
-	void (*onEndTween)(void* data);
-	//UserData
-	void* data;
-	//Wheather this tween will be deleted by program when it ends
-	bool autoDelete;
-
-	const float time;
-
-	virtual bool step()=0;
-
-	THTween(float _time):time(_time)
-	{
-		onEndTween=0;
-		next=0;
-		prev=0;
-		autoDelete=true;
-	}
-};
-
 //return accelated value between [0,1]
-class THInterpolater
+class THInterpolator
 {
 public:
-	float accel,v0;
-	const float time;
-
-	THInterpolater(float seconds,float coeff):time(seconds)
+	void Load(float seconds,float coeff)
 	{
+		m_time=0.0f;
+		m_seconds=seconds;
+
 		const float vel=1.0f/seconds;
 		const float vc=vel*coeff;
-		accel=2.0f*vel*vc;
-		v0=vel-vc;
+		m_halfaccel=vel*vc;
+		m_v0=vel-vc;
 	}
-	inline float GetValue(float ct) const
+	inline float GetCurTime() const{return m_time;}
+	inline float GetMaxSeconds() const{return m_seconds;}
+	inline bool IsOut() const{return m_time>=m_seconds;}
+	inline float GetDelta(float dt)
 	{
-		return 0.5f*accel*ct*ct + v0*ct;
+		m_time+=dt;
+
+		return m_halfaccel*(2.0f*m_time*dt - dt*dt) + m_v0*dt;
 	}
+protected:
+	float m_halfaccel,m_v0;
+	float m_seconds,m_time;
 };
 
-class THLinearTween : public THTween
+template <typename T>
+class THTweenVector
 {
 public:
-	THLinearTween(THVector2 *_src,const THVector2& deltaPos,const THInterpolater& interpolator):THTween(interpolator.time),
-		src0(*_src),src(_src),
-		delta(deltaPos),
-		interpolater(interpolator)
+	void Load(T *src,const T& delta,const THInterpolater interpolate)
 	{
-		ct=0.0f;
+		m_src=src;
+		m_delta=delta;
+
+		m_interpolator=interpolate;
 	}
 
-	bool step()
+	//return if the time is over
+	bool Step(float dt)
 	{
-		ct+=THDeltaTime;
-		if(ct<time)
-		{
-			*src=src0+(interpolater.GetValue(ct)*delta);
-			return false;
-		}
-		*src=src0+delta;
-		return true;
+		*m_src += m_delta*m_interpolator.GetDelta(dt);
+		return m_interpolator.IsOut();
 	}
 
 protected:
-	float ct;
-
-	//Source
-	const THVector2 src0;
-	THVector2* const src;
-
-	//Destination
-	const THVector2 delta;
+	T *m_src;
+	const T m_delta;
 
 	//Interpolater
-	const THInterpolater interpolater;
+	const THInterpolator m_interpolator;
 };
 
 #endif
