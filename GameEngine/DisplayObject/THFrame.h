@@ -58,18 +58,10 @@ public:
 		DrawObjects(0,objectList.num);
 	}
 #ifndef NDEBUG
-	void DrawButtonDebug(const THColor& color) const;
 #endif
 
 	void AddChild(THDisplayObject* object)
 	{
-#ifndef NDEBUG
-		if(ParentCheck(object))
-		{
-			THError("Parent Not Included first");
-			assert(0);
-		}
-#endif
 		objectList.Push(object);
 	}
 
@@ -82,13 +74,6 @@ public:
 
 	void ReAddChild(THDisplayObject* object)
 	{
-#ifndef NDEBUG
-		if(ParentCheck(object))
-		{
-			THError("Parent Not Included first");
-			assert(0);
-		}
-#endif
 		objectList.Repush(object);
 	}
 	inline void AddButton(THButton* button)
@@ -117,24 +102,6 @@ public:
 	}
 
 private:
-	#ifndef NDEBUG
-	bool ParentCheck(THDisplayObject *object) const
-	{
-		if(object->parent)
-		{
-			THDisplayObject *par=object->parent;
-			while(par)
-			{
-				if(objectList.Find(par)==-1)
-				{
-					return true;
-				}
-				par=par->parent;
-			}
-		}
-		return false;
-	}
-#endif
 };
 
 #endif

@@ -28,11 +28,9 @@ extern THDefProgram THDefaultProgram=THDefProgram();
 extern THFrame* currentFrame=0;
 extern THButton* downedButton=0;
 
-extern const GLfloat THFullVertices[]=MAKE_CENTER_VERTEX(1.0f,1.0f);
 extern GLfloat THGameFullVertices[8]={0.0};
-extern const GLfloat THZeroVertices[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
 
-extern THVertexBuffer THHalfVertices=THVertexBuffer();
+extern THVertexBuffer THZeroVertices=THVertexBuffer();
 
 extern float THDeltaTime=0.0f;
 
@@ -75,19 +73,22 @@ void THDefProgram::Load()
 	const GLchar* vs=
 			"precision mediump float;"
 			"uniform vec3 projMat[2];"
-			"attribute vec2 vert;"
-			"attribute vec2 rot;"
-			"attribute vec2 sScale;"
-			"attribute vec2 pos;"
-			"attribute vec2 aTex;"
+			"attribute vec2 aVert;"
+			"attribute vec2 aRot;"
+			"attribute vec2 aScale;"
+			"attribute vec2 aPos;"
+			"attribute vec2 aCenter;"
+			"attribute vec4 aTex;"
+
 			"varying vec2 vTex;"
 			"void main(){"
-			"vec2 svert=vert*sScale;"
-			"vec3 lastP=vec3("
-			"dot( vec2(rot.x,-rot.y) , svert )+pos.x , dot( vec2(rot.y,rot.x) , svert )+pos.y"
-			",1.0);"
-			"gl_Position=vec4(dot(projMat[0],lastP),dot(projMat[1],lastP),0.0,1.0);"
-			"vTex=aTex;"
+
+			"vec2 svert=(aVert-aCenter)*sScale;"
+			"vec2 rp=vec2( dot(vec2(aRot.x,-aRot.y),svert) , dot(vec2(aRot.y,aRot.x),svert) );"
+			"vec3 rrp=vec3(rp + aPos , 1.0);"
+			"gl_Position=vec4(dot(projMat[0],rrp),dot(projMat[1],rrp),0.0,1.0);"
+
+			"vTex=aVert*aTex.zw + aTex.xy;"
 			"}";
 
 	const GLchar* fs=
@@ -101,11 +102,12 @@ void THDefProgram::Load()
 			"}";
 	THProgram::Load(vs,fs);
 
-	vertexHandler=GetAttribLocation("vert");
-	rotationHandler=GetAttribLocation("rot");
-	scaleHandler=GetAttribLocation("sScale");
-	positionHandler=GetAttribLocation("pos");
+	vertexHandler=GetAttribLocation("aVert");
+	rotationHandler=GetAttribLocation("aRot");
+	scaleHandler=GetAttribLocation("aScale");
+	positionHandler=GetAttribLocation("aPos");
 	textureHandler=GetAttribLocation("aTex");
+	centerHandler=GetAttribLocation("aCenter");
 
 	projectMatrixHandler=GetUniformLocation("projMat");
 	colorAddHandler=GetUniformLocation("aColor");
@@ -129,8 +131,8 @@ void THGLInit()
 #endif
 	glViewport(0, 0, windowWidthi,windowHeighti);
 
-	const GLfloat halfVerts[]=MAKE_CENTER_VERTEX(0.5f,0.5f);
-	THHalfVertices.Load((void*)halfVerts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
+	const GLfloat verts[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
+	THZeroVertices.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 
 	THDefaultProgram.Load();
 	THDefaultProgram.SetColorAdd(0.0f,0.0f,0.0f,0.0f);
@@ -228,7 +230,7 @@ void THEGLInit(THApplicaation* state)
 
 
 
-void Touch_Point_Down(const float x,const float y)
+void Touch_Point_Down(const THVector2& p)
 {
 	unsigned int i=currentFrame->buttonList.num;
 	THButton** const list=(THButton**)currentFrame->buttonList.arr;
@@ -239,16 +241,16 @@ void Touch_Point_Down(const float x,const float y)
 		--i;
 		btn=list[i];
 
-		if(btn->enable && btn->HitTest(x,y))
+		if(btn->enable && btn->HitTest(p))
 		{
 			downedButton=btn;
-			if(btn->onDown){btn->onDown(x,y,btn);}
-			btn->SetDowned();
+			if(btn->onDown){btn->onDown(p,btn);}
+			btn->Swap();
 			return;
 		}
 	}
 }
-void Touch_Point_Up(const float x,const float y)
+void Touch_Point_Up(const THVector2& p)
 {
 	unsigned int i=currentFrame->buttonList.num;
 	THButton** const list=(THButton**)currentFrame->buttonList.arr;
@@ -259,11 +261,11 @@ void Touch_Point_Up(const float x,const float y)
 		--i;
 		btn=list[i];
 
-		if(btn->enable && btn->HitTest(x,y))
+		if(btn->enable && btn->HitTest(p))
 		{
 			if(downedButton==btn)
 			{
-				if(btn->onRelease){btn->onRelease(x,y,btn);}
+				if(btn->onRelease){btn->onRelease(p,btn);}
 				break;
 			}
 			
@@ -272,7 +274,7 @@ void Touch_Point_Up(const float x,const float y)
 
 	if(downedButton)
 	{
-		downedButton->SetUpped();
+		downedButton->Swap();
 		downedButton=0;
 	}		
 }

@@ -7,48 +7,71 @@
 #include <malloc.h>
 #include <assert.h>
 
-void THDisplayObject::CalcWorldPositionParent()
+void THDisplayObject::LoadChildren(unsigned int cap)
 {
-	if(parent)
+	if(cap>0)
 	{
-		parent->CalcWorldPositionParent();
-		worldPosition=position+parent->worldPosition;
-	}else
-	{
-		worldPosition=position;
+		m_children.Load(cap);
 	}
 }
-void THMovieClip::DrawTHMovieClip(const THMovieClip* obj)
+void THDisplayObject::AddChild(THDisplayObject *obj)
 {
-	glBindTexture(GL_TEXTURE_2D,obj->texture->image->textureID);
-	
-	glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,obj->texture->textureBuffer);
+	assert(m_children.IsAllocated());
 
-	if(obj->vertexBuffer==0){ THHalfVertices.BeginDrawing(); }
-	glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,obj->vertexBuffer);
-
-	glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&obj->rotation);
-	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&obj->size);
-	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&obj->worldPosition);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	if(obj->vertexBuffer==0){ THHalfVertices.EndDrawing(); }
+	m_children.Push(obj);
+	obj->m_parent=this;
+}
+void THDisplayObject::CalculateWorldAttrib()
+{
+	if(m_parent)
+	{
+		m_worldposition=m_parent->m_worldposition + (position*m_parent->m_worldrotation);
+		m_worldrotation=rotation*m_parent->m_worldrotation;
+	}else
+	{
+		m_worldposition=position;
+		m_worldrotation=rotation;
+	}
+	for(unsigned int i=0;i<m_children.num;++i)
+	{
+		m_children.arr[i]->CalculateWorldAttrib();
+	}
 }
 
 
-void THButton::SetPosition(float _x,float _y)
+void THDisplayObject::Draw()
 {
-	const THVector2 p(_x,_y);
-	maxBound=maxBound-minBound+p;
-	minBound=p;
+	if(texture)
+	{
+		glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
+
+		glVertexAttrib2fv(THDefaultProgram.rotationHandler,(const GLfloat*)&m_worldrotation);
+		glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&size);
+		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&m_worldposition);
+		glVertexAttrib4f(THDefaultProgram.textureHandler,texture->position.x,texture->position.y,texture->size.x,texture->size.y);
+		glVertexAttrib2fv(THDefaultProgram.centerHandler,(const GLfloat*)&center);
+
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
+	for(unsigned int i=0;i<m_children.num;++i)
+	{
+		m_children.arr[i]->Draw();
+	}
 }
-void THButton::SetSize(float w,float h)
+
+
+void THButton::SetPosition(const THVector2& p)
 {
-	maxBound=minBound+THVector2(w,h);
+	m_maxbound=m_maxbound-m_minbound+p;
+	m_minbound=p;
+}
+void THButton::SetSize(const THVector2& s)
+{
+	m_maxbound=m_minbound+s;
 }
 void THButton::Synchronize(const THVector2& extraBound)
 {
+	/*
 	assert(clip);
 
 	const THVector2 mp=clip->GetWorldPosition();
@@ -66,4 +89,5 @@ void THButton::Synchronize(const THVector2& extraBound)
 		minBound=mp-bc-extraBound;
 		maxBound=mp+bc+extraBound;
 	}
+	*/
 }

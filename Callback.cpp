@@ -6,8 +6,6 @@
 #include <GameEngine/Util/THTween.h>
 
 #include <GameEngine/Rendering/THDrawing.h>
-#include <GameEngine/Rendering/THEffects.h>
-#include <GameEngine/Rendering/THShadowEffect.h>
 
 #include <GameEngine/DisplayObject/THDisplayObject.h>
 #include <GameEngine/DisplayObject/THChar.h>

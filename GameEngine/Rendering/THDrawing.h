@@ -111,11 +111,10 @@ class THTexture
 {
 public:
 	THImage* image;
-	THVector2 textureBuffer[4];
+	THVector2 position,size;
 
 	void Set(THImage* _image);
 	void Set(THImage* _image,const THVector2& pos,const THVector2& size);
-	void Set(const THTexture& _texture,const THVector2& pos,const THVector2& size);
 	void UpsideDown();
 
 	inline THVector2 GetSize() const
@@ -126,15 +125,8 @@ public:
 	{
 		return position;
 	}
-	inline THVector2 GetRelative(const THVector2& v) const
-	{
-		return GetPosition()+(GetSize()*v);
-	}
 
 protected:
-	THVector2 position,size;
-
-	void SetBuffer(const THVector2& minp,const THVector2& maxp);
 };
 
 

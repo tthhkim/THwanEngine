@@ -15,60 +15,47 @@ class THChar;
 class THString : public THDisplayObject
 {
 public:
-	float scale;
+	
 
-	THString(unsigned int cap=10):THDisplayObject((THDrawingFunction)DrawTHString),chars(cap)
+	THString(unsigned int cap=10)
 	{
-		scale=1.0f;
-		positionOffset=0.0f;
+		m_scale=1.0f;
+		LoadChildren(cap);
+	}
+	~THString()
+	{
+		Refresh();
 	}
 	
+	void Refresh();
 	/*
 		Last char must be 0
 	*/
 	void SetString(const THChar** charArr);
-	void SetWidth(float w);
-	friend void DrawTHString(const THString* obj);
+	void SetScale(float s);
 
 	inline float Length() const
 	{
-		return length*scale;
+		return m_length;
 	}
-	inline void SetPosition(const THVector2& p,float _positionOffset)
+	inline float GetScale() const
 	{
-		position.Set(p.x-length*scale*_positionOffset,p.y);
-		positionOffset=_positionOffset;
+		return m_scale;
 	}
-	inline THVector2 GetPosition() const
-	{
-		return THVector2(position.x + length*scale*positionOffset,position.y);
-	}
-	inline float GetPositionOffset() const
-	{
-		return positionOffset;
-	}
-	static void DrawTHString(const THString* obj);
+
 
 protected:
-	THArray<const THChar*> chars;
-	float length;
-	float positionOffset;
+	float m_length,m_scale;
 };
 
 class THChar : public THTexture
 {
 	friend class THString;
 public:
-	THVector2 vertexBuffer[4];
-
-	void Set(THImage* _image,const THVector2& pos,const THVector2& size);
 	inline float Length() const
 	{
-		return length;
+		return size.x;
 	}
-
-protected:
-	float length;
 };
 
 

@@ -144,12 +144,12 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
 		{
 		case AMOTION_EVENT_ACTION_DOWN:
 			currentFrame->OnTouchDown(p);
-			Touch_Point_Down(p.x,p.y);
+			Touch_Point_Down(p);
 			Touch_last=p;
 			break;
 		case AMOTION_EVENT_ACTION_UP:
 			currentFrame->OnTouchUp(p);
-			Touch_Point_Up(p.x,p.y);
+			Touch_Point_Up(p);
 			break;
 		case AMOTION_EVENT_ACTION_MOVE:
 			currentFrame->OnTouchMove(p,p-Touch_last);
@@ -336,7 +336,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
 		currentFrame->OnTouchDown(p);
 		Touch_last=p;
-		Touch_Point_Down(p.x,p.y);
+		Touch_Point_Down(p);
 
 		return 1;
 	}
@@ -348,7 +348,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
 		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
 		currentFrame->OnTouchUp(p);
-		Touch_Point_Up(p.x,p.y);
+		Touch_Point_Up(p);
 
 		return 1;
 	}

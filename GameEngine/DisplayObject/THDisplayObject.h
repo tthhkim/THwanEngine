@@ -12,71 +12,44 @@ class THTexture;
 
 //THDisplayObject-----------------------------------------
 
-class THDisplayObject;
-static void DrawNothing(const THDisplayObject* obj){}
-
-typedef void (*THDrawingFunction)(const THDisplayObject*);
-
 class THDisplayObject
 {
 public:
 	bool visible;
 	void* userData;
-	THDisplayObject* parent;
+	
+	//individual attributes relative to parent
 	THVector2 position;
+	THRot2 rotation;
+	THVector2 center;
+	THVector2 size;
 
-	void (*Draw)(const THDisplayObject*);
+	const THTexture* texture;
 
-	THDisplayObject(THDrawingFunction drawfunction=DrawNothing):position(0.0f,0.0f),worldPosition(0.0f,0.0f)
+	THDisplayObject():position(0.0f,0.0f),m_worldposition(0.0f,0.0f)
 	{
 		visible=true;
 		userData=0;
-		parent=0;
+		m_parent=0;
 
-		Draw=drawfunction;
+		texture=0;
 	}
+	void LoadChildren(unsigned int cap);
+	void AddChild(THDisplayObject *obj);
+	void CalculateWorldAttrib();
 
-	void CalcWorldPositionParent();
-	inline void CalcWorldPosition()
-	{
-		if(parent){worldPosition=position+parent->worldPosition;}
-		else{worldPosition=position;}
-	}
 
-	inline const THVector2& GetWorldPosition() const
-	{
-		return worldPosition;
-	}
-	inline void DrawObject()
-	{
-		CalcWorldPosition();
-
-		assert(Draw);
-		Draw(this);
-	}
+	void Draw();
 
 protected:
-	THVector2 worldPosition;
+	//world attributes
+	THDisplayObject* m_parent;
+	THVector2 m_worldposition;
+	THRot2 m_worldrotation;
+
+	THArray<THDisplayObject*> m_children;
 };
 
-class THMovieClip : public THDisplayObject
-{
-public:
-	THTexture* texture;
-	THRot2 rotation;
-	THVector2 size;
-	const GLfloat *vertexBuffer;
-	
-
-	THMovieClip(const THVector2& _size,THTexture* _texture):THDisplayObject((THDrawingFunction)DrawTHMovieClip)
-	{
-		texture=_texture;
-		size=_size;
-		vertexBuffer=0;
-	}
-
-	static void DrawTHMovieClip(const THMovieClip* obj);
-};
 
 class THFrame;
 
@@ -84,68 +57,53 @@ class THButton
 {
 	friend class THFrame;
 public:
-	THMovieClip* clip;
 	bool enable;
 
-	THTexture* downed;
-	
+	void (*onDown)(const THVector2&,THButton*);
+	void (*onRelease)(const THVector2&,THButton*);
 
-	void (*onDown)(float,float,THButton*);
-	void (*onRelease)(float,float,THButton*);
-
-	THButton(float w,float h):minBound(0.0f,0.0f),maxBound(w,h)
+	THButton(const THVector2& _size):m_minbound(0.0f,0.0f),m_maxbound(_size)
 	{
 		enable=true;
 
-		downed=0;
-		normal=0;
 		onDown=0;
 		onRelease=0;
 	}
 
-	void SetPosition(float _x,float _y);
-	void SetSize(float w,float h);
+	void SetPosition(const THVector2& p);
+	void SetSize(const THVector2& s);
+	inline THVector2 GetSize() const
+	{
+		return m_maxbound-m_minbound;
+	}
 
 	void Synchronize(const THVector2& extraBound);
 
-	inline bool HitTest(float px,float py) const
+	inline bool HitTest(const THVector2& p) const
 	{
-		return (minBound.x<px)&&(maxBound.x>px) && (minBound.y<py)&&(maxBound.y>py);
+		return m_minbound.x<p.x&&m_minbound.y<p.y&&m_maxbound.x>p.x&&m_maxbound.y>p.y;
 	}
-	void SetDowned()
+	void SetSwap(void **src,void *dest)
 	{
-		if(clip && downed)
+		m_src=src;
+		m_swap=dest;
+	}
+	void Swap()
+	{
+		if(m_src)
 		{
-			normal=clip->texture;
-			clip->texture=downed;
+			void *temp=*m_src;
+			*m_src=m_swap;
+			m_swap=temp;
 		}
 	}
-	void SetUpped()
-	{
-		if(clip && normal)
-		{
-			clip->texture=normal;
-			normal=0;
-		}
-	}
-	void SwapTexture()
-	{
-		if(clip && downed)
-		{
-			normal=clip->texture;
-			clip->texture=downed;
-			downed=normal;
-			normal=0;
-		}
-	}
-	THVector2 GetSize() const
-	{
-		return maxBound-minBound;
-	}
+	
 
 protected:
-	THVector2 minBound,maxBound;
-	THTexture* normal;
+	THVector2 m_minbound,m_maxbound;
+
+	void **m_src;
+	void *m_swap;
 };
 
 #endif

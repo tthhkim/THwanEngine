@@ -22,12 +22,6 @@
     <Filter Include="소스 파일\lodepng">
       <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Effects">
-      <UniqueIdentifier>{f1626275-ae70-4375-8550-827ad20e63a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Effects">
-      <UniqueIdentifier>{d72281c8-50c6-4d88-96f5-e6608a681ae8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp">
@@ -56,12 +50,6 @@
     </ClCompile>
     <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameEngine\Rendering\THShadowEffect.cpp">
-      <Filter>소스 파일\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameEngine\Rendering\THEffects.cpp">
-      <Filter>소스 파일\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,12 +85,6 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\DisplayObject\THChar.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameEngine\Rendering\THEffects.h">
-      <Filter>헤더 파일\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameEngine\Rendering\THShadowEffect.h">
-      <Filter>헤더 파일\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

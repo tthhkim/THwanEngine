@@ -1,64 +1,42 @@
 #include "THChar.h"
 #include <THPrivate.h>
 
-void THChar::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
+void THString::Refresh()
 {
-	THTexture::Set(_image,pos,_size);
-
-	const THVector2 sxy2=_size/_image->size;
-
-	length=sxy2.x;
-
-	vertexBuffer[0].Set(0.0f,0.0f);
-	vertexBuffer[1].Set(sxy2.x,0.0f);
-	vertexBuffer[2].Set(0.0f,sxy2.y);
-	vertexBuffer[3].Set(sxy2.x,sxy2.y);
+	if(m_children.num>0)
+	{
+		for(unsigned int i=0;i<m_children.num;++i)
+		{
+			free(m_children.arr[i]);
+		}
+	}
 }
-
 void THString::SetString(const THChar** charArr)
 {
-	chars.Clear();
-	length=0.0f;
+	Refresh();
+	m_length=0.0f;
 	unsigned int i=0;
 
 	while(charArr[i]!=0)
 	{
-		length+=charArr[i]->length;
-		chars.Push(charArr[i]);
+		THDisplayObject *obj=new THDisplayObject;
+		obj->texture=charArr[i];
+		obj->position.x=m_scale*m_length;
+		AddChild(obj);
+
+
+		m_length+=charArr[i]->Length();
 		++i;
 	}
+	m_length*=m_scale;
 }
-void THString::SetWidth(float w)
+void THString::SetScale(float s)
 {
-	const THVector2 cp=GetPosition();
-	scale=w/length;
-	SetPosition(cp,positionOffset);
-}
-
-void THString::DrawTHString(const THString* obj)
-{
-	THVector2 pos=obj->position;
-
-	const float scale=obj->scale;
-	const THChar* ch;
-	const unsigned int cn=obj->chars.num;
-	const THChar **carrs=obj->chars.arr;
-	
-	for(unsigned int i=0;i<cn;++i)
+	const float scalefactor=s/m_scale;
+	m_scale=s;
+	for(unsigned int i=0;i<m_children.num;++i)
 	{
-		ch=carrs[i];
-
-		glBindTexture(GL_TEXTURE_2D,ch->image->textureID);
-
-		glVertexAttribPointer(THDefaultProgram.vertexHandler,2,GL_FLOAT,GL_FALSE,0,ch->vertexBuffer);
-		glVertexAttribPointer(THDefaultProgram.textureHandler,2,GL_FLOAT,GL_FALSE,0,ch->textureBuffer);
-
-		glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
-		glVertexAttrib2f(THDefaultProgram.scaleHandler,scale,scale);
-		glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&pos);
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		pos.x+=ch->length*scale;
+		m_children.arr[i]->position.x*=scalefactor;
 	}
+	m_scale*=scalefactor;
 }

@@ -35,7 +35,7 @@ template <typename T>
 class THTweenVector
 {
 public:
-	void Load(T *src,const T& delta,const THInterpolater interpolate)
+	void Load(T *src,const T& delta,const THInterpolator& interpolate)
 	{
 		m_src=src;
 		m_delta=delta;

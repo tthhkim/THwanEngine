@@ -53,11 +53,9 @@ class THTween;
 #define MAKE_VERTEX(left,bottom,right,top) \
 	{left, bottom,right, bottom,left,top,right,top}
 
-extern const GLfloat THFullVertices[];
 extern GLfloat THGameFullVertices[];
-extern const GLfloat THZeroVertices[];
 extern GLfloat THProjectMatrix[];
-extern THVertexBuffer THHalfVertices;
+extern THVertexBuffer THZeroVertices;
 
 #ifndef NDEBUG
 extern float cFPS;
@@ -79,13 +77,14 @@ class THDefProgram : public THProgram
 {
 public:
 	void Load();
-	GLuint vertexHandler;
-	GLuint rotationHandler;
-	GLuint scaleHandler;
-	GLuint positionHandler;
-	GLuint textureHandler;
-	GLuint projectMatrixHandler;
-	GLuint colorAddHandler,colorMultiplyHandler;
+	GLint vertexHandler;
+	GLint rotationHandler;
+	GLint scaleHandler;
+	GLint positionHandler;
+	GLint centerHandler;
+	GLint textureHandler;
+	GLint projectMatrixHandler;
+	GLint colorAddHandler,colorMultiplyHandler;
 
 	inline void EnableVertex() const
 	{

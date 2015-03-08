@@ -119,56 +119,21 @@ void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRe
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, type,0);
 }
 
-void THTexture::SetBuffer(const THVector2& minp,const THVector2& maxp)
-{
-#if PNG_UPSIDE_DOWN==1
-	textureBuffer[0].Set(minp.x,maxp.y);
-	textureBuffer[1].Set(maxp.x,maxp.y);
-	textureBuffer[2].Set(minp.x,minp.y);
-	textureBuffer[3].Set(maxp.x,minp.y);
-#else
-	textureBuffer[0].Set(minp.x,minp.y);
-	textureBuffer[1].Set(maxp.x,minp.y);
-	textureBuffer[2].Set(minp.x,maxp.y);
-	textureBuffer[3].Set(maxp.x,maxp.y);
-#endif
-}
+
 void THTexture::Set(THImage* _image,const THVector2& pos,const THVector2& _size)
 {
 	image=_image;
 	const THVector2 invSize=1.0f/_image->size;
-	const THVector2 min=pos*invSize;
-	const THVector2 max=(pos+_size)*invSize;
 
-	position=pos;
-	size=_size;
-
-	SetBuffer(min,max);
+	position=pos * invSize;
+	size=_size * invSize;
 }
 void THTexture::Set(THImage* _image)
 {
 	image=_image;
 
 	position.SetZero();
-	size=image->size;
-
-	SetBuffer(THVector2(0.0f,0.0f),THVector2(1.0f,1.0f));
-}
-void THTexture::Set(const THTexture& _texture,const THVector2& pos,const THVector2& size)
-{
-	Set(_texture.image,position+pos,size);
-}
-void THTexture::UpsideDown()
-{
-	const float sx=textureBuffer[0].x;
-	const float sy=textureBuffer[0].y;
-	const float sx2=textureBuffer[3].x;
-	const float sy2=textureBuffer[3].y;
-
-	textureBuffer[0].Set(sx,sy2);
-	textureBuffer[1].Set(sx2,sy2);
-	textureBuffer[2].Set(sx,sy);
-	textureBuffer[3].Set(sx2,sy);
+	size.Set(1.0f,1.0f);
 }
 
 
