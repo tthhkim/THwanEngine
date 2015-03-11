@@ -90,6 +90,7 @@
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
     <ClInclude Include="..\GameEngine\Util\THTween.h" />
+    <ClInclude Include="..\GameEngine\Util\THVectorArray.h" />
     <ClInclude Include="..\THPrivate.h" />
     <ClInclude Include="..\THSettings.h" />
   </ItemGroup>
