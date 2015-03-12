@@ -38,6 +38,15 @@ public:
 	void AddChild(THDisplayObject *obj);
 	void CalculateWorldAttrib();
 
+	inline const THVector2& GetWorldPosition() const
+	{
+		return m_worldposition;
+	}
+	inline const THRot2& GetWorldRotation() const
+	{
+		return m_worldrotation;
+	}
+
 
 	void Draw();
 
@@ -77,7 +86,7 @@ public:
 		return m_maxbound-m_minbound;
 	}
 
-	void Synchronize(const THVector2& extraBound);
+	void Synchronize(const THDisplayObject *obj,const THVector2& extraBound);
 
 	inline bool HitTest(const THVector2& p) const
 	{
