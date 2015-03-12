@@ -69,25 +69,13 @@ void THButton::SetSize(const THVector2& s)
 {
 	m_maxbound=m_minbound+s;
 }
-void THButton::Synchronize(const THVector2& extraBound)
+void THButton::Synchronize(const THDisplayObject *obj,const THVector2& extraBound)
 {
-	/*
-	assert(clip);
+	assert(obj);
 
-	const THVector2 mp=clip->GetWorldPosition();
+	const THVector2 mp=obj->GetWorldPosition();
+	const THVector2 m=obj->size*obj->center;
 
-	if(clip->vertexBuffer)
-	{
-		const THVector2 minc=((THVector2*)clip->vertexBuffer)[0]*clip->size;
-		const THVector2 maxc=((THVector2*)clip->vertexBuffer)[3]*clip->size;
-
-		minBound=mp+minc-extraBound;
-		maxBound=mp+maxc+extraBound;
-	}else
-	{
-		const THVector2 bc=clip->size*0.5f;
-		minBound=mp-bc-extraBound;
-		maxBound=mp+bc+extraBound;
-	}
-	*/
+	m_minbound=mp-m-extraBound;
+	m_maxbound=mp+obj->size-m+extraBound;
 }

@@ -83,7 +83,7 @@ void THDefProgram::Load()
 			"varying vec2 vTex;"
 			"void main(){"
 
-			"vec2 svert=(aVert-aCenter)*sScale;"
+			"vec2 svert=(aVert-aCenter)*aScale;"
 			"vec2 rp=vec2( dot(vec2(aRot.x,-aRot.y),svert) , dot(vec2(aRot.y,aRot.x),svert) );"
 			"vec3 rrp=vec3(rp + aPos , 1.0);"
 			"gl_Position=vec4(dot(projMat[0],rrp),dot(projMat[1],rrp),0.0,1.0);"
