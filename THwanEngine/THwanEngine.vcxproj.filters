@@ -22,6 +22,12 @@
     <Filter Include="소스 파일\lodepng">
       <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Fluid">
+      <UniqueIdentifier>{df649c1a-f6a5-45b5-a925-ac79a33429c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Fluid">
+      <UniqueIdentifier>{308b6216-69c8-4b4c-bac8-6dc53736a273}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp">
@@ -50,6 +56,30 @@
     </ClCompile>
     <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\FluidShader.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\GameFrame.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\GameRendering.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\THFluid.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\THFluidObject.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\THFluidParser.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\THGroups.cpp">
+      <Filter>소스 파일\Fluid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\THFluid\THLightGroup.cpp">
+      <Filter>소스 파일\Fluid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +118,30 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THVectorArray.h">
       <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THParticleCallbacks.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\FluidShader.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\GameFrame.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THFluid.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THFluidObject.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THFluidParser.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THGroups.h">
+      <Filter>헤더 파일\Fluid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\THFluid\THLightGroup.h">
+      <Filter>헤더 파일\Fluid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

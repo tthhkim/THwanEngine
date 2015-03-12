@@ -79,6 +79,14 @@
     <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
     <ClCompile Include="..\Includes\lodepng.cpp" />
+    <ClCompile Include="..\THFluid\FluidShader.cpp" />
+    <ClCompile Include="..\THFluid\GameFrame.cpp" />
+    <ClCompile Include="..\THFluid\GameRendering.cpp" />
+    <ClCompile Include="..\THFluid\THFluid.cpp" />
+    <ClCompile Include="..\THFluid\THFluidObject.cpp" />
+    <ClCompile Include="..\THFluid\THFluidParser.cpp" />
+    <ClCompile Include="..\THFluid\THGroups.cpp" />
+    <ClCompile Include="..\THFluid\THLightGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THChar.h" />
@@ -91,6 +99,14 @@
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
     <ClInclude Include="..\GameEngine\Util\THTween.h" />
     <ClInclude Include="..\GameEngine\Util\THVectorArray.h" />
+    <ClInclude Include="..\THFluid\FluidShader.h" />
+    <ClInclude Include="..\THFluid\GameFrame.h" />
+    <ClInclude Include="..\THFluid\THFluid.h" />
+    <ClInclude Include="..\THFluid\THFluidObject.h" />
+    <ClInclude Include="..\THFluid\THFluidParser.h" />
+    <ClInclude Include="..\THFluid\THGroups.h" />
+    <ClInclude Include="..\THFluid\THLightGroup.h" />
+    <ClInclude Include="..\THFluid\THParticleCallbacks.h" />
     <ClInclude Include="..\THPrivate.h" />
     <ClInclude Include="..\THSettings.h" />
   </ItemGroup>

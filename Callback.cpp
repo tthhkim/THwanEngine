@@ -16,13 +16,19 @@
 #include <unistd.h>
 #endif
 
+#include <THFluid/GameFrame.h>
+
+GameFrame f;
+
 void OnCreate(THApplicaation* state)
 {
-	//GoFrame();
+	GoFrame(&f,0);
 }
 void OnSurfaceCreated()
 {
-	//SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
+	SetOrtho( THVector2(0.0f,0.0f) , THVector2(7.20f,12.80f) );
+
+	f.Load();
 	//TextureLoading
 }
 
