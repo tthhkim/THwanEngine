@@ -43,7 +43,7 @@ void GameFrame::ParseFile()
 
 	size_t iw,ih;
 	int colorType=TH_PNG_GREY;
-	unsigned char *data=LoadImageBuffer("D:/map2.png",iw,ih,colorType);
+	unsigned char *data=LoadImageBuffer("map2.png",iw,ih,colorType);
 
 	parser->Parse(&engine,data,iw,ih);
 

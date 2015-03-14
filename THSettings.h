@@ -6,7 +6,7 @@
 #define SHOW_LOG 1
 #define USE_DEPTH_BUFFER 0
 
-#define DEFAULT_ASSET_PATH "D:/assets/"
+#define DEFAULT_ASSET_PATH "D:/Resources/Games/Fluid/"
 
 
 #define THPLATFORM_WINDOWS 1

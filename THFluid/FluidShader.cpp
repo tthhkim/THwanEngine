@@ -2,7 +2,7 @@
 
 void THFluidShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidshade.vs","D:/Resources/Games/Fluid/fluidshade.fs");
+	LoadFile("fluidshade.vs","fluidshade.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 	velocityHandler=GetAttribLocation("aVel");
@@ -33,7 +33,7 @@ void THFluidShader::PostDraw() const
 
 void THFluidRenderShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidrender.vs","D:/Resources/Games/Fluid/fluidrender.fs");
+	LoadFile("fluidrender.vs","fluidrender.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 
@@ -57,7 +57,7 @@ void THFluidRenderShader::Draw(const THImage& fbImage) const
 }
 void THSteamRenderShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidrender.vs","D:/Resources/Games/Fluid/steamrender.fs");
+	LoadFile("fluidrender.vs","steamrender.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 	alphaHandler=GetUniformLocation("u_alpha");
@@ -77,7 +77,7 @@ void THSteamRenderShader::Draw(const THImage& fbImage) const
 
 void THFluidBaseShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidbase.vs","D:/Resources/Games/Fluid/fluidbase.fs");
+	LoadFile("fluidbase.vs","fluidbase.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 }
@@ -90,7 +90,7 @@ void THFluidBaseShader::Draw()
 }
 void THBoundaryBaseShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidbase.vs","D:/Resources/Games/Fluid/boundarybase.fs");
+	LoadFile("fluidbase.vs","boundarybase.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 }
@@ -104,7 +104,7 @@ void THBoundaryBaseShader::Draw()
 }
 void THBoundaryShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/boundaryshade.vs","D:/Resources/Games/Fluid/boundaryshade.fs");
+	LoadFile("boundaryshade.vs","boundaryshade.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 	positionHandler=GetAttribLocation("aPos");
@@ -113,7 +113,7 @@ void THBoundaryShader::Load()
 }
 void THBoundaryRenderShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidrender.vs","D:/Resources/Games/Fluid/boundaryrender.fs");
+	LoadFile("fluidrender.vs","boundaryrender.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 
@@ -135,7 +135,7 @@ void THBoundaryRenderShader::Draw(const THImage& fbImage,const THImage& groundTe
 
 void THLightRenderShader::Load()
 {
-	LoadFile("D:/Resources/Games/Fluid/fluidrender.vs","D:/Resources/Games/Fluid/lightrender.fs");
+	LoadFile("fluidrender.vs","lightrender.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 

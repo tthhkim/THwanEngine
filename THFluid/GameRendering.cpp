@@ -75,7 +75,7 @@ void GameFrame::LoadRender()
 	brshader.Load();
 	brshader.SetTile(THVector2(256.0f,256.0f));
 
-	groundTileImage.LoadFile("D:/gtile.png",TH_PNG_RGB,GL_NEAREST,true);
+	groundTileImage.LoadFile("gtile.png",TH_PNG_RGB,GL_NEAREST,true);
 }
 void GameFrame::LoadOneVBO()
 {

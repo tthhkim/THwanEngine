@@ -55,6 +55,8 @@ public:
 		LoadCircleImage();
 		LoadRender();
 		SetViewport(THVector2(0.0f,0.0f),THVector2(7.2f,12.8f));
+
+		LoadTextures();
 	}
 
 	void SetViewport(const THVector2& minp,const THVector2& maxp);
