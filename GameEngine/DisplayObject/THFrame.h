@@ -52,7 +52,7 @@ public:
 	virtual void Draw();
 
 
-	void DrawObjects(unsigned int start,unsigned int end) const;
+	void DrawObjects(unsigned int start,unsigned int count) const;
 	inline void DrawObjects() const
 	{
 		DrawObjects(0,objectList.num);
