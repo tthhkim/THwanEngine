@@ -15,6 +15,9 @@
 class GameFrame : public THFrame
 {
 public:
+	THImage notebgImage;
+	THTexture notebgTexture;
+
 	THFluidEngine engine;
 
 	//rendering
@@ -41,6 +44,7 @@ public:
 	GameFrame():engine(THVector2(0.0f,-5.0f))
 	{
 	}
+	void LoadTextures();
 	void LoadGroups();
 	void LoadCircleImage();
 	void LoadRender();

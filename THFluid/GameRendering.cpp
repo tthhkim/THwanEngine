@@ -1,5 +1,9 @@
 #include "GameFrame.h"
 
+void GameFrame::LoadTextures()
+{
+	
+}
 
 #define CIRCLE_SIZE 64
 #define CIRCLE_BIG_RAD (CIRCLE_SIZE*0.5f)
