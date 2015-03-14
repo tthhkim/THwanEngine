@@ -243,6 +243,10 @@ public:
 		p1=_p1;
 		p2=_p2;
 	}
+	THParticlePair()
+	{
+		p1=p2=0;
+	}
 };
 struct THRaycastOut
 {

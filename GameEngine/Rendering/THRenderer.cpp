@@ -89,6 +89,8 @@ void THDefProgram::Load()
 			"gl_Position=vec4(dot(projMat[0],rrp),dot(projMat[1],rrp),0.0,1.0);"
 
 			"vTex=aVert*aTex.zw + aTex.xy;"
+
+			"gl_PointSize=4.0;"
 			"}";
 
 	const GLchar* fs=

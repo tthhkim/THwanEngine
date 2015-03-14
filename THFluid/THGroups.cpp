@@ -5,7 +5,7 @@ void THWaterGroup::Load()
 {
 	SetMass(1.0f);
 	SetPressure(10.0f,0.6f,15.0f);
-	SetViscosity(1.0f);
+	SetViscosity(0.0f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<WATER_BIT);
 }
@@ -128,56 +128,64 @@ void THFlameGroup::CreateNew(const THVector2& position)
 	m_engine->AddParticle(this,position + THRandf(0.0f,m_radius)*THVector2(cosf(theta),sinf(theta)));
 }
 
-void THEball::Load()
-{
-	SetCollideEach(true);
-	SetMass(1.0f);
-	SetPressure(10.0f,0.5f,10.0f);
 
+
+void THParticleRope::Load(unsigned int springcap)
+{
+	SetCollideEach(false);
+	SetMass(10.0f);
+	//SetStatic(false);
+	SetPressure(10.0f,0.5f,10.0f);
 	SetAutoRemove(false);
 
-	layer=(1<<DEFAULT_BIT)|(1<EBALL_BIT);
-}
-void THEball::LoadParticles(const THVector2& center,float rad,float gap)
-{
-	for(float r=rad;r>0.0f;r-=gap)
-	{
-		const float tinc=gap/r;
+	layer=(1<<DEFAULT_BIT);
 
-		for(float t=0.0f;t<TH_2PI;t+=tinc)
-		{
-			m_engine->AddParticle(this,THVector2(center.x + r*cosf(t),center.y + r*sinf(t)));
-		}
+	m_springs.Load(springcap);
+}
+void THParticleRope::LoadParticles(const THVector2 *arr,unsigned int count,THParticlePair *endp)
+{
+	THParticle *curp;
+
+	curp=m_engine->AddParticle(this,arr[0]);
+	if(endp)
+	{
+		endp->p1=curp;
+	}
+	for(unsigned int i=1;i<count;++i)
+	{
+		curp=m_engine->AddParticle(this,arr[i]);
+	}
+	if(endp)
+	{
+		endp->p2=curp;
 	}
 }
-/*
-void THEball::LoadSprings(float threshold)
+void THParticleRope::Step(float k)
 {
-	m_springs.Load((count*(count))>>1);
-	THParticle *p1=list,*p2;
-	const float tsq=threshold*threshold;
+	for(unsigned int i=0;i<m_springs.num;++i)
+	{
+		m_springs.arr[i].Step(k);
+	}
+}
+void THParticleRope::LoadSprings(float thre)
+{
+	float tsq=thre*thre;
+	float lsq;
+	THParticle *p1,*p2;
+	p1=list;
 	while(p1)
 	{
 		p2=p1->GetNext();
 		while(p2)
 		{
-			const float lsq=(p1->position-p2->position).LengthSquared();
-			if(lsq<tsq){const THParticleSpring spring(p1,p2);
-			m_springs.Push(spring);}
-			
+			lsq=(p1->position-p2->position).LengthSquared();
+			if(lsq<tsq)
+			{
+				m_springs.Push(THParticleSpring(p1,p2));
+			}
 
 			p2=p2->GetNext();
 		}
 		p1=p1->GetNext();
 	}
-
-	THLog("%d",m_springs.num);
 }
-void THEball::Step()
-{
-	for(unsigned int i=0;i<m_springs.num;++i)
-	{
-		m_springs.arr[i].Step(m_springcoeff);
-	}
-}
-*/

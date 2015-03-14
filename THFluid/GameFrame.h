@@ -4,6 +4,7 @@
 #include <THPrivate.h>
 #include <GameEngine\DisplayObject\THFrame.h>
 #include <GameEngine/Util/THMath3D.h>
+#include <GameEngine/Util/THVectorArray.h>
 
 #include <THFluid/THFluid.h>
 #include <THFluid/FluidShader.h>
@@ -30,9 +31,12 @@ public:
 
 	THBoundaryGroup boundaryGroup;
 	THWaterGroup waterGroup;
+	THParticleRope ropeGroup;
 	//THFlameGroup flameGroup;
 
 	THImage groundTileImage;
+
+	THParticle *mparticle,*mparticle2;
 	
 	GameFrame():engine(THVector2(0.0f,-5.0f))
 	{
@@ -62,10 +66,16 @@ public:
 		engine.TestStep(1.0f/100.0f,10);
 	}
 
-	
+	THVector2 mp,mp2;
 	void OnEnterFrame()
 	{
+		/*
+		mparticle->force+=20000.0f*(mp-mparticle->position);
+		mparticle2->force+=20000.0f*(mp2-mparticle2->position);
+		ropeGroup.Step(200.0f);
+		*/
 		engine.Step(THDeltaTime);
+		
 		//lightmanager.ParticleTest(&waterGroup);
 		//eball.Step();
 
@@ -90,14 +100,16 @@ public:
 
 		oneVBO.EndDrawing();
 
-		engine.DebugDraw();
+		//engine.DebugDraw();
 	}
 
 	void OnTouchDown(const THVector2& p)
 	{
+		//mp=p;
 	}
 	void OnTouchMove(const THVector2& p,const THVector2& delta)
 	{
+		//mp=p;
 		//boundaryGroup.Delete(p,0.4f);
 		//bridgeGroup.AddNew(THVector2(x,y));
 	}

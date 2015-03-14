@@ -62,7 +62,7 @@ void GameFrame::LoadRender()
 
 	rshader.Load();
 	rshader.SetColor(THVector3(1.0f,1.0f,1.0f),THVector3(0.8f,0.8f,0.8f));
-	rshader.SetThreshold(0.95f);
+	rshader.SetThreshold(0.7f);
 	rshader.SetAlpha(1.0f);
 
 	bshader.Load();

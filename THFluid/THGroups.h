@@ -2,6 +2,7 @@
 #define TH_SPONGE_BODY
 
 #include <THPrivate.h>
+#include <GameEngine/Util/THVectorArray.h>
 
 #include <THFluid/THFluid.h>
 
@@ -12,7 +13,6 @@
 #define WHEEL_BIT 4
 #define FLAME_BIT 5
 #define LIGHT_BIT 6
-#define EBALL_BIT 7
 
 
 class THWaterGroup : public THParticleGroup
@@ -86,29 +86,33 @@ public:
 		p2=_p2;
 		
 		l0=(p1->position-p2->position).Length();
-		THLog("%f",l0);
 	}
 	void Step(float coeff)
 	{
 		THVector2 rel=p1->position-p2->position;
-		float k=coeff*(rel.Normalize()-l0);
-		rel=rel*k;
+		float l=rel.Normalize();
+
+		float k1=l-l0;
+		float k2=1.0f-l0/(l+0.01f);
+
+		//rel=rel*(k1*300.0f + k2*100.0f);
+		//rel=rel*k1*4500.0f;
+		rel=rel*k2*1500.0f;
 		
-		p2->force=rel;
-		p1->force=-rel;
+		p2->force+=rel;
+		p1->force-=rel;
 	}
 protected:
 };
-class THEball : public THParticleBody
+
+class THParticleRope : public THParticleGroup
 {
 public:
-	void Load();
-	void LoadParticles(const THVector2& center,float rad,float gap);
-	//void LoadSprings(float threshold);
-	//void Step();
-	//inline void SetSpringCoeff(float k){m_springcoeff=k;}
+	void Load(unsigned int springcap);
+	void LoadParticles(const THVector2 *arr,unsigned int count,THParticlePair *endp);
+	void Step(float k);
+	void LoadSprings(float thre);
 protected:
-	//THArray<THParticleSpring> m_springs;
-	//float m_springcoeff;
+	THArray<THParticleSpring> m_springs;
 };
 #endif
