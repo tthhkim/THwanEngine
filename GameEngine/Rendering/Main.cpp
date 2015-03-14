@@ -607,7 +607,13 @@ size_t THAsset_length(THAsset asset)
 #elif THPLATFORM==THPLATFORM_WINDOWS
 THAsset THAsset_open(const char *name,THAssetMode mode)
 {
-	return fopen(name,mode);
+	char *paths=new char[strlen(DEFAULT_ASSET_PATH)+strlen(name)+2];
+	paths[0]=0;
+	strcat(paths,DEFAULT_ASSET_PATH);
+	strcat(paths,name);
+	THAsset f=fopen(paths,mode);
+	delete paths;
+	return f;
 }
 void THAsset_close(THAsset asset)
 {
