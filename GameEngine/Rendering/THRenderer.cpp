@@ -26,7 +26,6 @@ extern GLfloat THProjectMatrix[6]={0.0f};
 extern THDefProgram THDefaultProgram=THDefProgram();
 
 extern THFrame* currentFrame=0;
-extern THButton* downedButton=0;
 
 extern GLfloat THGameFullVertices[8]={0.0};
 
@@ -228,56 +227,6 @@ void THEGLInit(THApplicaation* state)
 	gameScale.Set(0.0f,0.0f);
 }
 
-
-
-void Touch_Point_Down(const THVector2& p)
-{
-	unsigned int i=currentFrame->buttonList.num;
-	THButton** const list=(THButton**)currentFrame->buttonList.arr;
-	THButton* btn;
-
-	while(i)
-	{
-		--i;
-		btn=list[i];
-
-		if(btn->enable && btn->HitTest(p))
-		{
-			downedButton=btn;
-			if(btn->onDown){btn->onDown(p,btn);}
-			btn->Swap();
-			return;
-		}
-	}
-}
-void Touch_Point_Up(const THVector2& p)
-{
-	unsigned int i=currentFrame->buttonList.num;
-	THButton** const list=(THButton**)currentFrame->buttonList.arr;
-	THButton* btn;
-
-	while(i)
-	{
-		--i;
-		btn=list[i];
-
-		if(btn->enable && btn->HitTest(p))
-		{
-			if(downedButton==btn)
-			{
-				if(btn->onRelease){btn->onRelease(p,btn);}
-				break;
-			}
-			
-		}
-	}
-
-	if(downedButton)
-	{
-		downedButton->Swap();
-		downedButton=0;
-	}		
-}
 void GoFrame(THFrame* f,void* data)
 {
 	if(currentFrame){currentFrame->OnChangeFrame(f);}

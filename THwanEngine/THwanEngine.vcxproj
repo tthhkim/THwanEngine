@@ -78,6 +78,7 @@
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
+    <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp" />
     <ClCompile Include="..\Includes\lodepng.cpp" />
   </ItemGroup>
   <ItemGroup>

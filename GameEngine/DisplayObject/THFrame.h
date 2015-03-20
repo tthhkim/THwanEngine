@@ -29,6 +29,7 @@ public:
 	THFrame(const unsigned int objectCount=2,const unsigned int buttonCount=2):objectList(objectCount),buttonList(buttonCount)
 	{
 		canTouch=true;
+		m_buttondown=0;
 	}
 
 	virtual void OnTouchEvent(THMotionEvent* event,THActionType action,const THVector2& p){}
@@ -101,7 +102,13 @@ public:
 		}
 	}
 
-private:
+	void FrameDown(const THVector2& p);
+	void FrameMove(const THVector2& p);
+	void FrameUp(const THVector2& p);
+
+protected:
+	THButton *m_buttondown;
+	THVector2 m_lasttouched;
 };
 
 #endif

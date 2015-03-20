@@ -147,13 +147,11 @@ void SetOrtho(const THVector2& minp,const THVector2& maxp);
 
 #if THPLATFORM==THPLATFORM_ANDROID
 typedef struct android_app THApplicaation;
-typedef long THTimeType;
 typedef AAsset* THAsset;
 typedef int THAssetMode;
 #elif THPLATFORM==THPLATFORM_WINDOWS
 #include <Windows.h>
 typedef HWND THApplicaation;
-typedef long long THTimeType;
 typedef FILE* THAsset;
 typedef const char* THAssetMode;
 #endif
@@ -195,7 +193,7 @@ static inline THVector2 ProjectVector(const THVector2& v)
 	return THVector2( v.x*THProjectMatrix[0]+THProjectMatrix[2] , v.y*THProjectMatrix[3]+THProjectMatrix[5] );
 }
 
-THTimeType GetCurrentTimeMicro();
+long long GetCurrentTimeMicro();
 
 void AddTimer(float timeSkip,void (*action)(void*),void* data);
 
