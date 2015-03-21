@@ -125,7 +125,7 @@ protected:
 
 	THArray<THRopeHanger> m_hangers;
 	THRopeHanger *m_clicked;
-	THVector2Array m_temparr;
+	THVector2Array m_temparr,m_temparr2;
 };
 
 
