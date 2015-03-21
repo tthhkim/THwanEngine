@@ -17,19 +17,32 @@ public:
 		
 		l0=(p1->position-p2->position).Length();
 	}
+	THRopeSpring(THParticle *_p1,THParticle *_p2,float _l0)
+	{
+		p1=_p1;
+		p2=_p2;
+		l0=_l0;
+	}
 	void Step(float invdt)
 	{
 		THVector2 rel=p1->position-p2->position;
 		float l=rel.Normalize();
 
-		float delta=(l-l0)*0.5f; //extension is positive
-		rel*=delta;
+		float delta=(l-l0); //extension is positive
+		float p1m=p1->GetGroup()->GetMass();
+		float p2m=p2->GetGroup()->GetMass();
+		//rel*=delta*invdt*invdt*p1m*p2m/(p1m+p2m);
+		rel*=(delta*0.5f);
 
+		//p1->force-=rel;
+		//p2->force+=rel;
+		
 		p1->position-=rel;
 		p2->position+=rel;
 		rel*=invdt;
 		p1->velocity-=rel;
 		p2->velocity+=rel;
+		
 	}
 protected:
 };
@@ -112,7 +125,7 @@ protected:
 
 	THArray<THRopeHanger> m_hangers;
 	THRopeHanger *m_clicked;
-	THVector2Array m_temparr,m_temparr2;
+	THVector2Array m_temparr;
 };
 
 

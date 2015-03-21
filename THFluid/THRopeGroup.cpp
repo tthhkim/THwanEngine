@@ -44,7 +44,6 @@ void THRopeGroup::Load(unsigned int hangerscap)
 
 	m_hangers.Load(hangerscap);
 	m_temparr.Load(64);
-	m_temparr2.Load(64);
 
 	m_clicked=0;
 }
@@ -105,7 +104,7 @@ THRopeHanger *THRopeGroup::OnTouchDown(const THVector2& p)
 }
 THRopeHanger *THRopeGroup::OnTouchMove(const THVector2& p)
 {
-	if(m_clicked&&(m_temparr.GetLast()-p).LengthSquared()>0.2f*0.2f)
+	if(m_clicked&&(m_temparr.GetLast()-p).LengthSquared()>0.1f*0.2f)
 	{
 		m_temparr.Push(p);
 	}
@@ -132,12 +131,11 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 			clicked=&hanger;
 
 			THLog("Hanger Chosen Rope making.. : %d",i);
-			THParticlePair pair;
 			
-			m_temparr2.Clear();
-			m_temparr.Bridge(m_temparr2,0.24f);
+			//m_temparr2.Clear();
+			//m_temparr.Bridge(m_temparr2,0.24f);
 
-			THRope *r=LoadRope(m_temparr2.arr,m_temparr2.num);
+			THRope *r=LoadRope(m_temparr.arr,m_temparr.num);
 
 			m_clicked->m_linked=r;
 			m_clicked->m_linkedp=r->m_p1;
@@ -150,8 +148,8 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 			break;
 		}
 	}
+	m_clicked=0;
 	m_temparr.Clear();
-	m_temparr2.Clear();
 
 	return clicked;
 }
