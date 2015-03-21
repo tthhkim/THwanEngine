@@ -208,6 +208,7 @@ public:
 		{
 			m_linkedlist->m_linkedprev=node;
 		}
+		m_linkedlist=node;
 	}
 	void Delete(THLinkedNode *node)
 	{
@@ -234,6 +235,10 @@ public:
 		node->m_linkednext=anchor->m_linkednext;
 		node->m_linkedprev=anchor;
 		anchor->m_linkednext=node;
+	}
+	void Clear()
+	{
+		m_linkedlist=0;
 	}
 protected:
 	THLinkedNode *m_linkedlist;
