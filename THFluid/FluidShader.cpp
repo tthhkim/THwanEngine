@@ -40,7 +40,7 @@ void THFluidRenderShader::Load()
 	thresholdHandler=GetUniformLocation("u_threshold");
 	alphaHandler=GetUniformLocation("u_alpha");
 	colorHandler=GetUniformLocation("u_color");
-	outColorHandler=GetUniformLocation("u_outColor");
+	//outColorHandler=GetUniformLocation("u_outColor");
 
 	
 }

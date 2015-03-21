@@ -10,13 +10,16 @@
 #include <THFluid/FluidShader.h>
 #include <THFluid/THFluidParser.h>
 #include <THFluid/THGroups.h>
+#include <THFluid/THRopeGroup.h>
 #include <THFluid/THLightGroup.h>
+
 
 class GameFrame : public THFrame
 {
 public:
 	THImage notebgImage;
 	THTexture notebgTexture;
+	THDisplayObject notebgObject;
 
 	THFluidEngine engine;
 
@@ -34,12 +37,10 @@ public:
 
 	THBoundaryGroup boundaryGroup;
 	THWaterGroup waterGroup;
-	THParticleRope ropeGroup;
+	THRopeGroup ropeGroup;
 	//THFlameGroup flameGroup;
 
 	THImage groundTileImage;
-
-	THParticle *mparticle,*mparticle2;
 	
 	GameFrame():engine(THVector2(0.0f,-5.0f))
 	{
@@ -64,23 +65,22 @@ public:
 	void Action(THFrame* callFrame,void* data)
 	{
 		engine.Load(THVector2(-0.0f,-0.0f),THVector2(7.2f,12.8f),0.80f);
+		engine.LoadCellMap(54,96);
 		LoadGroups();
 
 		ParseFile();
-		//ParseLevelFromFile("D:/lvd.dat");
 
 		engine.TestStep(1.0f/100.0f,10);
 	}
 
-	THVector2 mp,mp2;
 	void OnEnterFrame()
 	{
-		/*
-		mparticle->force+=20000.0f*(mp-mparticle->position);
-		mparticle2->force+=20000.0f*(mp2-mparticle2->position);
-		ropeGroup.Step(200.0f);
-		*/
-		engine.Step(THDeltaTime);
+		const THTimeStep step(THDeltaTime);
+		ropeGroup.Step(step.dt_inv);
+		engine.Step(step);
+
+		//float theta=THRandf(0.0f,TH_2PI);
+		//engine.AddParticle(&waterGroup,THVector2(1.0f,10.0f)+THRandf(0.0f,1.0f)*THVector2(cosf(theta),sinf(theta)));
 		
 		//lightmanager.ParticleTest(&waterGroup);
 		//eball.Step();
@@ -91,36 +91,41 @@ public:
 	}
 
 	void RenderBoundary();
-	void RenderFluid(const THParticleGroup& group);
+	void RenderFluid(const THParticleGroup& group,const THVector3& color);
 	//void RenderSteam();
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
+		//DrawObjects(0,1);
+
 		oneVBO.BeginDrawing();
 
 
-		RenderFluid(waterGroup);
+		RenderFluid(waterGroup,THVector3(1.0f,1.0f,1.0f));
 		//RenderFlame(flameGroup);
-		RenderBoundary();
+		//RenderBoundary();
+		RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
 
 
 		oneVBO.EndDrawing();
 
-		//engine.DebugDraw();
+		engine.DebugDraw();
 	}
 
 	void OnTouchDown(const THVector2& p)
 	{
-		//mp=p;
+		ropeGroup.OnTouchDown(p);
 	}
 	void OnTouchMove(const THVector2& p,const THVector2& delta)
 	{
-		//mp=p;
+		ropeGroup.OnTouchMove(p);
+		//boundaryGroup.Create(p,0.3f);
 		//boundaryGroup.Delete(p,0.4f);
 		//bridgeGroup.AddNew(THVector2(x,y));
 	}
 	void OnTouchUp(const THVector2& p)
 	{
+		ropeGroup.OnTouchUp(p);
 	}
 };
 

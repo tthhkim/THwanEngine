@@ -36,13 +36,12 @@ void THFluidEngine::Load(const THVector2& ming,const THVector2& maxg,float smoot
 	GetGridPos(m_outposition,cx,cy);
 	outgrid->Init(cx,cy);
 }
-/*
 void THFluidEngine::LoadCellMap(int w,int h)
 {
 	m_cellWidth=w;
 	m_cellHeight=h;
 
-	m_cellMapScale=THVector2((float)w,(float)h)/(maxGrid.x-minGrid.x);
+	m_cellMapScale=THVector2((float)w,(float)h)/(m_maxgrid-m_mingrid);
 
 	const size_t size=m_cellWidth*m_cellHeight;
 	m_cellCount=size;
@@ -56,19 +55,18 @@ void THFluidEngine::LoadCellMap(int w,int h)
 
 		for(j=0;j<m_cellHeight;++j)
 		{
-			THCell& bound=m_cellBuffer[i*m_cellHeight + j];
+			THCell& bound=m_cellBuffer[GetCellIndex(i,j)];
 			bound.particle=0;
 			//bound.layer=0xffffffff;
 			bound.position.Set
 				(
-				((float)i+0.5f)*invBoundaryMapScale.x + minGrid.x,
-				((float)j+0.5f)*invBoundaryMapScale.y + minGrid.y
+				((float)i+0.5f)*invBoundaryMapScale.x + m_mingrid.x,
+				((float)j+0.5f)*invBoundaryMapScale.y + m_mingrid.y
 				);
 		}
 	}
 	//memset(boundaryBuffer,0,sizeof(THBoundaryType)*size);
 }
-*/
 void THFluidEngine::FreeAll()
 {
 	if(gbuf)
@@ -79,13 +77,11 @@ void THFluidEngine::FreeAll()
 		gbuf=0;
 		grids=0;
 	}
-	/*
 	if(m_cellBuffer)
 	{
 		free(m_cellBuffer);
 		m_cellBuffer=0;
 	}
-	*/
 	for(unsigned int i=0;i<groups.num;++i)
 	{
 		THParticleGroup *group=groups.arr[i];
@@ -201,7 +197,6 @@ void THFluidEngine::QueryCircle(const THVector2& position,float radius,THParticl
 		}
 	}
 }
-/*
 void THFluidEngine::QueryCellCircle(const THVector2& position,float radius,THCellQuery *callback,void *data)
 {
 	int minx,miny,maxx,maxy;
@@ -225,7 +220,6 @@ void THFluidEngine::QueryCellCircle(const THVector2& position,float radius,THCel
 		}
 	}
 }
-*/
 void THFluidEngine::FixGridAndInit()
 {
 	THParticle *particle,*nextp;
@@ -422,8 +416,7 @@ void THFluidEngine::ApplyForceAndAdvect(const THTimeStep& step)
 {
 	for(unsigned int i=0;i<groups.num;++i)
 	{
-		THParticleGroup *group=groups.arr[i];
-		group->ApplyForceAndAdvect(step);
+		groups.arr[i]->ApplyForceAndAdvect(step);
 	}
 }
 void THFluidEngine::TestStep(float dt,unsigned int count)

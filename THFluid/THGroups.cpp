@@ -49,6 +49,14 @@ bool THBoundaryGroup::QueryCallback(THParticle *particle,void *data)
 	delete particle;
 	return true;
 }
+bool THBoundaryGroup::QueryCellCallback(THCell *cell,void *data)
+{
+	if(cell->particle==0)
+	{
+		cell->particle=m_engine->AddParticle(this,cell->position);
+	}
+	return true;
+}
 
 void THWheelBody::Load()
 {
@@ -126,66 +134,4 @@ void THFlameGroup::CreateNew(const THVector2& position)
 {
 	float theta=THRandf(-TH_PI,TH_PI);
 	m_engine->AddParticle(this,position + THRandf(0.0f,m_radius)*THVector2(cosf(theta),sinf(theta)));
-}
-
-
-
-void THParticleRope::Load(unsigned int springcap)
-{
-	SetCollideEach(false);
-	SetMass(10.0f);
-	//SetStatic(false);
-	SetPressure(10.0f,0.5f,10.0f);
-	SetAutoRemove(false);
-
-	layer=(1<<DEFAULT_BIT);
-
-	m_springs.Load(springcap);
-}
-void THParticleRope::LoadParticles(const THVector2 *arr,unsigned int count,THParticlePair *endp)
-{
-	THParticle *curp;
-
-	curp=m_engine->AddParticle(this,arr[0]);
-	if(endp)
-	{
-		endp->p1=curp;
-	}
-	for(unsigned int i=1;i<count;++i)
-	{
-		curp=m_engine->AddParticle(this,arr[i]);
-	}
-	if(endp)
-	{
-		endp->p2=curp;
-	}
-}
-void THParticleRope::Step(float k)
-{
-	for(unsigned int i=0;i<m_springs.num;++i)
-	{
-		m_springs.arr[i].Step(k);
-	}
-}
-void THParticleRope::LoadSprings(float thre)
-{
-	float tsq=thre*thre;
-	float lsq;
-	THParticle *p1,*p2;
-	p1=list;
-	while(p1)
-	{
-		p2=p1->GetNext();
-		while(p2)
-		{
-			lsq=(p1->position-p2->position).LengthSquared();
-			if(lsq<tsq)
-			{
-				m_springs.Push(THParticleSpring(p1,p2));
-			}
-
-			p2=p2->GetNext();
-		}
-		p1=p1->GetNext();
-	}
 }

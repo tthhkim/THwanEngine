@@ -16,39 +16,32 @@
 #include <GLES2/gl2.h>
 
 
-static THTimeType THFrameRate;
+static long long THFrameRate;
 
 #if THPLATFORM==THPLATFORM_ANDROID
-
 timespec timesp;
-THTimeType GetCurrentTimeMicro()
+long long GetCurrentTimeMicro()
 {
 	clock_gettime(CLOCK_MONOTONIC,&timesp);
 	return timesp.tv_sec*1000000l + timesp.tv_nsec*1e-3f;
 }
-void SetFrameRate(float _frameRate)
-{
-	THFrameRate=1000000000l/_frameRate;
-}
 #elif THPLATFORM==THPLATFORM_WINDOWS
-
-
 #include <Windows.h>
 
 static LARGE_INTEGER timesp;
 static double THTimeFrequency;
 
-THTimeType GetCurrentTimeMicro()
+long long GetCurrentTimeMicro()
 {
 	QueryPerformanceCounter(&timesp);
 	return (long long)((double)timesp.QuadPart*THTimeFrequency);
 }
-void SetFrameRate(float _frameRate)
-{
-	THFrameRate=(THTimeType)(1000000.0f/_frameRate);
-}
 #endif
 
+void SetFrameRate(float _frameRate)
+{
+	THFrameRate=(long long)(1000000.0f/_frameRate);
+}
 //randomize random field
 static void Randomize()
 {
@@ -69,40 +62,17 @@ static void Randomize()
 }
 
 
-static THTimeType THLastNanosec;
+static long long THLastNanosec;
 static bool THisRunning;
 
 #ifndef NDEBUG
 extern float cFPS=0.0f;
 #endif
 
-#if THPLATFORM==THPLATFORM_ANDROID
-extern EGLDisplay eglDisplay;
 static void RenderEnterFrame()
 {
-
-	clock_gettime(CLOCK_MONOTONIC,&timesp);
-	const long ct=timesp.tv_sec*1000000000l + timesp.tv_nsec;
-	const long gap=ct-THLastNanosec;
-
-#ifndef NDEBUG
-	cFPS=(float)((double)1000000000/(double)gap);
-#endif
-
-	if(gap>THFrameRate)
-	{
-		THDeltaTime=(float)((double)gap*1e-9);
-		if(THisRunning){MainEnterFrame();}
-		if(eglDisplay!=EGL_NO_DISPLAY){OnDrawFrame();}
-		THLastNanosec=ct;
-	}
-}
-#elif THPLATFORM==THPLATFORM_WINDOWS
-
-static void RenderEnterFrame()
-{
-	const THTimeType ct=GetCurrentTimeMicro();
-	const THTimeType gap=ct-THLastNanosec;
+	const long long ct=GetCurrentTimeMicro();
+	const long long gap=ct-THLastNanosec;
 
 
 #ifndef NDEBUG
@@ -117,11 +87,12 @@ static void RenderEnterFrame()
 		THLastNanosec=ct;
 	}
 }
-
-#endif
-
-static THVector2 Touch_last;
-
+static void InitVars()
+{
+	THisRunning=false;
+	SetFrameRate(60.0f);
+	Randomize();
+}
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android/input.h>
 #include <android/keycodes.h>
@@ -143,17 +114,13 @@ static int32_t handle_input(struct android_app* app, AInputEvent* event) {
 		switch(action)
 		{
 		case AMOTION_EVENT_ACTION_DOWN:
-			currentFrame->OnTouchDown(p);
-			Touch_Point_Down(p);
-			Touch_last=p;
+			currentFrame->FrameDown(p);
 			break;
 		case AMOTION_EVENT_ACTION_UP:
-			currentFrame->OnTouchUp(p);
-			Touch_Point_Up(p);
+			currentFrame->FrameUp(p);
 			break;
 		case AMOTION_EVENT_ACTION_MOVE:
-			currentFrame->OnTouchMove(p,p-Touch_last);
-			Touch_last=p;
+			currentFrame->FrameMove(p);
 			break;
 		}
 		return 1;
@@ -188,10 +155,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 			THLog("Gained Focus()");
 
 			THisRunning=true;
-
-			clock_gettime(CLOCK_MONOTONIC,&timesp);
-
-			THLastNanosec=timesp.tv_sec*1000000000l + timesp.tv_nsec;
+			THLastNanosec=GetCurrentTimeMicro();
 
 			OnResume();
 			break;
@@ -233,14 +197,12 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 AAssetManager* assetManager;
 void android_main(struct android_app* state)
 {
+	InitVars();
+
 	THLog("OnCreate()");
 	app_dummy();
 
 	assetManager=state->activity->assetManager;
-
-	SetFrameRate(60.0f);
-
-	Randomize();
 
 	OnCreate(state);
 #ifndef NDEBUG
@@ -262,8 +224,7 @@ void android_main(struct android_app* state)
 	struct android_poll_source* source;
     int events;
 
-	clock_gettime(CLOCK_MONOTONIC,&timesp);
-	THLastNanosec=timesp.tv_sec*1000000000l + timesp.tv_nsec;
+	THLastNanosec=GetCurrentTimeMicro();
 	while (1) {
         while (ALooper_pollAll(0, NULL, &events,
                 (void**)&source) >= 0) {
@@ -322,8 +283,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		if(currentFrame->canTouch==false || isMouseDown==false){return 0;}
 		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
 		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
-		currentFrame->OnTouchMove(p,p-Touch_last);
-		Touch_last=p;
+		currentFrame->FrameMove(p);
 
 		return 1;
 	}
@@ -334,9 +294,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		isMouseDown=true;
 		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
 		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
-		currentFrame->OnTouchDown(p);
-		Touch_last=p;
-		Touch_Point_Down(p);
+		currentFrame->FrameDown(p);
 
 		return 1;
 	}
@@ -347,8 +305,7 @@ LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM wi
 		isMouseDown=false;
 		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
 		currentFrame->OnTouchEvent((THMotionEvent*)message,longWindowParameters,p);
-		currentFrame->OnTouchUp(p);
-		Touch_Point_Up(p);
+		currentFrame->FrameUp(p);
 
 		return 1;
 	}
@@ -437,9 +394,8 @@ static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeW
 
 int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
 {
-	Randomize();
+	InitVars();
 
-	SetFrameRate(60.0f);
 	AllocConsole();
 	using namespace std;
 	freopen("conin$","r",stdin);

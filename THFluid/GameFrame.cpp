@@ -1,10 +1,12 @@
 #include "GameFrame.h"
 
+
+
 void GameFrame::LoadGroups()
 {
 	boundaryGroup.Load();
 	waterGroup.Load();
-	ropeGroup.Load(64);
+	ropeGroup.Load(6);
 
 	
 	engine.AddParticleGroup(&boundaryGroup);
@@ -37,7 +39,7 @@ void GameFrame::SetViewport(const THVector2& minp,const THVector2& maxp)
 void GameFrame::ParseFile()
 {
 	THFluidParser *parser=new THFluidParser;
-	parser->AddSet(0,1,&boundaryGroup,1,true);
+	//parser->AddSet(0,1,&boundaryGroup,1,true);
 	parser->AddSet(10,11,&waterGroup,2);
 	parser->AddSet(20,21,&waterGroup,2);
 
@@ -50,25 +52,6 @@ void GameFrame::ParseFile()
 	free(data);
 	delete parser;
 
-	/*
-	THVector2Array varr0(3);
-	THVector2Array varr(64);
-
-	varr0.Push(THVector2(3.6f,10.0f));
-	varr0.Push(THVector2(3.6f,5.0f));
-	varr0.Bridge(varr,0.2f);
-
-	
-
-	THParticlePair pair;
-	ropeGroup.LoadParticles(varr.arr,varr.num,&pair);
-	varr-=THVector2(0.2f,0.0f);
-	ropeGroup.LoadParticles(varr.arr,varr.num,0);
-	ropeGroup.LoadSprings(0.6f);
-	mparticle=pair.p1;
-	mparticle2=pair.p2;
-
-	mp.Set(1.00f,3.5f);
-	mp2.Set(6.2f,3.5f);
-	*/
+	ropeGroup.NewHanger()->position.Set(0.2f,6.4f);
+	ropeGroup.NewHanger()->position.Set(7.0f,6.4f);
 }

@@ -58,10 +58,10 @@ public:
 	void Load();
 	void Draw(const THImage& fbImage) const;
 
-	void SetColor(const THVector3& col,const THVector3& out)
+	void SetColor(const THVector3& col)
 	{
 		glUniform3f(colorHandler,col.x,col.y,col.z);
-		glUniform3f(outColorHandler,out.x,out.y,out.z);
+		//glUniform3f(outColorHandler,out.x,out.y,out.z);
 	}
 	void SetThreshold(float threshold)
 	{
@@ -74,7 +74,7 @@ public:
 protected:
 	GLint vertexHandler;
 
-	GLint colorHandler,outColorHandler;
+	GLint colorHandler;
 	GLint thresholdHandler,alphaHandler;
 };
 class THSteamRenderShader : public THProgram

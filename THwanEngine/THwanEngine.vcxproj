@@ -78,6 +78,7 @@
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
+    <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp" />
     <ClCompile Include="..\Includes\lodepng.cpp" />
     <ClCompile Include="..\THFluid\FluidShader.cpp" />
     <ClCompile Include="..\THFluid\GameFrame.cpp" />
@@ -87,6 +88,7 @@
     <ClCompile Include="..\THFluid\THFluidParser.cpp" />
     <ClCompile Include="..\THFluid\THGroups.cpp" />
     <ClCompile Include="..\THFluid\THLightGroup.cpp" />
+    <ClCompile Include="..\THFluid\THRopeGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THChar.h" />
@@ -107,6 +109,7 @@
     <ClInclude Include="..\THFluid\THGroups.h" />
     <ClInclude Include="..\THFluid\THLightGroup.h" />
     <ClInclude Include="..\THFluid\THParticleCallbacks.h" />
+    <ClInclude Include="..\THFluid\THRopeGroup.h" />
     <ClInclude Include="..\THPrivate.h" />
     <ClInclude Include="..\THSettings.h" />
   </ItemGroup>

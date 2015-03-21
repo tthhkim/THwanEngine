@@ -49,24 +49,7 @@ public:
 			arr[i]=rot*arr[i];
 		}
 	}
-	void Bridge(THArray<THVector2>& dest,float gap)
-	{
-		float left=0.0f,k;
-		THVector2 rel;
-		for(unsigned int i=1;i<num;++i)
-		{
-			const THVector2& p0=arr[i-1];
-			rel=arr[i]-p0;
-			k=left;
-			left+=rel.Normalize();
-
-			for(k;k<left;k+=gap)
-			{
-				dest.Push(p0 + (rel*k));
-			}
-			left=k-left;
-		}
-	}
+	void Bridge(THArray<THVector2>& dest,float gap);
 protected:
 };
 

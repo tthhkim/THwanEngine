@@ -2,7 +2,11 @@
 
 void GameFrame::LoadTextures()
 {
-	
+	notebgImage.LoadFile("notebg.png",TH_PNG_RGB);
+	notebgTexture.Set(&notebgImage);
+	notebgObject.texture=&notebgTexture;
+	notebgObject.size.Set(20.0f,20.0f);
+	AddChild(&notebgObject);
 }
 
 #define CIRCLE_SIZE 64
@@ -61,11 +65,11 @@ void GameFrame::LoadRender()
 
 	shader.Load();
 	//shader.SyncProjection(engine.GetMinGrid(),engine.GetMaxGrid());
-	shader.SetSize(0.6f);
+	shader.SetSize(0.4f);
 	shader.SetTailSize(0.2f);
 
 	rshader.Load();
-	rshader.SetColor(THVector3(1.0f,1.0f,1.0f),THVector3(0.8f,0.8f,0.8f));
+	rshader.SetColor(THVector3(0.0f,0.0f,0.0f));
 	rshader.SetThreshold(0.7f);
 	rshader.SetAlpha(1.0f);
 
@@ -114,7 +118,7 @@ void GameFrame::RenderBoundary()
 	brshader.Draw(fluidRenderImage,groundTileImage);
 	//framebaseFBO.EndDrawing();
 }
-void GameFrame::RenderFluid(const THParticleGroup& group)
+void GameFrame::RenderFluid(const THParticleGroup& group,const THVector3& color)
 {
 	THParticle *particle;
 
@@ -134,6 +138,7 @@ void GameFrame::RenderFluid(const THParticleGroup& group)
 
 	//framebaseFBO.BeginDrawing();
 	rshader.Use();
+	rshader.SetColor(color);
 	rshader.Draw(fluidRenderImage);
 	//framebaseFBO.EndDrawing();
 }

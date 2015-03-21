@@ -29,7 +29,7 @@ public:
 protected:
 };
 
-class THBoundaryGroup : public THParticleGroup,public THParticleQuery
+class THBoundaryGroup : public THParticleGroup,public THParticleQuery,public THCellQuery
 {
 public:
 	void Load();
@@ -37,9 +37,14 @@ public:
 	{
 		m_engine->QueryCircle(position,radius,(1<<BOUNDARY_BIT),this,0);
 	}
+	void Create(const THVector2& p,float r)
+	{
+		m_engine->QueryCellCircle(p,r,this,0);
+	}
 protected:
 
 	bool QueryCallback(THParticle *particle,void *data);
+	bool QueryCellCallback(THCell *cell,void *data);
 };
 
 class THWheelBody : public THParticleBody , public THParticleCollisionListener
@@ -72,47 +77,5 @@ public:
 protected:
 	float m_radius;
 	float m_lasttime,m_invtime;
-};
-
-class THParticleSpring
-{
-public:
-	THParticle *p1,*p2;
-	float l0;
-
-	THParticleSpring(THParticle *_p1,THParticle *_p2)
-	{
-		p1=_p1;
-		p2=_p2;
-		
-		l0=(p1->position-p2->position).Length();
-	}
-	void Step(float coeff)
-	{
-		THVector2 rel=p1->position-p2->position;
-		float l=rel.Normalize();
-
-		float k1=l-l0;
-		float k2=1.0f-l0/(l+0.01f);
-
-		//rel=rel*(k1*300.0f + k2*100.0f);
-		//rel=rel*k1*4500.0f;
-		rel=rel*k2*1500.0f;
-		
-		p2->force+=rel;
-		p1->force-=rel;
-	}
-protected:
-};
-
-class THParticleRope : public THParticleGroup
-{
-public:
-	void Load(unsigned int springcap);
-	void LoadParticles(const THVector2 *arr,unsigned int count,THParticlePair *endp);
-	void Step(float k);
-	void LoadSprings(float thre);
-protected:
-	THArray<THParticleSpring> m_springs;
 };
 #endif
