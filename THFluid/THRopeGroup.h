@@ -4,6 +4,7 @@
 #include <THFluid/THGroups.h>
 class THRopeHanger;
 class THRopeGroup;
+class THRopeHangerDef;
 class THRopeSpring
 {
 public:
@@ -31,17 +32,17 @@ public:
 		float delta=(l-l0); //extension is positive
 		float p1m=p1->GetGroup()->GetMass();
 		float p2m=p2->GetGroup()->GetMass();
-		//rel*=delta*invdt*invdt*p1m*p2m/(p1m+p2m);
-		rel*=(delta*0.5f);
-
-		//p1->force-=rel;
-		//p2->force+=rel;
+		rel*=delta*p1m*p2m/(p1m+p2m);
+		//rel*=(delta*0.5f);
 		
-		p1->position-=rel;
-		p2->position+=rel;
+		p1m=p1->GetGroup()->GetInvMass();
+		p2m=p2->GetGroup()->GetInvMass();
+		p1->position-=rel*p1m;
+		p2->position+=rel*p2m;
 		rel*=invdt;
-		p1->velocity-=rel;
-		p2->velocity+=rel;
+		p1->velocity-=rel*p1m;
+		p2->velocity+=rel*p2m;
+		
 		
 	}
 protected:
@@ -50,6 +51,7 @@ class THRope : public THLinkedNode
 {
 	friend class THRopeGroup;
 	friend class THRopeHanger;
+	friend class THRopeHangerDef;
 public:
 	THRope(unsigned int cap):m_springs(cap)
 	{
@@ -64,17 +66,30 @@ protected:
 
 	void Delete();
 };
+class THRopeHangerDef : public THLinkedNode
+{
+public:
+	THParticle *GetLinkedParticle()
+	{
+		return m_isleft?m_rope->m_p1:m_rope->m_p2;
+	}
+protected:
+	unsigned int m_isleft;
+	THRope *m_rope;
+};
 class THRopeHanger
 {
 	friend class THRopeGroup;
 	friend class THRope;
 public:
 	THVector2 position;
+	THParticle *syncedparticle;
 
 	THRopeHanger()
 	{
 		m_linked=0;
 		m_linkedp=0;
+		syncedparticle=0;
 	}
 	bool HitTest(const THVector2& p);
 	bool IsHanged()
@@ -83,6 +98,7 @@ public:
 	}
 	void Step(float dtinv)
 	{
+		if(syncedparticle){position=syncedparticle->position;}
 		if(m_linkedp)
 		{
 			THVector2 delta=(position-m_linkedp->position)*dtinv;
@@ -92,6 +108,7 @@ public:
 	}
 
 protected:
+	THLinkedList m_ropes;
 	THRope *m_linked;
 	THParticle *m_linkedp;
 };

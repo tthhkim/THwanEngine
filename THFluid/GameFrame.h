@@ -118,7 +118,12 @@ public:
 	}
 	void OnTouchMove(const THVector2& p,const THVector2& delta)
 	{
-		ropeGroup.OnTouchMove(p);
+		if(ropeGroup.OnTouchMove(p)==false)
+		{
+			//engine.AddParticle(&waterGroup,p+THVector2(THRandf(-0.3f,0.3f),THRandf(-0.3f,0.3f)));
+			//engine.AddParticle(&waterGroup,p+THVector2(THRandf(-0.3f,0.3f),THRandf(-0.3f,0.3f)));
+		}
+
 		//boundaryGroup.Create(p,0.3f);
 		//boundaryGroup.Delete(p,0.4f);
 		//bridgeGroup.AddNew(THVector2(x,y));

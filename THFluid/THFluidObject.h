@@ -132,6 +132,7 @@ public:
 	void SetGravityScale(float s){gravityScale=s;}
 	void SetCollideEach(bool isCollide){m_collideEach=isCollide;}
 	inline float GetMass() const{return m_mass;}
+	inline float GetInvMass() const{return m_invMass;}
 	void SetCollisionListener(THParticleCollisionListener *listener){collisionListener=listener;}
 	inline THFluidEngine* GetEngine() const{return m_engine;}
 	inline void SetAutoRemove(bool ar){m_autoremove=ar;}
