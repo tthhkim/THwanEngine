@@ -55,6 +55,8 @@ class THRope : public THLinkedNode
 public:
 	THRope(unsigned int cap):m_springs(cap)
 	{
+		m_rnext=0;
+		m_rprev=0;
 	}
 
 	void Step(float invdt);
@@ -64,18 +66,9 @@ protected:
 	THRopeHanger *m_left,*m_right;
 	THArray<THRopeSpring> m_springs;
 
-	void Delete();
-};
-class THRopeHangerDef : public THLinkedNode
-{
-public:
-	THParticle *GetLinkedParticle()
-	{
-		return m_isleft?m_rope->m_p1:m_rope->m_p2;
-	}
-protected:
-	unsigned int m_isleft;
-	THRope *m_rope;
+	THRope *m_rnext,*m_rprev;
+
+	void DeleteParticles();
 };
 class THRopeHanger
 {
@@ -87,30 +80,28 @@ public:
 
 	THRopeHanger()
 	{
-		m_linked=0;
-		m_linkedp=0;
 		syncedparticle=0;
 	}
 	bool HitTest(const THVector2& p);
+	void AddRope(THRope *r)
+	{
+		m_ropes.Push(r);
+	}
+	void DeleteRope(THRope *r)
+	{
+		m_ropes.Delete(r);
+	}
 	bool IsHanged()
 	{
-		return m_linked!=0;
+		return m_ropes.GetList()!=0;
 	}
 	void Step(float dtinv)
 	{
 		if(syncedparticle){position=syncedparticle->position;}
-		if(m_linkedp)
-		{
-			THVector2 delta=(position-m_linkedp->position)*dtinv;
-			m_linkedp->position=position;
-			m_linkedp->velocity+=delta;
-		}
 	}
 
 protected:
 	THLinkedList m_ropes;
-	THRope *m_linked;
-	THParticle *m_linkedp;
 };
 
 
@@ -119,8 +110,10 @@ class THRopeGroup : public THParticleGroup
 {
 public:
 	void Load(unsigned int hangerscap);
-	THRope* LoadRope(const THVector2 *arr,unsigned int count);
+	void AddRope(THRope *r);
 	void DeleteRope(THRope *r);
+	THRope* LoadRope(const THVector2 *arr,unsigned int count);
+	void ClearHanger(THRopeHanger *h);
 
 	void Step(float invdt);
 
@@ -138,7 +131,8 @@ public:
 		return m_hangers;
 	}
 protected:
-	THLinkedList m_ropes;
+	THRope *m_ropes;
+	//THLinkedList m_ropes;
 
 	THArray<THRopeHanger> m_hangers;
 	THRopeHanger *m_clicked;

@@ -6,19 +6,21 @@ bool THRopeHanger::HitTest(const THVector2& p)
 }
 void THRope::Step(float invdt)
 {
-	THLog("Springs step %d",m_springs.num);
+	THVector2 delta=(m_left->position-m_p1->position)*invdt;
+	m_p1->position=m_left->position;
+	m_p1->velocity+=delta;
+
+	delta=(m_right->position-m_p2->position)*invdt;
+	m_p2->position=m_right->position;
+	m_p2->velocity+=delta;
+
 	for(unsigned int i=0;i<m_springs.num;++i)
 	{
 		m_springs.arr[i].Step(invdt);
 	}
 }
-void THRope::Delete()
+void THRope::DeleteParticles()
 {
-	m_left->m_linked=0;
-	m_left->m_linkedp=0;
-	m_right->m_linked=0;
-	m_right->m_linkedp=0;
-
 	THParticle *p=GetList(),*np;
 	while(p)
 	{
@@ -47,6 +49,7 @@ void THRopeGroup::Load(unsigned int hangerscap)
 	m_temparr2.Load(64);
 
 	m_clicked=0;
+	m_ropes=0;
 }
 THRope* THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
 {
@@ -68,11 +71,21 @@ THRope* THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
 
 	return rope;
 }
-void THRopeGroup::DeleteRope(THRope *r)
+void THRopeGroup::ClearHanger(THRopeHanger *h)
 {
-	m_ropes.Delete(r);
-	r->Delete();
-	delete r;
+	THRope *r=(THRope*)h->m_ropes.GetList(),*nr;
+	while(r)
+	{
+		nr=(THRope*)r->GetLinkedNext();
+
+		DeleteRope(r);
+		r->DeleteParticles();
+		r->m_left->DeleteRope(r);
+		r->m_right->DeleteRope(r);
+		delete r;
+
+		r=nr;
+	}
 }
 void THRopeGroup::Step(float invdt)
 {
@@ -80,19 +93,18 @@ void THRopeGroup::Step(float invdt)
 	{
 		m_hangers.arr[i].Step(invdt);
 	}
-	THRope *r=(THRope*)m_ropes.GetList();
+	THRope *r=m_ropes;
 	while(r)
 	{
-		THLog("RopeStep");
 		r->Step(invdt);
-		r=(THRope*)r->GetLinkedNext();
+		r=r->m_rnext;
 	}
 }
 THRopeHanger *THRopeGroup::OnTouchDown(const THVector2& p)
 {
 	for(unsigned int i=0;i<m_hangers.num;++i)
 	{
-		if(m_hangers.arr[i].HitTest(p)&&(m_hangers.arr[i].IsHanged()==false))
+		if(m_hangers.arr[i].HitTest(p))
 		{
 			THLog("Hanger Chosen : %d",i);
 			m_clicked=&m_hangers.arr[i];
@@ -127,26 +139,32 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 	for(unsigned int i=0;i<m_hangers.num;++i)
 	{
 		THRopeHanger& hanger=m_hangers.arr[i];
-		if(hanger.HitTest(p)&&(&hanger!=m_clicked)&&(hanger.IsHanged()==false))
+		if(hanger.HitTest(p))
 		{
 			clicked=&hanger;
-
-			THLog("Hanger Chosen Rope making.. : %d",i);
+			if(&hanger==m_clicked)
+			{
+				THLog("Hanger Chosen Rope deleting.. : %d",i);
+				ClearHanger(m_clicked);
+				break;
+			}else
+			{
+				THLog("Hanger Chosen Rope making.. : %d",i);
 			
-			m_temparr2.Clear();
-			m_temparr.Bridge(m_temparr2,0.24f);
+				m_temparr2.Clear();
+				m_temparr.Bridge(m_temparr2,0.24f);
 
-			THRope *r=LoadRope(m_temparr2.arr,m_temparr2.num);
+				THRope *r=LoadRope(m_temparr2.arr,m_temparr2.num);
 
-			m_clicked->m_linked=r;
-			m_clicked->m_linkedp=r->m_p1;
-			hanger.m_linked=r;
-			hanger.m_linkedp=r->m_p2;
-			r->m_left=m_clicked;
-			r->m_right=&hanger;
+				m_clicked->AddRope(r);
+				hanger.AddRope(r);
+				r->m_left=m_clicked;
+				r->m_right=&hanger;
 
-			m_ropes.Push(r);
-			break;
+				AddRope(r);
+				
+				break;
+			}
 		}
 	}
 	m_clicked=0;
@@ -154,4 +172,27 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 	m_temparr2.Clear();
 
 	return clicked;
+}
+void THRopeGroup::AddRope(THRope *r)
+{
+	r->m_rnext=m_ropes;
+	if(m_ropes)
+	{
+		m_ropes->m_rprev=r;
+	}
+	m_ropes=r;
+}
+void THRopeGroup::DeleteRope(THRope *r)
+{
+	if(r->m_rprev)
+	{
+		r->m_rprev->m_rnext=r->m_rnext;
+	}else
+	{
+		m_ropes=r->m_rnext;
+	}
+	if(r->m_rnext)
+	{
+		r->m_rnext->m_rprev=r->m_rprev;
+	}
 }
