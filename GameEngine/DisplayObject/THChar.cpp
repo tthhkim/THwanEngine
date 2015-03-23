@@ -7,8 +7,9 @@ void THString::Refresh()
 	{
 		for(unsigned int i=0;i<m_children.num;++i)
 		{
-			free(m_children.arr[i]);
+			delete m_children.arr[i];
 		}
+		m_children.Clear();
 	}
 }
 void THString::SetString(const THChar** charArr)

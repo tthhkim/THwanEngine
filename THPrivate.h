@@ -86,21 +86,25 @@ public:
 	GLint projectMatrixHandler;
 	GLint colorAddHandler,colorMultiplyHandler;
 
+	void PreDraw() const
+	{
+		Use();
+		glEnableVertexAttribArray(vertexHandler);
+		THZeroVertices.BeginDrawing();
+		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
+	}
+	void PostDraw() const
+	{
+		glDisableVertexAttribArray(vertexHandler);
+		THZeroVertices.EndDrawing();
+	}
 	inline void EnableVertex() const
 	{
 		glEnableVertexAttribArray(vertexHandler);
 	}
-	inline void EnableTexture() const
-	{
-		glEnableVertexAttribArray(textureHandler);
-	}
 	inline void DisableVertex() const
 	{
 		glDisableVertexAttribArray(vertexHandler);
-	}
-	inline void DisableTexture() const
-	{
-		glDisableVertexAttribArray(textureHandler);
 	}
 	inline void SetRotation(float c,float s) const
 	{
@@ -113,6 +117,14 @@ public:
 	inline void SetPosition(float x,float y) const
 	{
 		glVertexAttrib2f(positionHandler,x,y);
+	}
+	inline void SetCenter(const GLfloat *v) const
+	{
+		glVertexAttrib2fv(centerHandler,v);
+	}
+	inline void SetTexture(const THVector2& tp,const THVector2& ts)
+	{
+		glVertexAttrib4f(textureHandler,tp.x,tp.y,ts.x,ts.y);
 	}
 	inline void SetRotation(const GLfloat *v) const
 	{
