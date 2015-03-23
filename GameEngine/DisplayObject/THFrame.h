@@ -58,6 +58,9 @@ public:
 	{
 		DrawObjects(0,objectList.num);
 	}
+	void PreDraw();
+	void PostDraw();
+	void DrawTexture(const THVector2& p,const THVector2& center,const THVector2& size,const THRot2& rot,const THTexture *tex);
 #ifndef NDEBUG
 #endif
 
