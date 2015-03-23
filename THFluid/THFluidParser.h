@@ -2,78 +2,60 @@
 #define TH_FLUID_PARSER
 
 #include <THFluid/THFluid.h>
+#include <GameEngine/Util/THVectorArray.h>
+#include <THPrivate.h>
 
 
 
-class THParseSetGroup
-{
-public:
-	int dataMin,dataMax;
-	THParseSetGroup *next,*prev;
-	bool isStatic;
-	THParticleGroup *pointer;
-	int gap;
-
-	THParseSetGroup()
-	{
-		next=0;
-		prev=0;
-	}
-};
-class THParseSetPoint
+class THParseSetGroup : public THLinkedNode
 {
 public:
 	int data;
-	THVector2 *pointer;
-	THParseSetPoint *next,*prev;
-
-	THParseSetPoint()
-	{
-		next=prev=0;
-	}
+	bool isStatic;
+	THParticleGroup *pointer;
+	int gap;
+};
+class THParseSetPoint : public THLinkedNode
+{
+public:
+	int data;
+	THVector2Array *pointer;
 };
 
 class THFluidParser
 {
 public:
-	THFluidParser()
-	{
-		m_listGroup=0;
-		m_listPoint=0;
-	}
 	~THFluidParser()
 	{
-		if(m_listGroup)
+		THParseSetGroup *p=(THParseSetGroup*)m_listGroup.GetList(),*np;
+		while(p)
 		{
-			THParseSetGroup *p=m_listGroup,*np;
-			while(p)
-			{
-				np=p->next;
-				delete p;
-				p=np;
-			}
+			np=(THParseSetGroup*)p->GetLinkedNext();
+
+			delete p;
+			p=np;
 		}
-		if(m_listPoint)
+
+		THParseSetPoint *set=(THParseSetPoint*)m_listPoint.GetList(),*ns;
+		while(set)
 		{
-			THParseSetPoint *p=m_listPoint,*np;
-			while(p)
-			{
-				np=p->next;
-				delete p;
-				p=np;
-			}
+			ns=(THParseSetPoint*)set->GetLinkedNext();
+			delete set;
+			set=ns;
 		}
 	}
 
-	void AddSet(int dataMin,int dataMax,THParticleGroup *group,int gap=1,bool isStatic=false);
-	void AddSet(int data,THVector2 *point);
+	void AddSet(int data,THParticleGroup *group,int gap=1,bool isStatic=false);
+	void AddSet(int data,THVector2Array *point);
 	void Parse(THFluidEngine *_engine,unsigned char *data,size_t w,size_t h);
-	void CheckData(int data,const THVector2& pos,int x,int y);
+	
 
 protected:
-	THParseSetGroup *m_listGroup;
-	THParseSetPoint *m_listPoint;
+	THLinkedList m_listGroup;
+	THLinkedList m_listPoint;
 	THFluidEngine *engine;
+
+	void CheckData(int data,const THVector2& pos,int x,int y);
 };
 
 #endif

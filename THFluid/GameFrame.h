@@ -65,7 +65,7 @@ public:
 	void Action(THFrame* callFrame,void* data)
 	{
 		engine.Load(THVector2(-0.0f,-0.0f),THVector2(7.2f,12.8f),0.80f);
-		engine.LoadCellMap(54,96);
+		//engine.LoadCellMap(54,96);
 		LoadGroups();
 
 		ParseFile();
@@ -92,11 +92,13 @@ public:
 
 	void RenderBoundary();
 	void RenderFluid(const THParticleGroup& group,const THVector3& color);
+	void RenderBoundary(const THParticleGroup& group,const THVector3& color);
+	void RenderBoundary(const THVector2 *arr,unsigned int count,const THVector3& color);
 	//void RenderSteam();
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
-		//DrawObjects(0,1);
+		DrawObjects(0,1);
 
 		oneVBO.BeginDrawing();
 
@@ -104,12 +106,15 @@ public:
 		RenderFluid(waterGroup,THVector3(1.0f,1.0f,1.0f));
 		//RenderFlame(flameGroup);
 		//RenderBoundary();
-		RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
+		//RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
+		RenderBoundary(ropeGroup,THVector3(1.0f,1.0f,1.0f));
+		const THVector2Array& rtemparr=ropeGroup.GetTempArr();
+		RenderBoundary(rtemparr.arr,rtemparr.num,THVector3(1.0f,1.0f,1.0f));
 
 
 		oneVBO.EndDrawing();
 
-		engine.DebugDraw();
+		//engine.DebugDraw();
 	}
 
 	void OnTouchDown(const THVector2& p)

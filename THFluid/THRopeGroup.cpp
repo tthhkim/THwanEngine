@@ -37,21 +37,22 @@ void THRope::DeleteParticles()
 void THRopeGroup::Load(unsigned int hangerscap)
 {
 	SetCollideEach(false);
-	SetMass(10.0f);
+	SetMass(20.0f);
 	//SetStatic(false);
 	SetPressure(10.0f,0.5f,10.0f);
 	SetAutoRemove(false);
+	SetViscosity(10.0f);
 
 	layer=(1<<DEFAULT_BIT);
 
 	m_hangers.Load(hangerscap);
 	m_temparr.Load(64);
-	m_temparr2.Load(64);
+	//m_temparr2.Load(64);
 
 	m_clicked=0;
 	m_ropes=0;
 }
-THRope* THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
+THRope* THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count,float l0)
 {
 	THRope *rope=new THRope(count);
 	THParticle *curp,*prevp;
@@ -63,7 +64,7 @@ THRope* THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
 	{
 		curp=m_engine->AddParticle(this,arr[i]);
 		curp->data.pointer=prevp;
-		rope->m_springs.Push(THRopeSpring(prevp,curp));
+		rope->m_springs.Push(THRopeSpring(prevp,curp,l0));
 		prevp=curp;
 	}
 	rope->m_p2=curp;
@@ -117,7 +118,7 @@ THRopeHanger *THRopeGroup::OnTouchDown(const THVector2& p)
 }
 THRopeHanger *THRopeGroup::OnTouchMove(const THVector2& p)
 {
-	if(m_clicked&&(m_temparr.GetLast()-p).LengthSquared()>0.1f*0.2f)
+	if(m_clicked&&(m_temparr.GetLast()-p).LengthSquared()>ROPE_GAP*ROPE_GAP)
 	{
 		m_temparr.Push(p);
 	}
@@ -151,17 +152,11 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 			{
 				THLog("Hanger Chosen Rope making.. : %d",i);
 			
-				m_temparr2.Clear();
-				m_temparr.Bridge(m_temparr2,0.24f);
+				m_temparr.Push(p);
+				//m_temparr2.Clear();
+				//m_temparr.Bridge(m_temparr2,ROPE_GAP);
 
-				THRope *r=LoadRope(m_temparr2.arr,m_temparr2.num);
-
-				m_clicked->AddRope(r);
-				hanger.AddRope(r);
-				r->m_left=m_clicked;
-				r->m_right=&hanger;
-
-				AddRope(r);
+				MakeRope(m_clicked,&hanger,m_temparr.arr,m_temparr.num);
 				
 				break;
 			}
@@ -169,7 +164,7 @@ THRopeHanger *THRopeGroup::OnTouchUp(const THVector2& p)
 	}
 	m_clicked=0;
 	m_temparr.Clear();
-	m_temparr2.Clear();
+	//m_temparr2.Clear();
 
 	return clicked;
 }
@@ -195,4 +190,40 @@ void THRopeGroup::DeleteRope(THRope *r)
 	{
 		r->m_rnext->m_rprev=r->m_rprev;
 	}
+}
+void THRopeGroup::MakeRope(THRopeHanger *h1,THRopeHanger *h2,const THVector2 *arr,unsigned int count)
+{
+	THRope *r=LoadRope(arr,count,ROPE_GAP);
+
+	h1->AddRope(r);
+	h2->AddRope(r);
+	r->m_left=h1;
+	r->m_right=h2;
+
+	AddRope(r);
+}
+void THRopeGroup::MakeRope(THRopeHanger *h1,THRopeHanger *h2,float coeff)
+{
+	THVector2 rel=h2->position-h1->position;
+	const THVector2& p0=h1->position;
+	float l0=rel.Normalize();
+	float count=ceilf(l0*coeff/ROPE_GAP);
+	unsigned int ucount=(unsigned int)count;
+
+	rel*=(l0/count);
+
+	THVector2Array varr(ucount+2);
+	for(unsigned int i=0;i<ucount;++i)
+	{
+		varr.Push(p0 + (float)i*rel);
+	}
+	
+	THRope *r=LoadRope(varr.arr,ucount,ROPE_GAP);
+
+	h1->AddRope(r);
+	h2->AddRope(r);
+	r->m_left=h1;
+	r->m_right=h2;
+
+	AddRope(r);
 }

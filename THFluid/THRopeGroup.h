@@ -1,6 +1,8 @@
 #ifndef TH_ROPE_GROUP
 #define TH_ROPE_GROUP
 
+#define ROPE_GAP 0.175f
+
 #include <THFluid/THGroups.h>
 class THRopeHanger;
 class THRopeGroup;
@@ -110,9 +112,11 @@ class THRopeGroup : public THParticleGroup
 {
 public:
 	void Load(unsigned int hangerscap);
+	void MakeRope(THRopeHanger *h1,THRopeHanger *h2,const THVector2 *arr,unsigned int count);
+	void MakeRope(THRopeHanger *h1,THRopeHanger *h2,float coeff);
 	void AddRope(THRope *r);
 	void DeleteRope(THRope *r);
-	THRope* LoadRope(const THVector2 *arr,unsigned int count);
+	THRope* LoadRope(const THVector2 *arr,unsigned int count,float l0);
 	void ClearHanger(THRopeHanger *h);
 
 	void Step(float invdt);
@@ -130,13 +134,17 @@ public:
 	{
 		return m_hangers;
 	}
+	inline const THVector2Array& GetTempArr() const
+	{
+		return m_temparr;
+	}
 protected:
 	THRope *m_ropes;
 	//THLinkedList m_ropes;
 
 	THArray<THRopeHanger> m_hangers;
 	THRopeHanger *m_clicked;
-	THVector2Array m_temparr,m_temparr2;
+	THVector2Array m_temparr;//,m_temparr2;
 };
 
 

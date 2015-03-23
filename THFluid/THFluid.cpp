@@ -407,9 +407,9 @@ void THFluidEngine::DoubleDensityRelaxation(const THTimeStep& step)
 		neighbor.p1->force-=d;
 		neighbor.p2->force+=d;
 
-		d=neighbor.p1->velocity-neighbor.p2->velocity;
-		neighbor.p1->force-=d*neighbor.p1->group->viscosity;
-		neighbor.p1->force+=d*neighbor.p2->group->viscosity;
+		//d=neighbor.p1->velocity-neighbor.p2->velocity;
+		//neighbor.p1->force-=d*neighbor.p1->group->viscosity*neighbor.q;
+		//neighbor.p2->force+=d*neighbor.p2->group->viscosity*neighbor.q;
 	}
 }
 void THFluidEngine::ApplyForceAndAdvect(const THTimeStep& step)

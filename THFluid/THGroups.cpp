@@ -5,7 +5,7 @@ void THWaterGroup::Load()
 {
 	SetMass(1.0f);
 	SetPressure(10.0f,0.6f,15.0f);
-	SetViscosity(0.0f);
+	SetViscosity(1.0f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<WATER_BIT);
 }

@@ -1,70 +1,58 @@
 #include "THFluidParser.h"
 
-void THFluidParser::AddSet(int dataMin,int dataMax,THParticleGroup *group,int _gap,bool isStatic)
+void THFluidParser::AddSet(int data,THParticleGroup *group,int _gap,bool isStatic)
 {
 	THParseSetGroup *set=new THParseSetGroup;
-	set->dataMin=dataMin;
-	set->dataMax=dataMax;
+	set->data=data;
 	set->isStatic=isStatic;
 	set->pointer=group;
 	set->gap=_gap;
 
-	set->next=m_listGroup;
-	if(m_listGroup){m_listGroup->prev=set;}
-	m_listGroup=set;
+	//set->next=m_listGroup;
+	//if(m_listGroup){m_listGroup->prev=set;}
+	//m_listGroup=set;
+	m_listGroup.Push(set);
 }
-void THFluidParser::AddSet(int data,THVector2 *point)
+void THFluidParser::AddSet(int data,THVector2Array *point)
 {
 	THParseSetPoint *set=new THParseSetPoint;
 	set->data=data;
 	set->pointer=point;
 
-	set->next=m_listPoint;
-	if(m_listPoint){m_listPoint->prev=set;}
-	m_listPoint=set;
+	m_listPoint.Push(set);
 }
 void THFluidParser::CheckData(int data,const THVector2& pos,int x,int y)
 {
 	//if(data==0){return;}
-	THParseSetGroup *p=m_listGroup;
+	THParseSetGroup *p=(THParseSetGroup*)m_listGroup.GetList();
 	while(p)
 	{
-		if(p->dataMin<=data && p->dataMax>data)
+		if(p->data==data)
 		{
 			if(p->isStatic || ( (x%p->gap==0)&&(y%p->gap==0)) )
 			{
 				engine->AddParticle((THParticleGroup*)(p->pointer),pos);
 			}
 				
-
-			if(p==m_listGroup){break;}
-			p->prev->next=p->next;
-			if(p->next){p->next->prev=p->prev;}
-
-			p->next=m_listGroup;
-			m_listGroup->prev=p;
-			m_listGroup=p;
-
+			m_listGroup.Delete(p);
+			m_listGroup.Push(p);
 			break;
 		}
-		p=p->next;
+		p=(THParseSetGroup*)p->GetLinkedNext();
 	}
 
-	THParseSetPoint *set=m_listPoint;
+	THParseSetPoint *set=(THParseSetPoint*)m_listPoint.GetList();
 	while(set)
 	{
 		if(set->data==data)
 		{
-			*(set->pointer)=pos;
+			set->pointer->Push(pos);
+			m_listPoint.Delete(set);
+			m_listPoint.Push(set);
 
-			if(set->prev){set->prev->next=set->next;}
-			if(set->next){set->next->prev=set->prev;}
-			if(set==m_listPoint){m_listPoint=set->next;}
-
-			delete set;
 			break;
 		}
-		set=set->next;
+		set=(THParseSetPoint*)set->GetLinkedNext();
 	}
 
 }

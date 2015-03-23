@@ -91,10 +91,13 @@ void THParticleGroup::ApplyForceAndAdvect(const THTimeStep& step)
 	const float invdt2=m_invMass*step.dt2;
 	const float invdt=m_invMass*step.dt;
 
+	THVector2 f;
 	while(particle)
 	{
-		particle->position+=particle->force*invdt2;
-		particle->velocity+=particle->force*invdt;
+		f=particle->force-viscosity*particle->velocity;
+
+		particle->position+=f*invdt2;
+		particle->velocity+=f*invdt;
 		particle->force.SetZero();
 
 		particle->position+=(particle->velocity*step.dt);
@@ -141,7 +144,7 @@ void THParticleBody::ApplyForceAndAdvect(const THTimeStep& step)
 	while(particle)
 	{
 		torque+=THCrossScalar(particle->position-position,particle->force);
-		force+=particle->force;
+		force+=particle->force-viscosity*particle->velocity;
 		particle->force.SetZero();
 
 		particle=particle->next;

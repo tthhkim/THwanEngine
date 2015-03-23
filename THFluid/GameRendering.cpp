@@ -118,6 +118,54 @@ void GameFrame::RenderBoundary()
 	brshader.Draw(fluidRenderImage,groundTileImage);
 	//framebaseFBO.EndDrawing();
 }
+void GameFrame::RenderBoundary(const THParticleGroup& group,const THVector3& color)
+{
+	THParticle *particle;
+
+	fluidRenderFBO.BeginDrawing();
+	glViewport(0,0,1024,2048);
+	glClear(GL_COLOR_BUFFER_BIT);
+	bshader.Use();
+	bshader.SetSize(0.2f);
+	bshader.PreDraw(boundaryCircleImage);
+	for(particle=group.list;particle;particle=particle->GetNext())
+	{
+		bshader.Draw(particle->position);
+	}
+	bshader.PostDraw();
+	fluidRenderFBO.EndDrawing();
+
+	ViewportInit();
+
+	//framebaseFBO.BeginDrawing();
+	rshader.Use();
+	rshader.SetColor(color);
+	rshader.Draw(fluidRenderImage);
+	//framebaseFBO.EndDrawing();
+}
+void GameFrame::RenderBoundary(const THVector2 *arr,unsigned int count,const THVector3& color)
+{
+	fluidRenderFBO.BeginDrawing();
+	glViewport(0,0,1024,2048);
+	glClear(GL_COLOR_BUFFER_BIT);
+	bshader.Use();
+	bshader.SetSize(0.2f);
+	bshader.PreDraw(boundaryCircleImage);
+	for(unsigned int i=0;i<count;++i)
+	{
+		bshader.Draw(arr[i]);
+	}
+	bshader.PostDraw();
+	fluidRenderFBO.EndDrawing();
+
+	ViewportInit();
+
+	//framebaseFBO.BeginDrawing();
+	rshader.Use();
+	rshader.SetColor(color);
+	rshader.Draw(fluidRenderImage);
+	//framebaseFBO.EndDrawing();
+}
 void GameFrame::RenderFluid(const THParticleGroup& group,const THVector3& color)
 {
 	THParticle *particle;
