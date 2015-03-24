@@ -21,6 +21,9 @@ public:
 	THTexture notebgTexture;
 	THDisplayObject notebgObject;
 
+	THImage groundTileImage;
+	THTexture hangerTexture;
+
 	THFluidEngine engine;
 
 	//rendering
@@ -40,7 +43,7 @@ public:
 	THRopeGroup ropeGroup;
 	//THFlameGroup flameGroup;
 
-	THImage groundTileImage;
+	
 	
 	GameFrame():engine(THVector2(0.0f,-5.0f))
 	{
@@ -98,16 +101,23 @@ public:
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
+		PreDraw();
 		DrawObjects(0,1);
+		for(unsigned int i=0;i<ropeGroup.GetHangerList().num;++i)
+		{
+			const THRopeHanger& h=ropeGroup.GetHangerList().arr[i];
+			DrawTexture(h.position,THVector2(0.5f,0.5f),THVector2(0.3f,0.3f),THRot2(),&hangerTexture);
+		}
+		PostDraw();
 
 		oneVBO.BeginDrawing();
 
 
-		RenderFluid(waterGroup,THVector3(1.0f,1.0f,1.0f));
+		RenderFluid(waterGroup,THVector3(0.0f,0.0f,0.0f));
 		//RenderFlame(flameGroup);
 		//RenderBoundary();
 		//RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
-		RenderBoundary(ropeGroup,THVector3(1.0f,1.0f,1.0f));
+		RenderBoundary(ropeGroup,THVector3(0.0f,0.0f,0.0f));
 		const THVector2Array& rtemparr=ropeGroup.GetTempArr();
 		RenderBoundary(rtemparr.arr,rtemparr.num,THVector3(1.0f,1.0f,1.0f));
 

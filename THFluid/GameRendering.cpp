@@ -7,6 +7,9 @@ void GameFrame::LoadTextures()
 	notebgObject.texture=&notebgTexture;
 	notebgObject.size.Set(20.0f,20.0f);
 	AddChild(&notebgObject);
+
+	groundTileImage.LoadFile("gtile.png",TH_PNG_RGB,GL_NEAREST,true);
+	hangerTexture.Set(&groundTileImage);
 }
 
 #define CIRCLE_SIZE 64
@@ -79,7 +82,7 @@ void GameFrame::LoadRender()
 	brshader.Load();
 	brshader.SetTile(THVector2(256.0f,256.0f));
 
-	groundTileImage.LoadFile("gtile.png",TH_PNG_RGB,GL_NEAREST,true);
+	
 }
 void GameFrame::LoadOneVBO()
 {

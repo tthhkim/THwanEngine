@@ -32,13 +32,13 @@ public:
 		float l=rel.Normalize();
 
 		float delta=(l-l0); //extension is positive
-		float p1m=p1->GetGroup()->GetMass();
-		float p2m=p2->GetGroup()->GetMass();
-		rel*=delta*p1m*p2m/(p1m+p2m);
+		float p1m=p1->GetGroup()->GetInvMass();
+		float p2m=p2->GetGroup()->GetInvMass();
+		rel*=delta/(p1m+p2m);
 		//rel*=(delta*0.5f);
 		
-		p1m=p1->GetGroup()->GetInvMass();
-		p2m=p2->GetGroup()->GetInvMass();
+		//p1m=p1->GetGroup()->GetInvMass();
+		//p2m=p2->GetGroup()->GetInvMass();
 		p1->position-=rel*p1m;
 		p2->position+=rel*p2m;
 		rel*=invdt;
