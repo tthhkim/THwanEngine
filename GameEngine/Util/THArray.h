@@ -212,13 +212,14 @@ public:
 	}
 	void Delete(THLinkedNode *node)
 	{
+		if(node==m_linkedlist)
+		{
+			m_linkedlist=node->m_linkednext;
+		}
 		if(node->m_linkedprev)
 		{
 			node->m_linkedprev->m_linkednext=node->m_linkednext;
 			node->m_linkedprev=0;
-		}else
-		{
-			m_linkedlist=node->m_linkednext;
 		}
 		if(node->m_linkednext)
 		{
