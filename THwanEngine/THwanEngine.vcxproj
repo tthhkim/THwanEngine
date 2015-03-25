@@ -87,7 +87,6 @@
     <ClCompile Include="..\THFluid\THFluidObject.cpp" />
     <ClCompile Include="..\THFluid\THFluidParser.cpp" />
     <ClCompile Include="..\THFluid\THGroups.cpp" />
-    <ClCompile Include="..\THFluid\THLightGroup.cpp" />
     <ClCompile Include="..\THFluid\THRopeGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +106,6 @@
     <ClInclude Include="..\THFluid\THFluidObject.h" />
     <ClInclude Include="..\THFluid\THFluidParser.h" />
     <ClInclude Include="..\THFluid\THGroups.h" />
-    <ClInclude Include="..\THFluid\THLightGroup.h" />
     <ClInclude Include="..\THFluid\THParticleCallbacks.h" />
     <ClInclude Include="..\THFluid\THRopeGroup.h" />
     <ClInclude Include="..\THPrivate.h" />

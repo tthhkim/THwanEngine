@@ -18,8 +18,6 @@ class THParticleCollisionListener
 public:
 	//return 0 normal (both temperature & force)
 	//return 1 not add to neighbor list
-	//return 2 only temperature
-	//return 3 only force
 	virtual int ParticleCollide(THParticle *p1,THParticle *p2,float fraction)=0;
 };
 

@@ -41,6 +41,7 @@ public:
 	THBoundaryGroup boundaryGroup;
 	THWaterGroup waterGroup;
 	THRopeGroup ropeGroup;
+	THRopeDampGroup ropedampGroup;
 	//THFlameGroup flameGroup;
 
 	
@@ -103,11 +104,6 @@ public:
 	{
 		PreDraw();
 		DrawObjects(0,1);
-		for(unsigned int i=0;i<ropeGroup.GetHangerList().num;++i)
-		{
-			const THRopeHanger& h=ropeGroup.GetHangerList().arr[i];
-			DrawTexture(h.position,THVector2(0.5f,0.5f),THVector2(0.3f,0.3f),THRot2(),&hangerTexture);
-		}
 		PostDraw();
 
 		oneVBO.BeginDrawing();
@@ -116,10 +112,11 @@ public:
 		RenderFluid(waterGroup,THVector3(0.0f,0.0f,0.0f));
 		//RenderFlame(flameGroup);
 		//RenderBoundary();
-		//RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
+		RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
+		RenderBoundary(ropedampGroup,THVector3(0.0f,0.0f,0.0f));
 		RenderBoundary(ropeGroup,THVector3(0.0f,0.0f,0.0f));
 		const THVector2Array& rtemparr=ropeGroup.GetTempArr();
-		RenderBoundary(rtemparr.arr,rtemparr.num,THVector3(1.0f,1.0f,1.0f));
+		RenderBoundary(rtemparr.arr,rtemparr.num,THVector3(0.3f,0.3f,0.3f));
 
 
 		oneVBO.EndDrawing();
@@ -133,11 +130,7 @@ public:
 	}
 	void OnTouchMove(const THVector2& p,const THVector2& delta)
 	{
-		if(ropeGroup.OnTouchMove(p)==false)
-		{
-			//engine.AddParticle(&waterGroup,p+THVector2(THRandf(-0.3f,0.3f),THRandf(-0.3f,0.3f)));
-			//engine.AddParticle(&waterGroup,p+THVector2(THRandf(-0.3f,0.3f),THRandf(-0.3f,0.3f)));
-		}
+		ropeGroup.OnTouchMove(p);
 
 		//boundaryGroup.Create(p,0.3f);
 		//boundaryGroup.Delete(p,0.4f);

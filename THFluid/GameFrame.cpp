@@ -6,12 +6,14 @@ void GameFrame::LoadGroups()
 {
 	boundaryGroup.Load();
 	waterGroup.Load();
-	ropeGroup.Load(6);
+	ropeGroup.Load(64);
+	ropedampGroup.Load();
 
 	
 	engine.AddParticleGroup(&boundaryGroup);
 	engine.AddParticleGroup(&waterGroup);
 	engine.AddParticleGroup(&ropeGroup);
+	engine.AddParticleGroup(&ropedampGroup);
 	//engine.AddParticleGroup(&iceGroup);
 	//engine.AddParticleGroup(&steamGroup);
 	//engine.AddParticleGroup(&heatGroup);
@@ -39,19 +41,21 @@ void GameFrame::SetViewport(const THVector2& minp,const THVector2& maxp)
 void GameFrame::ParseFile()
 {
 	THFluidParser *parser=new THFluidParser;
-	//parser->AddSet(0,1,&boundaryGroup,1,true);
-	parser->AddSet(10,&waterGroup,2);
+	parser->AddSet(0,&boundaryGroup,1,true);
 	parser->AddSet(20,&waterGroup,2);
+	parser->AddSet(20,&waterGroup,2);
+	//parser->AddSet(10,&ropedampGroup,1,true);
 
 	size_t iw,ih;
 	int colorType=TH_PNG_GREY;
 	unsigned char *data=LoadImageBuffer("map2.png",iw,ih,colorType);
 
-	//parser->Parse(&engine,data,iw,ih);
+	parser->Parse(&engine,data,iw,ih);
 
 	free(data);
 	delete parser;
 
+	/*
 	THRopeHanger *h1=ropeGroup.NewHanger();
 	h1->position.Set(0.2f,6.4f);
 
@@ -59,4 +63,5 @@ void GameFrame::ParseFile()
 	h2->position.Set(7.0f,6.4f);
 
 	ropeGroup.MakeRope(h1,h2,1.4f);
+	*/
 }

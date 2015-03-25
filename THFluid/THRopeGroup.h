@@ -3,10 +3,9 @@
 
 #define ROPE_GAP 0.175f
 
+
 #include <THFluid/THGroups.h>
-class THRopeHanger;
 class THRopeGroup;
-class THRopeHangerDef;
 class THRopeSpring
 {
 public:
@@ -15,16 +14,33 @@ public:
 
 	THRopeSpring(THParticle *_p1,THParticle *_p2)
 	{
-		p1=_p1;
-		p2=_p2;
-		
+		Set(_p1,_p2);
 		l0=(p1->position-p2->position).Length();
 	}
 	THRopeSpring(THParticle *_p1,THParticle *_p2,float _l0)
 	{
+		Set(_p1,_p2);
+		l0=_l0;
+	}
+	inline bool Contains(THParticle *p)
+	{
+		return p1==p || p2==p;
+	}
+	void Set(THParticle *_p1,THParticle *_p2)
+	{
+		/*
+		if(_p1<_p2)
+		{
+			p1=_p1;
+			p2=_p2;
+		}else
+		{
+			p1=_p2;
+			p2=_p1;
+		}
+		*/
 		p1=_p1;
 		p2=_p2;
-		l0=_l0;
 	}
 	void Step(float invdt)
 	{
@@ -49,6 +65,7 @@ public:
 	}
 protected:
 };
+/*
 class THRope : public THLinkedNode
 {
 	friend class THRopeGroup;
@@ -72,78 +89,39 @@ protected:
 
 	void DeleteParticles();
 };
-class THRopeHanger
-{
-	friend class THRopeGroup;
-	friend class THRope;
-public:
-	THVector2 position;
-	THParticle *syncedparticle;
-
-	THRopeHanger()
-	{
-		syncedparticle=0;
-	}
-	bool HitTest(const THVector2& p);
-	void AddRope(THRope *r)
-	{
-		m_ropes.Push(r);
-	}
-	void DeleteRope(THRope *r)
-	{
-		m_ropes.Delete(r);
-	}
-	bool IsHanged()
-	{
-		return m_ropes.GetList()!=0;
-	}
-	void Step(float dtinv)
-	{
-		if(syncedparticle){position=syncedparticle->position;}
-	}
-
-protected:
-	THLinkedList m_ropes;
-};
+*/
 
 
-
-class THRopeGroup : public THParticleGroup
+class THRopeGroup : public THParticleGroup,public THParticleQuery,public THParticleCollisionListener
 {
 public:
-	void Load(unsigned int hangerscap);
-	void MakeRope(THRopeHanger *h1,THRopeHanger *h2,const THVector2 *arr,unsigned int count);
-	void MakeRope(THRopeHanger *h1,THRopeHanger *h2,float coeff);
-	void AddRope(THRope *r);
-	void DeleteRope(THRope *r);
-	THRope* LoadRope(const THVector2 *arr,unsigned int count,float l0);
-	void ClearHanger(THRopeHanger *h);
+	void Load(unsigned int springcap);
+	//void MakeRope(THRopeHanger *h1,THRopeHanger *h2,const THVector2 *arr,unsigned int count);
+	//void MakeRope(THRopeHanger *h1,THRopeHanger *h2,float coeff);
+	//void AddRope(THRope *r);
+	//void DeleteRope(THRope *r);
+	void LoadRope(const THVector2 *arr,unsigned int count);
+	void FindSpringAndDelete(THParticle *p);
+	void DeleteRope(const THVector2& p);
+	//void ClearHanger(THRopeHanger *h);
 
 	void Step(float invdt);
 
-	THRopeHanger *OnTouchDown(const THVector2& p);
-	THRopeHanger *OnTouchMove(const THVector2& p);
-	THRopeHanger *OnTouchUp(const THVector2& p);
+	bool OnTouchDown(const THVector2& p);
+	bool OnTouchMove(const THVector2& p);
+	bool OnTouchUp(const THVector2& p);
 
-	THRopeHanger *NewHanger()
-	{
-		m_hangers.Push(THRopeHanger());
-		return &m_hangers.GetLast();
-	}
-	THArray<THRopeHanger>& GetHangerList()
-	{
-		return m_hangers;
-	}
 	inline const THVector2Array& GetTempArr() const
 	{
 		return m_temparr;
 	}
+	bool QueryCallback(THParticle *particle,void *data);
+	int ParticleCollide(THParticle *p1,THParticle *p2,float fraction);
 protected:
-	THRope *m_ropes;
+	//THRope *m_ropes;
 	//THLinkedList m_ropes;
 
-	THArray<THRopeHanger> m_hangers;
-	THRopeHanger *m_clicked;
+	THArray<THRopeSpring> m_springs;
 	THVector2Array m_temparr;//,m_temparr2;
 };
 

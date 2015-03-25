@@ -9,10 +9,10 @@
 #define DEFAULT_BIT  0
 #define BOUNDARY_BIT 1
 #define WATER_BIT 2
-#define STEAM_BIT 3
 #define WHEEL_BIT 4
 #define FLAME_BIT 5
-#define LIGHT_BIT 6
+#define ROPE_BIT 6
+#define ROPE_DAMP_BIT 7
 
 
 class THWaterGroup : public THParticleGroup
@@ -22,11 +22,11 @@ public:
 	void Step();
 protected:
 };
-class THSteamGroup : public THParticleGroup
+
+class THRopeDampGroup : public THParticleGroup
 {
 public:
 	void Load();
-protected:
 };
 
 class THBoundaryGroup : public THParticleGroup,public THParticleQuery,public THCellQuery

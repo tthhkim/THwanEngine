@@ -22,17 +22,15 @@ void THWaterGroup::Step()
 		particle=particle->GetNext();
 	}
 }
-
-void THSteamGroup::Load()
+void THRopeDampGroup::Load()
 {
-	SetMass(0.8f);
-	SetPressure(5.0f,0.5f,15.0f);
-	SetViscosity(1.0f);
-	gravityScale=-1.0f;
+	SetCollideEach(false);
+	SetMass(2.0f);
+	SetStatic(true);
+	SetPressure(10.0f,0.4f,6.0f);
 
-	layer=(1<<DEFAULT_BIT)|(1<<STEAM_BIT);
+	layer=(1<<ROPE_DAMP_BIT);
 }
-
 void THBoundaryGroup::Load()
 {
 	SetCollideEach(false);
@@ -94,7 +92,7 @@ void THWheelBody::LoadParticles(const THVector2& position,float length,float gap
 }
 int THWheelBody::ParticleCollide(THParticle *p1,THParticle *p2,float fraction)
 {
-	if(p2->GetGroup()->layer & ((1<<WATER_BIT)|(1<<STEAM_BIT)))
+	if(p2->GetGroup()->layer & ((1<<WATER_BIT)) )
 	{
 		return 0;
 	}

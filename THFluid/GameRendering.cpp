@@ -77,6 +77,7 @@ void GameFrame::LoadRender()
 	rshader.SetAlpha(1.0f);
 
 	bshader.Load();
+	bshader.SetSize(0.1f);
 	//bshader.SyncProjection(engine.GetMinGrid(),engine.GetMaxGrid());
 
 	brshader.Load();
@@ -129,7 +130,7 @@ void GameFrame::RenderBoundary(const THParticleGroup& group,const THVector3& col
 	glViewport(0,0,1024,2048);
 	glClear(GL_COLOR_BUFFER_BIT);
 	bshader.Use();
-	bshader.SetSize(0.2f);
+	
 	bshader.PreDraw(boundaryCircleImage);
 	for(particle=group.list;particle;particle=particle->GetNext())
 	{
@@ -152,7 +153,6 @@ void GameFrame::RenderBoundary(const THVector2 *arr,unsigned int count,const THV
 	glViewport(0,0,1024,2048);
 	glClear(GL_COLOR_BUFFER_BIT);
 	bshader.Use();
-	bshader.SetSize(0.2f);
 	bshader.PreDraw(boundaryCircleImage);
 	for(unsigned int i=0;i<count;++i)
 	{

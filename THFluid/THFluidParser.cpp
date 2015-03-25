@@ -1,10 +1,10 @@
 #include "THFluidParser.h"
 
-void THFluidParser::AddSet(int data,THParticleGroup *group,int _gap,bool isStatic)
+void THFluidParser::AddSet(int data,THParticleGroup *group,int _gap,bool _isStatic)
 {
 	THParseSetGroup *set=new THParseSetGroup;
 	set->data=data;
-	set->isStatic=isStatic;
+	set->isStatic=_isStatic;
 	set->pointer=group;
 	set->gap=_gap;
 
@@ -29,9 +29,9 @@ void THFluidParser::CheckData(int data,const THVector2& pos,int x,int y)
 	{
 		if(p->data==data)
 		{
-			if(p->isStatic || ( (x%p->gap==0)&&(y%p->gap==0)) )
+			if( p->isStatic || ( (x%p->gap==0)&&(y%p->gap==0) ) )
 			{
-				engine->AddParticle((THParticleGroup*)(p->pointer),pos);
+				engine->AddParticle(p->pointer,pos);
 			}
 				
 			m_listGroup.Delete(p);
@@ -47,8 +47,8 @@ void THFluidParser::CheckData(int data,const THVector2& pos,int x,int y)
 		if(set->data==data)
 		{
 			set->pointer->Push(pos);
-			m_listPoint.Delete(set);
-			m_listPoint.Push(set);
+			//m_listPoint.Delete(set);
+			//m_listPoint.Push(set);
 
 			break;
 		}

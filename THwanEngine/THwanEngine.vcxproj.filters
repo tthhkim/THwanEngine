@@ -78,9 +78,6 @@
     <ClCompile Include="..\THFluid\THGroups.cpp">
       <Filter>소스 파일\Fluid</Filter>
     </ClCompile>
-    <ClCompile Include="..\THFluid\THLightGroup.cpp">
-      <Filter>소스 파일\Fluid</Filter>
-    </ClCompile>
     <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
       <Filter>헤더 파일\Fluid</Filter>
     </ClInclude>
     <ClInclude Include="..\THFluid\THGroups.h">
-      <Filter>헤더 파일\Fluid</Filter>
-    </ClInclude>
-    <ClInclude Include="..\THFluid\THLightGroup.h">
       <Filter>헤더 파일\Fluid</Filter>
     </ClInclude>
     <ClInclude Include="..\THFluid\THRopeGroup.h">

@@ -212,19 +212,21 @@ public:
 	}
 	void Delete(THLinkedNode *node)
 	{
+		if(m_linkedlist==node)
+		{
+			m_linkedlist=node->m_linkednext;
+		}
 		if(node->m_linkedprev)
 		{
 			node->m_linkedprev->m_linkednext=node->m_linkednext;
 			node->m_linkedprev=0;
-		}else
-		{
-			m_linkedlist=node->m_linkednext;
 		}
 		if(node->m_linkednext)
 		{
 			node->m_linkednext->m_linkedprev=node->m_linkedprev;
 			node->m_linkednext=0;
 		}
+		
 	}
 	void PushNext(THLinkedNode *node,THLinkedNode *anchor)
 	{
