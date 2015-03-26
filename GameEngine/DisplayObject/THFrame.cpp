@@ -59,7 +59,7 @@ void THFrame::FrameDown(const THVector2& p)
 		if(btn->enable && btn->HitTest(p))
 		{
 			m_buttondown=btn;
-			if(btn->onDown){btn->onDown(p,btn);}
+			if(btn->m_callback){btn->m_callback->OnDown(p,btn);}
 			btn->Swap();
 			return;
 		}
@@ -86,7 +86,7 @@ void THFrame::FrameUp(const THVector2& p)
 		{
 			if(m_buttondown==btn)
 			{
-				if(btn->onRelease){btn->onRelease(p,btn);}
+				if(btn->m_callback){btn->m_callback->OnRelease(p,btn);}
 				break;
 			}
 			
