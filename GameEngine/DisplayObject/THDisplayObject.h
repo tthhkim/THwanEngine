@@ -62,21 +62,23 @@ protected:
 
 class THFrame;
 
+class THButtonCallback
+{
+public:
+	virtual void OnDown(const THVector2& p,THButton *btn);
+	virtual void OnRelease(const THVector2& p,THButton *btn);
+};
 class THButton
 {
 	friend class THFrame;
 public:
 	bool enable;
 
-	void (*onDown)(const THVector2&,THButton*);
-	void (*onRelease)(const THVector2&,THButton*);
-
 	THButton(const THVector2& _size):m_minbound(0.0f,0.0f),m_maxbound(_size)
 	{
 		enable=true;
 
-		onDown=0;
-		onRelease=0;
+		m_callback=0;
 	}
 
 	void SetPosition(const THVector2& p);
@@ -106,9 +108,15 @@ public:
 			m_swap=temp;
 		}
 	}
+	void SetCallback(THButtonCallback *c)
+	{
+		m_callback=c;
+	}
 	
 
 protected:
+	THButtonCallback *m_callback;
+
 	THVector2 m_minbound,m_maxbound;
 
 	void **m_src;
