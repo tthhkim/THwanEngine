@@ -62,6 +62,7 @@ protected:
 
 class THFrame;
 
+class THButton;
 class THButtonCallback
 {
 public:
