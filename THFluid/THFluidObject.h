@@ -107,7 +107,8 @@ public:
 	THParticleGroup()
 	{
 		gravityScale=1.0f;
-		viscosity=0.0f;
+		m_resistance=0.0f;
+		//viscosity=0.0f;
 
 		list=0;
 		layer=0xffffffff;
@@ -128,7 +129,8 @@ public:
 	void SetMass(float m);
 	void SetPressure(float _RestDensity,float _PressureK,float _NearPressureK);
 	void SetStatic(bool _isStatic);
-	void SetViscosity(float v){viscosity=v;}
+	void SetResistance(float r){m_resistance=r;}
+	//void SetViscosity(float v){viscosity=v;}
 	void SetGravityScale(float s){gravityScale=s;}
 	void SetCollideEach(bool isCollide){m_collideEach=isCollide;}
 	inline float GetMass() const{return m_mass;}
@@ -148,7 +150,7 @@ protected:
 	float restDensity;
 	float pressureK;
 	float nearPressureK;
-	float viscosity;
+	float m_resistance;
 
 	bool m_collideEach;
 	bool m_autoremove;

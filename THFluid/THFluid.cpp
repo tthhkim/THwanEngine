@@ -224,18 +224,20 @@ void THFluidEngine::FixGridAndInit()
 {
 	THParticle *particle,*nextp;
 	THParticleGroup *group;
+	float rk;
 	for(unsigned int i=0;i<groups.num;++i)
 	{
 		group=groups.arr[i];
 
 		particle=group->list;
 		THVector2 gforce=gravity*(group->m_mass*group->gravityScale);
+		rk=group->m_resistance;
 		while(particle)
 		{
 			//Init
 			particle->p=0.0f;
 			particle->pnear=0.0f;
-			particle->force+=gforce;
+			particle->force+=gforce-particle->velocity*rk;
 
 			particle=particle->next;
 		}

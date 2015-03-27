@@ -94,7 +94,7 @@ void THParticleGroup::ApplyForceAndAdvect(const THTimeStep& step)
 	THVector2 f;
 	while(particle)
 	{
-		f=particle->force-viscosity*particle->velocity;
+		f=particle->force;
 
 		particle->position+=f*invdt2;
 		particle->velocity+=f*invdt;
