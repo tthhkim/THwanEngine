@@ -5,7 +5,7 @@ void THWaterGroup::Load()
 {
 	SetMass(1.0f);
 	SetPressure(10.0f,0.6f,15.0f);
-	SetViscosity(1.0f);
+	SetResistance(0.5f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<WATER_BIT);
 }
@@ -132,4 +132,32 @@ void THFlameGroup::CreateNew(const THVector2& position)
 {
 	float theta=THRandf(-TH_PI,TH_PI);
 	m_engine->AddParticle(this,position + THRandf(0.0f,m_radius)*THVector2(cosf(theta),sinf(theta)));
+}
+
+
+
+bool THEndPoint::QueryCallback(THParticle *particle,void *data)
+{
+	THVector2 rel=position-particle->position;
+	float x=rel.Normalize()/TH_ENDPOINT_RADIUS;
+	if(x<TH_ENDPOINT_END_FACTOR)
+	{
+		particle->GetGroup()->Remove(particle);
+		particle->GetGrid()->Remove(particle);
+
+		++m_pcount;
+	}
+	else
+	{
+		x=1.0f-x;
+		float s=2.0f*sqrtf(1.0f-x*x)*x;
+	
+		particle->force+=(s*k)*rel;
+	}
+	
+	return true;
+}
+void THEndPoint::Step(THFluidEngine *engine)
+{
+	engine->QueryCircle(position,TH_ENDPOINT_RADIUS,1u<<WATER_BIT,this,0);
 }

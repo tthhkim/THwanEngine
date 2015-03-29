@@ -144,7 +144,7 @@ void THParticleBody::ApplyForceAndAdvect(const THTimeStep& step)
 	while(particle)
 	{
 		torque+=THCrossScalar(particle->position-position,particle->force);
-		force+=particle->force-viscosity*particle->velocity;
+		force+=particle->force;
 		particle->force.SetZero();
 
 		particle=particle->next;

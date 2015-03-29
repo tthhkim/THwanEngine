@@ -40,20 +40,25 @@ void GameFrame::SetViewport(const THVector2& minp,const THVector2& maxp)
 }
 void GameFrame::ParseFile()
 {
-	THFluidParser *parser=new THFluidParser;
-	parser->AddSet(0,&boundaryGroup,1,true);
-	parser->AddSet(20,&waterGroup,2);
-	parser->AddSet(20,&waterGroup,2);
-	//parser->AddSet(10,&ropedampGroup,1,true);
+	THFluidParser parser;
+	THVector2Array varr(10);
+	//parser.AddSet(0,&boundaryGroup,1,true);
+	parser.AddSet(30,&waterGroup,2);
+	parser.AddSet(30,&waterGroup,2);
+	parser.AddSet(20,&varr);
+	parser.AddSet(10,&ropedampGroup,1,true);
+	parser.AddSet(40,&endpoint.position);
 
 	size_t iw,ih;
 	int colorType=TH_PNG_GREY;
-	unsigned char *data=LoadImageBuffer("map2.png",iw,ih,colorType);
+	unsigned char *data=LoadImageBuffer("map3.png",iw,ih,colorType);
 
-	parser->Parse(&engine,data,iw,ih);
+	parser.Parse(&engine,data,iw,ih);
 
 	free(data);
-	delete parser;
+
+	ropeGroup.LoadRope(varr.arr[0],varr.arr[1],1.4f);
+	//delete parser;
 
 	/*
 	THRopeHanger *h1=ropeGroup.NewHanger();

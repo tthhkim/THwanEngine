@@ -78,4 +78,26 @@ protected:
 	float m_radius;
 	float m_lasttime,m_invtime;
 };
+
+#define TH_ENDPOINT_RADIUS 0.7f
+#define TH_ENDPOINT_END_FACTOR 0.1f
+class THEndPoint : public THParticleQuery
+{
+public:
+	THVector2 position;
+	float k;
+
+	THEndPoint()
+	{
+		k=1.0f;
+	}
+
+	bool QueryCallback(THParticle *particle,void *data);
+	inline unsigned int GetPositiveCount() const{return m_pcount;}
+	inline unsigned int GetNegativeCount() const{return m_ncount;}
+	void Refresh(){m_pcount=0;m_ncount=0;}
+	void Step(THFluidEngine *engine);
+protected:
+	unsigned int m_pcount,m_ncount;
+};
 #endif

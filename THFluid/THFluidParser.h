@@ -18,8 +18,24 @@ public:
 class THParseSetPoint : public THLinkedNode
 {
 public:
+	THParseSetPoint(bool isarr){m_isarray=isarr;}
+
 	int data;
-	THVector2Array *pointer;
+	void *pointer;
+	bool Process(const THVector2& p)
+	{
+		if(m_isarray)
+		{
+			((THVector2Array*)pointer)->Push(p);
+			return false;
+		}else
+		{
+			*(THVector2*)pointer=p;
+			return true;
+		}
+	}
+protected:
+	bool m_isarray;
 };
 
 class THFluidParser
@@ -47,6 +63,7 @@ public:
 
 	void AddSet(int data,THParticleGroup *group,int gap=1,bool isStatic=false);
 	void AddSet(int data,THVector2Array *point);
+	void AddSet(int data,THVector2 *vp);
 	void Parse(THFluidEngine *_engine,unsigned char *data,size_t w,size_t h);
 	
 

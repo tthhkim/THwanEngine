@@ -15,9 +15,17 @@ void THFluidParser::AddSet(int data,THParticleGroup *group,int _gap,bool _isStat
 }
 void THFluidParser::AddSet(int data,THVector2Array *point)
 {
-	THParseSetPoint *set=new THParseSetPoint;
+	THParseSetPoint *set=new THParseSetPoint(true);
 	set->data=data;
 	set->pointer=point;
+
+	m_listPoint.Push(set);
+}
+void THFluidParser::AddSet(int data,THVector2 *vp)
+{
+	THParseSetPoint *set=new THParseSetPoint(false);
+	set->data=data;
+	set->pointer=vp;
 
 	m_listPoint.Push(set);
 }
@@ -41,18 +49,20 @@ void THFluidParser::CheckData(int data,const THVector2& pos,int x,int y)
 		p=(THParseSetGroup*)p->GetLinkedNext();
 	}
 
-	THParseSetPoint *set=(THParseSetPoint*)m_listPoint.GetList();
+	THParseSetPoint *set=(THParseSetPoint*)m_listPoint.GetList(),*ns;
 	while(set)
 	{
+		ns=(THParseSetPoint*)set->GetLinkedNext();
 		if(set->data==data)
 		{
-			set->pointer->Push(pos);
-			//m_listPoint.Delete(set);
-			//m_listPoint.Push(set);
-
+			m_listPoint.Delete(set);
+			if(!set->Process(pos))
+			{
+				m_listPoint.Push(set);
+			}
 			break;
 		}
-		set=(THParseSetPoint*)set->GetLinkedNext();
+		set=ns;
 	}
 
 }

@@ -25,6 +25,7 @@ public:
 	THTexture hangerTexture;
 
 	THFluidEngine engine;
+	THEndPoint endpoint;
 
 	//rendering
 	THVertexBuffer oneVBO;
@@ -73,8 +74,15 @@ public:
 		LoadGroups();
 
 		ParseFile();
+		//engine.Step(0.1f);
+		const THVector2 grav=engine.gravity*0.001f;
+		for(unsigned int i=0;i<40;++i)
+		{
+			ropeGroup.TestStep(grav);
+			ropeGroup.Step(100.0f);
+		}
 
-		engine.TestStep(1.0f/100.0f,10);
+		//engine.TestStep(1.0f/100.0f,10);
 	}
 
 	void OnEnterFrame()
@@ -82,6 +90,8 @@ public:
 		const THTimeStep step(THDeltaTime);
 		ropeGroup.Step(step.dt_inv);
 		engine.Step(step);
+		endpoint.Refresh();
+		endpoint.Step(&engine);
 
 		//float theta=THRandf(0.0f,TH_2PI);
 		//engine.AddParticle(&waterGroup,THVector2(1.0f,10.0f)+THRandf(0.0f,1.0f)*THVector2(cosf(theta),sinf(theta)));

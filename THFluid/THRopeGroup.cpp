@@ -37,11 +37,11 @@ void THRope::DeleteParticles()
 void THRopeGroup::Load(unsigned int springcap)
 {
 	SetCollideEach(false);
-	SetMass(20.0f);
+	SetMass(25.0f);
 	//SetStatic(false);
 	SetPressure(10.0f,0.5f,10.0f);
 	SetAutoRemove(false);
-	SetViscosity(10.0f);
+	SetResistance(10.0f);
 	SetCollisionListener(this);
 
 	layer=(1<<DEFAULT_BIT)|(1<<ROPE_BIT)|(1<<ROPE_DAMP_BIT);
@@ -67,6 +67,21 @@ void THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
 	pair.p1=prevp;
 	pair.p2=curp;
 	m_engine->QueryCircle(arr[count-1],ROPE_GAP,1<<ROPE_DAMP_BIT,this,&pair);
+}
+void THRopeGroup::LoadRope(const THVector2& p1,const THVector2& p2,float factor)
+{
+	THVector2 rel=p2-p1;
+	float l=rel.Normalize();
+	rel*=ROPE_GAP/factor;
+	int count=(int)(l*factor/ROPE_GAP);
+	THVector2Array varr(count+3);
+	for(int i=0;i<count;++i)
+	{
+		varr.Push(p1 + rel*float(i));
+	}
+	varr.Push(p2);
+
+	LoadRope(varr.arr,varr.num);
 }
 void THRopeGroup::FindSpringAndDelete(THParticle *p)
 {
@@ -110,6 +125,16 @@ int THRopeGroup::ParticleCollide(THParticle *p1,THParticle *p2,float fraction)
 {
 	if(p2->GetGroup()->layer&(1<<ROPE_DAMP_BIT)){return 1;}
 	return 0;
+}
+void THRopeGroup::TestStep(const THVector2& grav)
+{
+	THParticle *p;
+	p=list;
+	while(p)
+	{
+		p->position+=grav;
+		p=p->GetNext();
+	}
 }
 void THRopeGroup::Step(float invdt)
 {

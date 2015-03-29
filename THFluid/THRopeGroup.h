@@ -60,8 +60,19 @@ public:
 		rel*=invdt;
 		p1->velocity-=rel*p1m;
 		p2->velocity+=rel*p2m;
-		
-		
+	}
+	void StepNVelocity()
+	{
+		THVector2 rel=p1->position-p2->position;
+		float l=rel.Normalize();
+
+		float delta=(l-l0); //extension is positive
+		float p1m=p1->GetGroup()->GetInvMass();
+		float p2m=p2->GetGroup()->GetInvMass();
+		rel*=delta/(p1m+p2m);
+
+		p1->position-=rel*p1m;
+		p2->position+=rel*p2m;
 	}
 protected:
 };
@@ -101,11 +112,13 @@ public:
 	//void AddRope(THRope *r);
 	//void DeleteRope(THRope *r);
 	void LoadRope(const THVector2 *arr,unsigned int count);
+	void LoadRope(const THVector2& p1,const THVector2& p2,float factor);
 	void FindSpringAndDelete(THParticle *p);
 	void DeleteRope(const THVector2& p);
 	//void ClearHanger(THRopeHanger *h);
 
 	void Step(float invdt);
+	void TestStep(const THVector2& grav);
 
 	bool OnTouchDown(const THVector2& p);
 	bool OnTouchMove(const THVector2& p);
