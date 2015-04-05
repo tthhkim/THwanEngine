@@ -3,30 +3,20 @@
 
 void THWaterGroup::Load()
 {
-	SetMass(1.0f);
-	SetPressure(10.0f,0.6f,15.0f);
-	SetResistance(0.5f);
+	m_mass.SetMass(1.0f);
+	SetPressure(17.0f,0.7f,15.0f);
+	SetResistance(0.8f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<WATER_BIT);
 }
-void THWaterGroup::Step()
+void THWaterGroup::Create(const THVector2& p,float gap)
 {
-	THParticle *particle=list;
-	while(particle)
-	{
-		if(particle->position.y<2.0f)
-		{
-			particle->force.y=1000.0f*(2.0f-particle->position.y);
-		}
-
-		particle=particle->GetNext();
-	}
+	m_engine->AddParticle(this,p+THVector2(THRandf(-gap,gap),THRandf(-gap,gap)));
 }
 void THRopeDampGroup::Load()
 {
 	SetCollideEach(false);
-	SetMass(2.0f);
-	SetStatic(true);
+	m_mass.SetMass(2.0f,0.0f);
 	SetPressure(10.0f,0.4f,6.0f);
 
 	layer=(1<<ROPE_DAMP_BIT);
@@ -34,8 +24,7 @@ void THRopeDampGroup::Load()
 void THBoundaryGroup::Load()
 {
 	SetCollideEach(false);
-	SetMass(2.0f);
-	SetStatic(true);
+	m_mass.SetMass(2.0f,0.0f);
 	SetPressure(10.0f,0.4f,6.0f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<BOUNDARY_BIT);
@@ -59,10 +48,8 @@ bool THBoundaryGroup::QueryCellCallback(THCell *cell,void *data)
 void THWheelBody::Load()
 {
 	SetCollideEach(false);
-	SetMass(0.7f);
-	SetStatic(false);
+	m_mass.SetMass(0.7f);
 	SetPressure(10.0f,0.5f,10.0f);
-	angularDamping=0.4f;
 
 	layer=(1<<DEFAULT_BIT)|(1<<WHEEL_BIT);
 	
@@ -88,7 +75,7 @@ void THWheelBody::LoadParticles(const THVector2& position,float length,float gap
 
 	CalculateMass();
 	CalculateInertia();
-	b_invMass=0.0f;
+	m_bodyinertia.SetInvMass(0.0f);
 }
 int THWheelBody::ParticleCollide(THParticle *p1,THParticle *p2,float fraction)
 {
@@ -102,8 +89,7 @@ int THWheelBody::ParticleCollide(THParticle *p1,THParticle *p2,float fraction)
 void THFlameGroup::Load()
 {
 	SetCollideEach(true);
-	SetMass(0.5f);
-	SetStatic(false);
+	m_mass.SetMass(0.5f);
 	SetPressure(10.0f,0.8f,5.0f);
 
 	SetGravityScale(-1.0f);
@@ -135,7 +121,16 @@ void THFlameGroup::CreateNew(const THVector2& position)
 }
 
 
+void THEndPoint::Load()
+{
+	SetCollideEach(true);
+	m_mass.SetMass(0.5f);
+	SetPressure(10.0f,0.8f,5.0f);
+	SetResistance(0.5f);
+	SetGravityScale(0.0f);
 
+	layer=(1<<END_BIT);
+}
 bool THEndPoint::QueryCallback(THParticle *particle,void *data)
 {
 	THVector2 rel=position-particle->position;
@@ -145,7 +140,13 @@ bool THEndPoint::QueryCallback(THParticle *particle,void *data)
 		particle->GetGroup()->Remove(particle);
 		particle->GetGrid()->Remove(particle);
 
-		++m_pcount;
+		//this->Add(particle);
+
+		//++m_pcount;
+
+		delete particle;
+
+		Create();
 	}
 	else
 	{
@@ -157,7 +158,27 @@ bool THEndPoint::QueryCallback(THParticle *particle,void *data)
 	
 	return true;
 }
-void THEndPoint::Step(THFluidEngine *engine)
+void THEndPoint::Step()
 {
-	engine->QueryCircle(position,TH_ENDPOINT_RADIUS,1u<<WATER_BIT,this,0);
+	m_engine->QueryCircle(position,TH_ENDPOINT_RADIUS,1u<<WATER_BIT,this,0);
+
+	THParticle *p=list;
+	THVector2 rel;
+	float x;
+	while(p)
+	{
+		rel=position-p->position;
+		x=rel.Normalize()/TH_ENDPOINT_RADIUS;
+		x=1.0f-x;
+		float s=2.0f*sqrtf(1.0f-x*x)*x;
+	
+		p->force+=(s*3.0f)*rel;
+
+		p=p->GetNext();
+	}
+}
+void THEndPoint::Create()
+{
+	float theta=THRandf(-TH_PI,TH_PI);
+	m_engine->AddParticle(this,position + THRandf(0.0f,TH_ENDPOINT_RADIUS)*THVector2(cosf(theta),sinf(theta)));
 }

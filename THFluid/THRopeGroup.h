@@ -45,34 +45,31 @@ public:
 	void Step(float invdt)
 	{
 		THVector2 rel=p1->position-p2->position;
-		float l=rel.Normalize();
 
-		float delta=(l-l0); //extension is positive
 		float p1m=p1->GetGroup()->GetInvMass();
 		float p2m=p2->GetGroup()->GetInvMass();
-		rel*=delta/(p1m+p2m);
+		rel*=(rel.Normalize()-l0)/(p1m+p2m);//extension is positive
 		//rel*=(delta*0.5f);
 		
-		//p1m=p1->GetGroup()->GetInvMass();
-		//p2m=p2->GetGroup()->GetInvMass();
+		/*
+		rel*=(invdt*invdt);
+		p1->force-=rel;
+		p2->force+=rel;
+		*/
+		
+		p1->GetGroup()->ApplyDeltaForce(p1,-rel*p1m,invdt);
+		p2->GetGroup()->ApplyDeltaForce(p2,rel*p2m,invdt);
+
+		/*
 		p1->position-=rel*p1m;
 		p2->position+=rel*p2m;
+		
+	
 		rel*=invdt;
 		p1->velocity-=rel*p1m;
 		p2->velocity+=rel*p2m;
-	}
-	void StepNVelocity()
-	{
-		THVector2 rel=p1->position-p2->position;
-		float l=rel.Normalize();
-
-		float delta=(l-l0); //extension is positive
-		float p1m=p1->GetGroup()->GetInvMass();
-		float p2m=p2->GetGroup()->GetInvMass();
-		rel*=delta/(p1m+p2m);
-
-		p1->position-=rel*p1m;
-		p2->position+=rel*p2m;
+		*/
+		
 	}
 protected:
 };
@@ -103,7 +100,7 @@ protected:
 */
 
 
-class THRopeGroup : public THParticleGroup,public THParticleQuery,public THParticleCollisionListener
+class THRopeGroup : public THParticleGroup,public THParticleQuery,public THParticleCollisionListener,public THParticleDestructionListener
 {
 public:
 	void Load(unsigned int springcap);
@@ -130,6 +127,7 @@ public:
 	}
 	bool QueryCallback(THParticle *particle,void *data);
 	int ParticleCollide(THParticle *p1,THParticle *p2,float fraction);
+	int ParticleDestruct(THParticle *particle);
 protected:
 	//THRope *m_ropes;
 	//THLinkedList m_ropes;

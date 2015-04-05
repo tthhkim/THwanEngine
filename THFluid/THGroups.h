@@ -13,13 +13,14 @@
 #define FLAME_BIT 5
 #define ROPE_BIT 6
 #define ROPE_DAMP_BIT 7
+#define END_BIT 8
 
 
 class THWaterGroup : public THParticleGroup
 {
 public:
 	void Load();
-	void Step();
+	void Create(const THVector2& p,float gap);
 protected:
 };
 
@@ -80,8 +81,8 @@ protected:
 };
 
 #define TH_ENDPOINT_RADIUS 0.7f
-#define TH_ENDPOINT_END_FACTOR 0.1f
-class THEndPoint : public THParticleQuery
+#define TH_ENDPOINT_END_FACTOR 0.3f
+class THEndPoint : public THParticleQuery , public THParticleGroup
 {
 public:
 	THVector2 position;
@@ -92,11 +93,13 @@ public:
 		k=1.0f;
 	}
 
+	void Load();
+	void Create();
 	bool QueryCallback(THParticle *particle,void *data);
 	inline unsigned int GetPositiveCount() const{return m_pcount;}
 	inline unsigned int GetNegativeCount() const{return m_ncount;}
 	void Refresh(){m_pcount=0;m_ncount=0;}
-	void Step(THFluidEngine *engine);
+	void Step();
 protected:
 	unsigned int m_pcount,m_ncount;
 };

@@ -3,6 +3,13 @@
 
 #include <GameEngine/Util/THMath3D.h>
 #include <THFluid/THParticleCallbacks.h>
+#include <assert.h>
+
+typedef unsigned int THParticleFilter;
+class THFluidEngine;
+class THGrid;
+class THParticleGroup;
+class THParticleBody;
 
 union THDataUnion
 {
@@ -10,6 +17,22 @@ union THDataUnion
 	float fdata;
 	int idata;
 	unsigned int uidata;
+};
+class THMassData
+{
+	friend class THFluidEngine;
+	friend class THParticleGroup;
+	friend class THParticleBody;
+public:
+	void SetMass(float m,float inv){m_mass=m;m_invmass=inv;m_isstatic=(inv==0.0f);}
+	void SetMass(float m){assert(m!=0.0f);m_mass=m;m_invmass=1.0f/m;m_isstatic=false;}
+	void SetInvMass(float inv){m_invmass=inv;m_isstatic=(inv==0.0f);}
+	inline float GetMass() const{return m_mass;}
+	inline float GetInvMass() const{return m_invmass;}
+	inline bool IsStatic() const{return m_isstatic;}
+protected:
+	float m_mass,m_invmass;
+	bool m_isstatic;
 };
 class THTimeStep
 {
@@ -26,11 +49,6 @@ public:
 	}
 };
 
-typedef unsigned int THParticleFilter;
-class THFluidEngine;
-class THGrid;
-class THParticleGroup;
-class THParticleBody;
 class THParticle
 {
 	friend class THFluidEngine;
@@ -108,54 +126,56 @@ public:
 	{
 		gravityScale=1.0f;
 		m_resistance=0.0f;
+		m_friction=0.0f;
 		//viscosity=0.0f;
 
 		list=0;
 		layer=0xffffffff;
 		count=0;
 		m_collideEach=true;
-		m_isStatic=false;
 		m_autoremove=true;
 
 		collisionListener=0;
+		m_destructionListener=0;
 
 		m_engine=0;
 	}
 	void Add(THParticle *p);
 	void Remove(THParticle *p);
 	void FreeAll();
+
+	virtual float GetInvMass() const{return m_mass.m_invmass;}
+	virtual void ApplyDeltaForce(THParticle *p,const THVector2& delta,float invdt);
 	
 
-	void SetMass(float m);
 	void SetPressure(float _RestDensity,float _PressureK,float _NearPressureK);
-	void SetStatic(bool _isStatic);
 	void SetResistance(float r){m_resistance=r;}
 	//void SetViscosity(float v){viscosity=v;}
 	void SetGravityScale(float s){gravityScale=s;}
 	void SetCollideEach(bool isCollide){m_collideEach=isCollide;}
-	inline float GetMass() const{return m_mass;}
-	inline float GetInvMass() const{return m_invMass;}
+	inline THMassData& GetMassData(){return m_mass;}
 	void SetCollisionListener(THParticleCollisionListener *listener){collisionListener=listener;}
+	void SetDestructionListener(THParticleDestructionListener *listener){m_destructionListener=listener;}
 	inline THFluidEngine* GetEngine() const{return m_engine;}
 	inline void SetAutoRemove(bool ar){m_autoremove=ar;}
+	inline void SetFriction(float f){m_friction=f;}
 
 protected:
 	THFluidEngine *m_engine;
 
-	bool m_isStatic;
-
-	float m_mass;
-	float m_invMass;
+	THMassData m_mass;
 	float gravityScale;
 	float restDensity;
 	float pressureK;
 	float nearPressureK;
 	float m_resistance;
+	float m_friction;
 
 	bool m_collideEach;
 	bool m_autoremove;
 
 	THParticleCollisionListener *collisionListener;
+	THParticleDestructionListener *m_destructionListener;
 
 	void CalculatePressure();
 	virtual void ApplyForceAndAdvect(const THTimeStep& step);
@@ -166,16 +186,18 @@ class THParticleBody : public THParticleGroup
 public:
 	THVector2 position;
 	float angle;
-	float angularDamping;
-	float b_invMass,b_invInertia;
 	
 
 	THParticleBody():THParticleGroup()
 	{
 		m_collideEach=false;
 		angle=0.0f;
-		angularDamping=0.0f;
 	}
+
+	inline THMassData& GetBodyMassData(){return m_bodymass;}
+	inline THMassData& GetBodyInertiaData(){return m_bodyinertia;}
+	float GetInvMass() const{return m_bodymass.m_invmass;}
+	void ApplyDeltaForce(THParticle *p,const THVector2& delta,float invdt);
 
 	void CalculateMass();
 	void CalculateInertia();
@@ -185,6 +207,8 @@ public:
 	void SetAngle(float r);
 	
 protected:
+	THMassData m_bodymass,m_bodyinertia;
+
 	float m_angularVelocity;
 	THVector2 m_velocity;
 	

@@ -8,8 +8,8 @@ void GameFrame::LoadTextures()
 	notebgObject.size.Set(20.0f,20.0f);
 	AddChild(&notebgObject);
 
-	groundTileImage.LoadFile("gtile.png",TH_PNG_RGB,GL_NEAREST,true);
-	hangerTexture.Set(&groundTileImage);
+	endpointImage.LoadFile("endpoint.png",TH_PNG_RGBA,GL_NEAREST,false);
+	endpointTexture.Set(&endpointImage);
 }
 
 #define CIRCLE_SIZE 64
@@ -83,7 +83,10 @@ void GameFrame::LoadRender()
 	brshader.Load();
 	brshader.SetTile(THVector2(256.0f,256.0f));
 
-	
+	eshader.Load();
+	eshader.SetColor(THVector3(0.0f,0.0f,0.0f));
+	eshader.SetAlpha(1.0f);
+	eshader.SetThreshold(0.6f);
 }
 void GameFrame::LoadOneVBO()
 {
@@ -119,7 +122,7 @@ void GameFrame::RenderBoundary()
 
 	//framebaseFBO.BeginDrawing();
 	brshader.Use();
-	brshader.Draw(fluidRenderImage,groundTileImage);
+	//brshader.Draw(fluidRenderImage,groundTileImage);
 	//framebaseFBO.EndDrawing();
 }
 void GameFrame::RenderBoundary(const THParticleGroup& group,const THVector3& color)
@@ -130,7 +133,7 @@ void GameFrame::RenderBoundary(const THParticleGroup& group,const THVector3& col
 	glViewport(0,0,1024,2048);
 	glClear(GL_COLOR_BUFFER_BIT);
 	bshader.Use();
-	
+	bshader.SetSize(0.2f);
 	bshader.PreDraw(boundaryCircleImage);
 	for(particle=group.list;particle;particle=particle->GetNext())
 	{
@@ -153,6 +156,7 @@ void GameFrame::RenderBoundary(const THVector2 *arr,unsigned int count,const THV
 	glViewport(0,0,1024,2048);
 	glClear(GL_COLOR_BUFFER_BIT);
 	bshader.Use();
+	bshader.SetSize(0.2f);
 	bshader.PreDraw(boundaryCircleImage);
 	for(unsigned int i=0;i<count;++i)
 	{
@@ -191,6 +195,30 @@ void GameFrame::RenderFluid(const THParticleGroup& group,const THVector3& color)
 	rshader.Use();
 	rshader.SetColor(color);
 	rshader.Draw(fluidRenderImage);
+	//framebaseFBO.EndDrawing();
+}
+void GameFrame::RenderEndPoint()
+{
+	THParticle *particle;
+
+	fluidRenderFBO.BeginDrawing();
+	glViewport(0,0,1024,2048);
+	glClear(GL_COLOR_BUFFER_BIT);
+	bshader.Use();
+	bshader.SetSize(0.4f);
+	bshader.PreDraw(circleImage);
+	for(particle=endpoint.list;particle;particle=particle->GetNext())
+	{
+		bshader.Draw(particle->position);
+	}
+	bshader.PostDraw();
+	fluidRenderFBO.EndDrawing();
+
+	ViewportInit();
+
+	//framebaseFBO.BeginDrawing();
+	eshader.Use();
+	eshader.Draw(fluidRenderImage);
 	//framebaseFBO.EndDrawing();
 }
 

@@ -77,20 +77,6 @@ protected:
 	GLint colorHandler;
 	GLint thresholdHandler,alphaHandler;
 };
-class THSteamRenderShader : public THProgram
-{
-public:
-	void Load();
-	void SetAlpha(float a)
-	{
-		glUniform1f(alphaHandler,a);
-	}
-	void Draw(const THImage& fbImage) const;
-
-protected:
-	GLint vertexHandler;
-	GLint alphaHandler;
-};
 
 class THFluidBaseShader : public THProgram
 {
@@ -158,21 +144,29 @@ protected:
 	GLint vertexHandler;
 };
 
-class THLightRenderShader : public THProgram
+class THEndPointShader : public THProgram
 {
 public:
 	void Load();
-	void Draw(const THImage& frame,const THImage& light);
-	void SetAmbient(const THVector3& c)
+	void Draw(const THImage& fbImage) const;
+
+	void SetColor(const THVector3& col)
 	{
-		SetUniform("u_ambient",c.x,c.y,c.z);
+		glUniform3f(colorHandler,col.x,col.y,col.z);
+		//glUniform3f(outColorHandler,out.x,out.y,out.z);
 	}
-	void SetLightCoeff(float c)
+	void SetThreshold(float threshold)
 	{
-		glUniform1f(lightcoeffHandler,c);
+		glUniform1f(thresholdHandler,threshold);
+	}
+	void SetAlpha(float alpha)
+	{
+		glUniform1f(alphaHandler,alpha);
 	}
 protected:
 	GLint vertexHandler;
-	GLint lightcoeffHandler;
+
+	GLint colorHandler;
+	GLint thresholdHandler,alphaHandler;
 };
 #endif

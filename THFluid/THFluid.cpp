@@ -230,7 +230,7 @@ void THFluidEngine::FixGridAndInit()
 		group=groups.arr[i];
 
 		particle=group->list;
-		THVector2 gforce=gravity*(group->m_mass*group->gravityScale);
+		THVector2 gforce=gravity*(group->m_mass.m_mass*group->gravityScale);
 		rk=group->m_resistance;
 		while(particle)
 		{
@@ -254,6 +254,10 @@ void THFluidEngine::FixGridAndInit()
 
 			if(cx<0 || cy<0 || cx>=gridWidth || cy>=gridHeight)
 			{
+				if(particle->group->m_destructionListener)
+				{
+					particle->group->m_destructionListener->ParticleDestruct(particle);
+				}
 				particle->grid->Remove(particle);
 				if(group->m_autoremove)
 				{
@@ -297,15 +301,15 @@ void THFluidEngine::CheckNeighbor(THParticle *p1,THParticle *p2)
 	q=1.0f-q;
 	q2=q*q;
 
-	temp=q2*q*p2->group->m_mass;
+	temp=q2*q*p2->group->m_mass.m_mass;
 	p1->p+=temp;
 	p1->pnear+=temp*q;
-	temp=q2*q*p1->group->m_mass;
+	temp=q2*q*p1->group->m_mass.m_mass;
 	p2->p+=temp;
 	p2->pnear+=temp*q;
 
 	if(p1->group==p2->group && p1->group->m_collideEach==false){return;}
-	if(p1->group->m_isStatic && p2->group->m_isStatic){return;}
+	if(p1->group->m_mass.m_isstatic && p2->group->m_mass.m_isstatic){return;}
 
 	const THNeighbor neighbor={p1,p2,rel,q,q2};
 	neighbors.Push(neighbor);
@@ -398,16 +402,22 @@ void THFluidEngine::DoubleDensityRelaxation(const THTimeStep& step)
 	THVector2 d;
 	for(unsigned int i=0;i<neighbors.num;++i)
 	{
-		const THNeighbor& neighbor=neighbors.arr[i];
+		THNeighbor& neighbor=neighbors.arr[i];
 
 		d=(0.5f*((neighbor.p1->p+neighbor.p2->p)*neighbor.q + (neighbor.p1->pnear+neighbor.p2->pnear)*neighbor.q2)   )*neighbor.one2two;
-		
-		/*if(neighbor.p1->group==neighbor.p2->group)
-		{
-			d+=(neighbor.p1->velocity-neighbor.p2->velocity)*(neighbor.q*0.5f*neighbor.p1->group->viscosity);
-		}*/
+	
 		neighbor.p1->force-=d;
 		neighbor.p2->force+=d;
+
+		neighbor.one2two.Skew();
+		d=neighbor.p2->velocity-neighbor.p1->velocity;
+		d.Normalize();
+		d=THDot(neighbor.one2two,d)*neighbor.one2two;
+		d*=neighbor.q*sqrtf(neighbor.p1->group->m_friction*neighbor.p2->group->m_friction);
+
+		neighbor.p1->force+=d;
+		neighbor.p2->force-=d;
+		
 
 		//d=neighbor.p1->velocity-neighbor.p2->velocity;
 		//neighbor.p1->force-=d*neighbor.p1->group->viscosity*neighbor.q;

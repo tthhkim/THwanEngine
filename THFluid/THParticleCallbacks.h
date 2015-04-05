@@ -20,5 +20,10 @@ public:
 	//return 1 not add to neighbor list
 	virtual int ParticleCollide(THParticle *p1,THParticle *p2,float fraction)=0;
 };
+class THParticleDestructionListener
+{
+public:
+	virtual int ParticleDestruct(THParticle *particle)=0;
+};
 
 #endif

@@ -8,12 +8,14 @@ void GameFrame::LoadGroups()
 	waterGroup.Load();
 	ropeGroup.Load(64);
 	ropedampGroup.Load();
+	endpoint.Load();
 
 	
 	engine.AddParticleGroup(&boundaryGroup);
 	engine.AddParticleGroup(&waterGroup);
 	engine.AddParticleGroup(&ropeGroup);
 	engine.AddParticleGroup(&ropedampGroup);
+	engine.AddParticleGroup(&endpoint);
 	//engine.AddParticleGroup(&iceGroup);
 	//engine.AddParticleGroup(&steamGroup);
 	//engine.AddParticleGroup(&heatGroup);
@@ -42,16 +44,17 @@ void GameFrame::ParseFile()
 {
 	THFluidParser parser;
 	THVector2Array varr(10);
-	//parser.AddSet(0,&boundaryGroup,1,true);
-	parser.AddSet(30,&waterGroup,2);
-	parser.AddSet(30,&waterGroup,2);
+	parser.AddSet(0,&boundaryGroup,1,true);
+	//parser.AddSet(30,&waterGroup,2);
+	//parser.AddSet(30,&waterGroup,2);
 	parser.AddSet(20,&varr);
 	parser.AddSet(10,&ropedampGroup,1,true);
 	parser.AddSet(40,&endpoint.position);
+	parser.AddSet(50,&emitPoint);
 
 	size_t iw,ih;
 	int colorType=TH_PNG_GREY;
-	unsigned char *data=LoadImageBuffer("map3.png",iw,ih,colorType);
+	unsigned char *data=LoadImageBuffer("map4.png",iw,ih,colorType);
 
 	parser.Parse(&engine,data,iw,ih);
 

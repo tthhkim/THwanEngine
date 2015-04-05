@@ -21,8 +21,8 @@ public:
 	THTexture notebgTexture;
 	THDisplayObject notebgObject;
 
-	THImage groundTileImage;
-	THTexture hangerTexture;
+	THImage endpointImage;
+	THTexture endpointTexture;
 
 	THFluidEngine engine;
 	THEndPoint endpoint;
@@ -38,11 +38,14 @@ public:
 	THFluidRenderShader rshader;
 	THBoundaryShader bshader;
 	THBoundaryRenderShader brshader;
+	THEndPointShader eshader;
 
 	THBoundaryGroup boundaryGroup;
 	THWaterGroup waterGroup;
 	THRopeGroup ropeGroup;
 	THRopeDampGroup ropedampGroup;
+	THVector2 emitPoint;
+
 	//THFlameGroup flameGroup;
 
 	
@@ -87,11 +90,13 @@ public:
 
 	void OnEnterFrame()
 	{
+		waterGroup.Create(emitPoint,0.5f);
+
 		const THTimeStep step(THDeltaTime);
 		ropeGroup.Step(step.dt_inv);
+		endpoint.Step();
 		engine.Step(step);
-		endpoint.Refresh();
-		endpoint.Step(&engine);
+		//endpoint.Refresh();
 
 		//float theta=THRandf(0.0f,TH_2PI);
 		//engine.AddParticle(&waterGroup,THVector2(1.0f,10.0f)+THRandf(0.0f,1.0f)*THVector2(cosf(theta),sinf(theta)));
@@ -108,12 +113,14 @@ public:
 	void RenderFluid(const THParticleGroup& group,const THVector3& color);
 	void RenderBoundary(const THParticleGroup& group,const THVector3& color);
 	void RenderBoundary(const THVector2 *arr,unsigned int count,const THVector3& color);
+	void RenderEndPoint();
 	//void RenderSteam();
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
 		PreDraw();
 		DrawObjects(0,1);
+		DrawTexture(endpoint.position,THVector2(0.5f,0.5f),THVector2(TH_ENDPOINT_RADIUS*0.1f,TH_ENDPOINT_RADIUS*0.10f),THRot2(),&endpointTexture);
 		PostDraw();
 
 		oneVBO.BeginDrawing();
@@ -127,6 +134,9 @@ public:
 		RenderBoundary(ropeGroup,THVector3(0.0f,0.0f,0.0f));
 		const THVector2Array& rtemparr=ropeGroup.GetTempArr();
 		RenderBoundary(rtemparr.arr,rtemparr.num,THVector3(0.3f,0.3f,0.3f));
+
+		RenderEndPoint();
+		//RenderBoundary(endpoint,THVector3(0.4f,0.4f,0.4f));
 
 
 		oneVBO.EndDrawing();

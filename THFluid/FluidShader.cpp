@@ -55,24 +55,6 @@ void THFluidRenderShader::Draw(const THImage& fbImage) const
 
 	glDisableVertexAttribArray(vertexHandler);
 }
-void THSteamRenderShader::Load()
-{
-	LoadFile("fluidrender.vs","steamrender.fs");
-
-	vertexHandler=GetAttribLocation("vert");
-	alphaHandler=GetUniformLocation("u_alpha");
-}
-void THSteamRenderShader::Draw(const THImage& fbImage) const
-{
-	glBindTexture(GL_TEXTURE_2D,fbImage.textureID);
-
-	glEnableVertexAttribArray(vertexHandler);
-
-	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-	glDisableVertexAttribArray(vertexHandler);
-}
 
 
 void THFluidBaseShader::Load()
@@ -133,26 +115,27 @@ void THBoundaryRenderShader::Draw(const THImage& fbImage,const THImage& groundTe
 	glDisableVertexAttribArray(vertexHandler);
 }
 
-void THLightRenderShader::Load()
+void THEndPointShader::Load()
 {
-	LoadFile("fluidrender.vs","lightrender.fs");
+	LoadFile("fluidrender.vs","endpoint.fs");
 
 	vertexHandler=GetAttribLocation("vert");
 
-	glUniform1i(GetUniformLocation("u_texture"),0);
-	glUniform1i(GetUniformLocation("u_lightmap"),1);
+	thresholdHandler=GetUniformLocation("u_threshold");
+	alphaHandler=GetUniformLocation("u_alpha");
+	colorHandler=GetUniformLocation("u_color");
+	//outColorHandler=GetUniformLocation("u_outColor");
 
-	lightcoeffHandler=GetUniformLocation("u_lightcoeff");
+	
 }
-void THLightRenderShader::Draw(const THImage& frame,const THImage& light)
+void THEndPointShader::Draw(const THImage& fbImage) const
 {
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,light.textureID);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,frame.textureID);
+	glBindTexture(GL_TEXTURE_2D,fbImage.textureID);
 
 	glEnableVertexAttribArray(vertexHandler);
+
 	glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
 	glDisableVertexAttribArray(vertexHandler);
 }

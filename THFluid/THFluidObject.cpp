@@ -1,24 +1,11 @@
 #include "THFluidObject.h"
 #include <assert.h>
 
-void THParticleGroup::SetMass(float m)
-{
-	m_mass=m;
-	m_invMass=1.0f/m;
-}
 void THParticleGroup::SetPressure(float _RestDensity,float _PressureK,float _NearPressureK)
 {
 	restDensity=_RestDensity;
 	pressureK=_PressureK;
 	nearPressureK=_NearPressureK;
-}
-void THParticleGroup::SetStatic(bool _isStatic)
-{
-	if(_isStatic)
-	{
-		m_invMass=0.0f;
-	}
-	m_isStatic=_isStatic;
 }
 
 
@@ -74,9 +61,14 @@ void THParticleGroup::CalculatePressure()
 		particle=particle->next;
 	}
 }
+void THParticleGroup::ApplyDeltaForce(THParticle *p,const THVector2& delta,float invdt)
+{
+	p->position+=delta;
+	p->velocity+=delta*invdt;
+}
 void THParticleGroup::ApplyForceAndAdvect(const THTimeStep& step)
 {
-	if(m_isStatic)
+	if(m_mass.m_isstatic)
 	{
 		THParticle *particle=list;
 		while(particle)
@@ -88,8 +80,8 @@ void THParticleGroup::ApplyForceAndAdvect(const THTimeStep& step)
 		return;
 	}
 	THParticle *particle=list;
-	const float invdt2=m_invMass*step.dt2;
-	const float invdt=m_invMass*step.dt;
+	const float invdt2=m_mass.m_invmass*step.dt2;
+	const float invdt=m_mass.m_invmass*step.dt;
 
 	THVector2 f;
 	while(particle)
@@ -120,7 +112,7 @@ void THParticleBody::CalculateMass()
 	}
 	position=pp*(1.0f/(float)count);
 
-	b_invMass=1.0f/(m_mass*(float)count);
+	m_bodymass.SetMass(m_mass.m_mass*float(count));
 }
 void THParticleBody::CalculateInertia()
 {
@@ -133,9 +125,12 @@ void THParticleBody::CalculateInertia()
 		lsq+=rel.LengthSquared();
 		particle=particle->next;
 	}
-	b_invInertia=1.0f/(m_mass*lsq);
+	m_bodyinertia.SetMass(m_mass.m_mass*lsq);
 }
-
+void THParticleBody::ApplyDeltaForce(THParticle *p,const THVector2& delta,float invdt)
+{
+	p->force+=delta*(invdt*invdt);
+}
 void THParticleBody::ApplyForceAndAdvect(const THTimeStep& step)
 {
 	THParticle *particle=list;
@@ -149,14 +144,13 @@ void THParticleBody::ApplyForceAndAdvect(const THTimeStep& step)
 
 		particle=particle->next;
 	}
-	torque*=b_invInertia;
-	force*=b_invMass;
+	torque*=m_bodyinertia.m_invmass;
+	force*=m_bodymass.m_invmass;
 
 	float anginc=step.dt2*torque;
 	THVector2 posinc=step.dt2*force;
 
 	m_angularVelocity+=torque*step.dt;
-	m_angularVelocity*=1.0f/(1.0f+step.dt*angularDamping);
 	m_velocity+=step.dt*force;
 
 	anginc+=m_angularVelocity*step.dt;
