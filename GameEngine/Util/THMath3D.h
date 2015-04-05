@@ -50,6 +50,10 @@ public:
 	{
 		return sqrtf(x*x + y*y + z*z);
 	}
+	float InvLength() const
+	{
+		return THInvSqrt2(x*x+y*y+z*z);
+	}
 
 	float Normalize()
 	{

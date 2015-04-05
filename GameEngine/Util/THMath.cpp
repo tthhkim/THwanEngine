@@ -5,6 +5,34 @@
 //For Random
 extern double InvRandomMax=0.0;
 
+float THInvSqrt(float x)
+{
+	union 
+	{
+		float f;
+		int i;
+	} v;
+	v.f=x;
+	const float xhalf = 0.5f*x;
+
+	v.i=0x5f375a86-(v.i>>1);
+	return v.f*(1.5f-xhalf*v.f*v.f); // Newton step, repeating increases accuracy
+}
+float THInvSqrt2(float x)
+{
+	union 
+	{
+		float f;
+		int i;
+	} v;
+	v.f=x;
+	const float xhalf = 0.5f*x;
+
+	v.i=0x5f375a86-(v.i>>1);
+	v.f=v.f*(1.5f-xhalf*v.f*v.f);
+	return v.f*(1.5f-xhalf*v.f*v.f); // Newton step, repeating increases accuracy
+}
+
 THMatrix33 THMatrix33::RotateAxis(const THVector3& axis,const THRot2& rot)
 {
 	  const THMatrix33 ux

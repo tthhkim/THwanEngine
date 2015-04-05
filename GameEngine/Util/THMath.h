@@ -12,7 +12,8 @@ static inline bool THIsPowerOfTwo(T x)
 {
 	return (x&(x-1))==0;
 }
-
+float THInvSqrt(float x);
+float THInvSqrt2(float x);
 class THVector2
 {
 public:
@@ -59,6 +60,10 @@ public:
 	float Length() const
 	{
 		return sqrtf(x*x + y*y);
+	}
+	float InvLength() const
+	{
+		return THInvSqrt2(x*x+y*y);
 	}
 
 	float Normalize()
