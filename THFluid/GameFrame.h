@@ -25,7 +25,7 @@ public:
 	THTexture endpointTexture;
 
 	THFluidEngine engine;
-	THEndPoint endpoint;
+	//THEndPoint endpoint;
 
 	//rendering
 	THVertexBuffer oneVBO;
@@ -44,7 +44,10 @@ public:
 	THWaterGroup waterGroup;
 	THRopeGroup ropeGroup;
 	THRopeDampGroup ropedampGroup;
-	THVector2 emitPoint;
+	THStone stone;
+	THArray<THClickGroup*> clickgroups;
+	THClickGroup clickgroup;
+	//THVector2 emitPoint;
 
 	//THFlameGroup flameGroup;
 
@@ -90,11 +93,11 @@ public:
 
 	void OnEnterFrame()
 	{
-		waterGroup.Create(emitPoint,0.5f);
+		//waterGroup.Create(emitPoint,0.5f);
 
 		const THTimeStep step(THDeltaTime);
 		ropeGroup.Step(step.dt_inv);
-		endpoint.Step();
+		//endpoint.Step();
 		engine.Step(step);
 		//endpoint.Refresh();
 
@@ -118,9 +121,9 @@ public:
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
+		/*
 		PreDraw();
 		DrawObjects(0,1);
-		DrawTexture(endpoint.position,THVector2(0.5f,0.5f),THVector2(TH_ENDPOINT_RADIUS*0.1f,TH_ENDPOINT_RADIUS*0.10f),THRot2(),&endpointTexture);
 		PostDraw();
 
 		oneVBO.BeginDrawing();
@@ -140,8 +143,9 @@ public:
 
 
 		oneVBO.EndDrawing();
+		*/
 
-		//engine.DebugDraw();
+		engine.DebugDraw();
 	}
 
 	void OnTouchDown(const THVector2& p)

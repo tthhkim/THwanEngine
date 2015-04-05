@@ -129,7 +129,7 @@ void THParticleBody::CalculateInertia()
 }
 void THParticleBody::ApplyDeltaForce(THParticle *p,const THVector2& delta,float invdt)
 {
-	p->force+=delta*(invdt*invdt);
+	p->force+=delta*(invdt*invdt*m_bodymass.m_mass);
 }
 void THParticleBody::ApplyForceAndAdvect(const THTimeStep& step)
 {

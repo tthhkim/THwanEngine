@@ -226,7 +226,6 @@ public:
 			node->m_linkednext->m_linkedprev=node->m_linkedprev;
 			node->m_linkednext=0;
 		}
-		
 	}
 	void PushNext(THLinkedNode *node,THLinkedNode *anchor)
 	{

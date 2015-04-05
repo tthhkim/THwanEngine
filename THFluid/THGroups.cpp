@@ -26,6 +26,7 @@ void THBoundaryGroup::Load()
 	SetCollideEach(false);
 	m_mass.SetMass(2.0f,0.0f);
 	SetPressure(10.0f,0.4f,6.0f);
+	SetFriction(1.0f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<BOUNDARY_BIT);
 }
@@ -118,6 +119,57 @@ void THFlameGroup::CreateNew(const THVector2& position)
 {
 	float theta=THRandf(-TH_PI,TH_PI);
 	m_engine->AddParticle(this,position + THRandf(0.0f,m_radius)*THVector2(cosf(theta),sinf(theta)));
+}
+
+void THStone::Load()
+{
+	SetCollideEach(false);
+	m_mass.SetMass(1.0f);
+	SetPressure(10.0f,0.5f,10.0f);
+	SetResistance(1.0f);
+	SetFriction(100.0f);
+
+	layer=(1<<DEFAULT_BIT)|(1<<ROPE_DAMP_BIT);
+}
+
+void THClickGroup::Load()
+{
+	SetCollideEach(false);
+	m_mass.SetMass(2.0f,0.0f);
+	SetPressure(10.0f,0.5f,10.0f);
+	SetFriction(100.0f);
+
+	layer=(1<<DEFAULT_BIT);
+}
+void THClickGroup::DeleteAll()
+{
+	THParticle *p=list,*np;
+	while(p)
+	{
+		np=p->GetNext();
+
+		p->GetGrid()->Remove(p);
+		p->GetGroup()->Remove(p);
+		delete p;
+
+		p=np;
+	}
+}
+bool THClickGroup::HitTest(const THVector2& p)
+{
+	bool a=false;
+	m_engine->QueryCircle(p,0.1f,0xffffffff,this,&a);
+	return a;
+}
+
+bool THClickGroup::QueryCallback(THParticle *particle,void *data)
+{
+	if(particle->GetGroup()==this)
+	{
+		*((bool*)data)=true;
+		return false;
+	}
+	return true;
 }
 
 

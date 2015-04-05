@@ -37,7 +37,7 @@ void THRope::DeleteParticles()
 void THRopeGroup::Load(unsigned int springcap)
 {
 	SetCollideEach(false);
-	m_mass.SetMass(25.0f);
+	m_mass.SetMass(3.0f);
 	//SetStatic(false);
 	SetPressure(10.0f,0.5f,10.0f);
 	SetAutoRemove(true);
@@ -65,10 +65,12 @@ void THRopeGroup::LoadRope(const THVector2 *arr,unsigned int count)
 		//curp->data.pointer=prevp;
 		m_springs.Push(THRopeSpring(prevp,curp,ROPE_GAP));
 
-		pair.p1=prevp;
-		pair.p2=curp;
-		m_engine->QueryCircle(arr[i],ROPE_GAP,1<<ROPE_DAMP_BIT,this,&pair);
+		
+		
 	}
+	pair.p1=prevp;
+	pair.p2=curp;
+	m_engine->QueryCircle(arr[count-1],ROPE_GAP,1<<ROPE_DAMP_BIT,this,&pair);
 }
 void THRopeGroup::LoadRope(const THVector2& p1,const THVector2& p2,float factor)
 {
@@ -130,8 +132,9 @@ bool THRopeGroup::QueryCallback(THParticle *particle,void *data)
 	const THParticlePair& pair=*(THParticlePair*)data;
 	if(particle!=pair.p1&&particle!=pair.p2)
 	{
+		if((pair.p2->position-particle->position).LengthSquared()==0.0f){return true;}
 		m_springs.Push(THRopeSpring(particle,pair.p2));
-		//return false;
+		return false;
 	}
 	return true;
 }

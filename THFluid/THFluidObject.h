@@ -124,7 +124,7 @@ public:
 
 	THParticleGroup()
 	{
-		gravityScale=1.0f;
+		m_gravityscale=1.0f;
 		m_resistance=0.0f;
 		m_friction=0.0f;
 		//viscosity=0.0f;
@@ -151,7 +151,7 @@ public:
 	void SetPressure(float _RestDensity,float _PressureK,float _NearPressureK);
 	void SetResistance(float r){m_resistance=r;}
 	//void SetViscosity(float v){viscosity=v;}
-	void SetGravityScale(float s){gravityScale=s;}
+	void SetGravityScale(float s){m_gravityscale=s;}
 	void SetCollideEach(bool isCollide){m_collideEach=isCollide;}
 	inline THMassData& GetMassData(){return m_mass;}
 	void SetCollisionListener(THParticleCollisionListener *listener){collisionListener=listener;}
@@ -163,11 +163,13 @@ public:
 protected:
 	THFluidEngine *m_engine;
 
-	THMassData m_mass;
-	float gravityScale;
 	float restDensity;
 	float pressureK;
 	float nearPressureK;
+
+	THMassData m_mass;
+	float m_gravityscale;
+	
 	float m_resistance;
 	float m_friction;
 
@@ -176,6 +178,8 @@ protected:
 
 	THParticleCollisionListener *collisionListener;
 	THParticleDestructionListener *m_destructionListener;
+
+	unsigned int m_groupindex;
 
 	void CalculatePressure();
 	virtual void ApplyForceAndAdvect(const THTimeStep& step);

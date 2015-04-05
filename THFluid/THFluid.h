@@ -61,7 +61,7 @@ public:
 	{
 		return m_maxgrid;
 	}
-	
+	/*
 	inline THCell& GetCell(int index)
 	{
 		return m_cellBuffer[index];
@@ -83,14 +83,14 @@ public:
 	{
 		return m_cellCount;
 	}
-	
+	*/
 
 	void QueryAABB(const THVector2& minBound,const THVector2& maxBound,THParticleFilter layer,THParticleQuery *callback,void *data);
 	void QueryCircle(const THVector2& position,float radius,THParticleFilter layer,THParticleQuery *callback,void *data);
 	void QueryCellCircle(const THVector2& position,float radius,THCellQuery *callback,void *data);
 
 	void Load(const THVector2& ming,const THVector2& maxg,float smoothingLength);
-	void LoadCellMap(int w,int h);
+	//void LoadCellMap(int w,int h);
 	void FreeAll();
 
 	inline void Step(const THTimeStep& step)
@@ -115,10 +115,14 @@ protected:
 
 	float smoothLength,smoothLengthSq,smoothLengthInv;
 
+	//THArray<float> m_frictioncombined;
+
+	/*
 	int m_cellWidth,m_cellHeight;
 	unsigned int m_cellCount;
 	THVector2 m_cellMapScale;
 	THCell *m_cellBuffer;
+	*/
 	
 	void FixGridAndInit();
 	void CheckNeighbor(THParticle *p1,THParticle *p2);

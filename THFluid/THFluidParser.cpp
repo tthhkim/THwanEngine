@@ -42,8 +42,8 @@ void THFluidParser::CheckData(int data,const THVector2& pos,int x,int y)
 				engine->AddParticle(p->pointer,pos);
 			}
 				
-			m_listGroup.Delete(p);
-			m_listGroup.Push(p);
+			//m_listGroup.Delete(p);
+			//m_listGroup.Push(p);
 			break;
 		}
 		p=(THParseSetGroup*)p->GetLinkedNext();

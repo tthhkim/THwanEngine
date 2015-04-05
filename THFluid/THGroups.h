@@ -80,6 +80,23 @@ protected:
 	float m_lasttime,m_invtime;
 };
 
+class THStone : public THParticleBody
+{
+public:
+	void Load();
+protected:
+};
+
+class THClickGroup : public THParticleGroup,public THParticleQuery
+{
+public:
+	void Load();
+	bool HitTest(const THVector2& p);
+	void DeleteAll();
+	bool QueryCallback(THParticle *particle,void *data);
+protected:
+};
+
 #define TH_ENDPOINT_RADIUS 0.7f
 #define TH_ENDPOINT_END_FACTOR 0.3f
 class THEndPoint : public THParticleQuery , public THParticleGroup

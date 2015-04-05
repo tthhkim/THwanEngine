@@ -207,9 +207,9 @@ void GameFrame::RenderEndPoint()
 	bshader.Use();
 	bshader.SetSize(0.4f);
 	bshader.PreDraw(circleImage);
-	for(particle=endpoint.list;particle;particle=particle->GetNext())
+	//for(particle=endpoint.list;particle;particle=particle->GetNext())
 	{
-		bshader.Draw(particle->position);
+		//bshader.Draw(particle->position);
 	}
 	bshader.PostDraw();
 	fluidRenderFBO.EndDrawing();

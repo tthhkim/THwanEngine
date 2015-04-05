@@ -36,6 +36,7 @@ void THFluidEngine::Load(const THVector2& ming,const THVector2& maxg,float smoot
 	GetGridPos(m_outposition,cx,cy);
 	outgrid->Init(cx,cy);
 }
+/*
 void THFluidEngine::LoadCellMap(int w,int h)
 {
 	m_cellWidth=w;
@@ -67,6 +68,7 @@ void THFluidEngine::LoadCellMap(int w,int h)
 	}
 	//memset(boundaryBuffer,0,sizeof(THBoundaryType)*size);
 }
+*/
 void THFluidEngine::FreeAll()
 {
 	if(gbuf)
@@ -77,11 +79,13 @@ void THFluidEngine::FreeAll()
 		gbuf=0;
 		grids=0;
 	}
+	/*
 	if(m_cellBuffer)
 	{
 		free(m_cellBuffer);
 		m_cellBuffer=0;
 	}
+	*/
 	for(unsigned int i=0;i<groups.num;++i)
 	{
 		THParticleGroup *group=groups.arr[i];
@@ -92,6 +96,7 @@ void THFluidEngine::FreeAll()
 }
 void THFluidEngine::AddParticleGroup(THParticleGroup *group)
 {
+	group->m_groupindex=groups.num;
 	groups.Push(group);
 	group->m_engine=this;
 }
@@ -197,6 +202,7 @@ void THFluidEngine::QueryCircle(const THVector2& position,float radius,THParticl
 		}
 	}
 }
+/*
 void THFluidEngine::QueryCellCircle(const THVector2& position,float radius,THCellQuery *callback,void *data)
 {
 	int minx,miny,maxx,maxy;
@@ -220,6 +226,7 @@ void THFluidEngine::QueryCellCircle(const THVector2& position,float radius,THCel
 		}
 	}
 }
+*/
 void THFluidEngine::FixGridAndInit()
 {
 	THParticle *particle,*nextp;
@@ -230,7 +237,7 @@ void THFluidEngine::FixGridAndInit()
 		group=groups.arr[i];
 
 		particle=group->list;
-		THVector2 gforce=gravity*(group->m_mass.m_mass*group->gravityScale);
+		THVector2 gforce=gravity*(group->m_mass.m_mass*group->m_gravityscale);
 		rk=group->m_resistance;
 		while(particle)
 		{
@@ -411,7 +418,7 @@ void THFluidEngine::DoubleDensityRelaxation(const THTimeStep& step)
 
 		neighbor.one2two.Skew();
 		d=neighbor.p2->velocity-neighbor.p1->velocity;
-		d.Normalize();
+		d.FastNormalize();
 		d=THDot(neighbor.one2two,d)*neighbor.one2two;
 		d*=neighbor.q*sqrtf(neighbor.p1->group->m_friction*neighbor.p2->group->m_friction);
 
