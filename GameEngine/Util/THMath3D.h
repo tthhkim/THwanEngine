@@ -66,6 +66,16 @@ public:
 
 		return length;
 	}
+	float FastNormalize()
+	{
+		const float li=THInvSqrt2(x*x+y*y+z*z);
+
+		x*=li;
+		y*=li;
+		z*=li;
+
+		return li;
+	}
 };
 
 inline float THDot(const THVector3& a, const THVector3& b)

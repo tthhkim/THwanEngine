@@ -76,6 +76,15 @@ public:
 
 		return length;
 	}
+	float FastNormalize()
+	{
+		const float li=THInvSqrt2(x*x+y*y);
+
+		x*=li;
+		y*=li;
+
+		return li;
+	}
 };
 class THRot2 : public THVector2
 {
