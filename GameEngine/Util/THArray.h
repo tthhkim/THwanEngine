@@ -219,13 +219,13 @@ public:
 		if(node->m_linkedprev)
 		{
 			node->m_linkedprev->m_linkednext=node->m_linkednext;
-			node->m_linkedprev=0;
 		}
 		if(node->m_linkednext)
 		{
 			node->m_linkednext->m_linkedprev=node->m_linkedprev;
-			node->m_linkednext=0;
 		}
+		node->m_linkedprev=0;
+		node->m_linkednext=0;
 	}
 	void PushNext(THLinkedNode *node,THLinkedNode *anchor)
 	{
