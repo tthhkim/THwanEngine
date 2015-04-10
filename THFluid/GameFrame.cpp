@@ -11,11 +11,8 @@ void GameFrame::LoadGroups()
 	//endpoint.Load();
 	stone.Load();
 	clickgroups.Load(3);
-	clickgroup.Load();
-	THClickGroup *g=new THClickGroup;
-	g->Load();
+	massbodies.Load(3);
 	
-	clickgroups.Push(g);
 
 	
 	engine.AddParticleGroup(&boundaryGroup);
@@ -24,7 +21,6 @@ void GameFrame::LoadGroups()
 	engine.AddParticleGroup(&ropedampGroup);
 	//engine.AddParticleGroup(&endpoint);
 	engine.AddParticleGroup(&stone);
-	engine.AddParticleGroup(&clickgroup);
 	//engine.AddParticleGroup(&iceGroup);
 	//engine.AddParticleGroup(&steamGroup);
 	//engine.AddParticleGroup(&heatGroup);
@@ -51,10 +47,21 @@ void GameFrame::SetViewport(const THVector2& minp,const THVector2& maxp)
 }
 void GameFrame::ParseFile()
 {
+	THClickGroup *g=new THClickGroup;
+	g->Load();
+	engine.AddParticleGroup(g);
+	clickgroups.Push(g);
+
+	THMassBody *gp=new THMassBody;
+	gp->Load(1.0f);
+	engine.AddParticleGroup(gp);
+	massbodies.Push(gp);
+
 	THFluidParser parser;
 	parser.AddSet(0,&boundaryGroup,1,true);
 	parser.AddSet(10,&stone);
-	parser.AddSet(30,&clickgroup,1,true);
+	//parser.AddSet(20,gp);
+	//parser.AddSet(30,g,1,true);
 	//parser.AddSet(30,&waterGroup,2);
 	//parser.AddSet(30,&waterGroup,2);
 	//parser.AddSet(20,&varr);
@@ -64,7 +71,7 @@ void GameFrame::ParseFile()
 
 	size_t iw,ih;
 	int colorType=TH_PNG_GREY;
-	unsigned char *data=LoadImageBuffer("map5.png",iw,ih,colorType);
+	unsigned char *data=LoadImageBuffer("map6.png",iw,ih,colorType);
 
 	parser.Parse(&engine,data,iw,ih);
 
@@ -72,6 +79,8 @@ void GameFrame::ParseFile()
 
 	stone.CalculateMass();
 	stone.CalculateInertia();
+	//gp->CalculateMass();
+	//gp->CalculateInertia();
 
 	//ropeGroup.LoadRope(varr.arr[0],varr.arr[1],1.4f);
 	//delete parser;

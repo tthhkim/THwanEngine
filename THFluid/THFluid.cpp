@@ -412,7 +412,7 @@ void THFluidEngine::DoubleDensityRelaxation(const THTimeStep& step)
 		THNeighbor& neighbor=neighbors.arr[i];
 
 		d=(0.5f*((neighbor.p1->p+neighbor.p2->p)*neighbor.q + (neighbor.p1->pnear+neighbor.p2->pnear)*neighbor.q2)   )*neighbor.one2two;
-	
+
 		neighbor.p1->force-=d;
 		neighbor.p2->force+=d;
 
@@ -420,7 +420,7 @@ void THFluidEngine::DoubleDensityRelaxation(const THTimeStep& step)
 		d=neighbor.p2->velocity-neighbor.p1->velocity;
 		d.FastNormalize();
 		d=THDot(neighbor.one2two,d)*neighbor.one2two;
-		d*=neighbor.q*sqrtf(neighbor.p1->group->m_friction*neighbor.p2->group->m_friction);
+		d*=neighbor.q2*sqrtf(neighbor.p1->group->m_friction*neighbor.p2->group->m_friction);
 
 		neighbor.p1->force+=d;
 		neighbor.p2->force-=d;

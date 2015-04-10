@@ -37,11 +37,11 @@ void THRope::DeleteParticles()
 void THRopeGroup::Load(unsigned int springcap)
 {
 	SetCollideEach(false);
-	m_mass.SetMass(3.0f);
+	m_mass.SetMass(14.0f);
 	//SetStatic(false);
 	SetPressure(10.0f,0.5f,10.0f);
 	SetAutoRemove(true);
-	SetResistance(12.0f);
+	SetResistance(1.0f);
 	SetCollisionListener(this);
 	SetDestructionListener(this);
 

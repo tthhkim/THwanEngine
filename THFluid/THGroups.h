@@ -96,6 +96,11 @@ public:
 	bool QueryCallback(THParticle *particle,void *data);
 protected:
 };
+class THMassBody : public THParticleBody
+{
+public:
+	void Load(float m);
+};
 
 #define TH_ENDPOINT_RADIUS 0.7f
 #define TH_ENDPOINT_END_FACTOR 0.3f

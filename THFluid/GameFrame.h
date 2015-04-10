@@ -46,7 +46,7 @@ public:
 	THRopeDampGroup ropedampGroup;
 	THStone stone;
 	THArray<THClickGroup*> clickgroups;
-	THClickGroup clickgroup;
+	THArray<THMassBody*> massbodies;
 	//THVector2 emitPoint;
 
 	//THFlameGroup flameGroup;
@@ -121,15 +121,24 @@ public:
 	//void RenderFlame(const THFlameGroup& group);
 	void Draw()
 	{
-		/*
+		
 		PreDraw();
 		DrawObjects(0,1);
 		PostDraw();
 
 		oneVBO.BeginDrawing();
 
+		for(unsigned int i=0;i<massbodies.num;++i)
+		{
+			RenderFluid(*massbodies.arr[i],THVector3(0.0f,0.0f,0.0f));
+		}
+		for(unsigned int i=0;i<clickgroups.num;++i)
+		{
+			RenderFluid(*clickgroups.arr[i],THVector3(0.0f,0.0f,0.0f));
+		}
+		RenderFluid(stone,THVector3(0.0f,0.0f,0.0f));
 
-		RenderFluid(waterGroup,THVector3(0.0f,0.0f,0.0f));
+		//RenderFluid(waterGroup,THVector3(0.0f,0.0f,0.0f));
 		//RenderFlame(flameGroup);
 		//RenderBoundary();
 		RenderFluid(boundaryGroup,THVector3(0.0f,0.0f,0.0f));
@@ -143,14 +152,21 @@ public:
 
 
 		oneVBO.EndDrawing();
-		*/
+		
 
-		engine.DebugDraw();
+		//engine.DebugDraw();
 	}
 
 	void OnTouchDown(const THVector2& p)
 	{
 		ropeGroup.OnTouchDown(p);
+		for(unsigned int i=0;i<clickgroups.num;++i)
+		{
+			if(clickgroups.arr[i]->HitTest(p))
+			{
+				clickgroups.arr[i]->DeleteAll();
+			}
+		}
 	}
 	void OnTouchMove(const THVector2& p,const THVector2& delta)
 	{

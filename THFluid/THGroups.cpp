@@ -24,7 +24,7 @@ void THRopeDampGroup::Load()
 void THBoundaryGroup::Load()
 {
 	SetCollideEach(false);
-	m_mass.SetMass(2.0f,0.0f);
+	m_mass.SetMass(10.0f,0.0f);
 	SetPressure(10.0f,0.4f,6.0f);
 	SetFriction(1.0f);
 
@@ -127,7 +127,7 @@ void THStone::Load()
 	m_mass.SetMass(1.0f);
 	SetPressure(10.0f,0.5f,10.0f);
 	SetResistance(1.0f);
-	SetFriction(100.0f);
+	SetFriction(50.0f);
 
 	layer=(1<<DEFAULT_BIT)|(1<<ROPE_DAMP_BIT);
 }
@@ -137,7 +137,7 @@ void THClickGroup::Load()
 	SetCollideEach(false);
 	m_mass.SetMass(2.0f,0.0f);
 	SetPressure(10.0f,0.5f,10.0f);
-	SetFriction(100.0f);
+	SetFriction(10.0f);
 
 	layer=(1<<DEFAULT_BIT);
 }
@@ -172,6 +172,16 @@ bool THClickGroup::QueryCallback(THParticle *particle,void *data)
 	return true;
 }
 
+void THMassBody::Load(float m)
+{
+	SetCollideEach(false);
+	m_mass.SetMass(m);
+	SetPressure(10.0f,0.5f,10.0f);
+	SetResistance(1.0f);
+	SetFriction(5.0f);
+
+	layer=(1<<DEFAULT_BIT)|(1<<ROPE_DAMP_BIT);
+}
 
 void THEndPoint::Load()
 {
