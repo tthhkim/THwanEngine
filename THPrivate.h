@@ -17,6 +17,8 @@
 
 #include <GameEngine/Util/THMath.h>
 
+
+
 class THFrame;
 class THTween;
 
@@ -47,6 +49,18 @@ class THTween;
 	#define THError(...) printf("\n"__VA_ARGS__)
 #endif
 #endif
+
+#define TH_GETTER(type,name,varname) \
+	inline type Get##name() const{\
+		return varname;\
+	}
+#define TH_SETTER(type,name,varname) \
+	inline void Set##name(type name) {\
+		varname=name;\
+	}
+#define TH_VARIABLES(type,name,varname) \
+	TH_GETTER(type,name,varname) \
+	TH_SETTER(type,name,varname)
 
 #define MAKE_CENTER_VERTEX(hw,hh) \
 	{-hw, -hh,hw, -hh,-hw,hh,hw,hh}
