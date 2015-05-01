@@ -17,6 +17,18 @@
 
 #include <GameEngine/Util/THMath.h>
 
+#ifndef NDEBUG
+	#define TH_GLERROR_CHECK()\
+		{\
+			const GLenum gl_estatus=glGetError();\
+			if(gl_estatus!=GL_NO_ERROR)\
+			{\
+				THError("GL Error : %d",gl_estatus);\
+			}\
+		}
+#else
+	#define TH_GLERROR_CHECK
+#endif
 
 
 class THFrame;

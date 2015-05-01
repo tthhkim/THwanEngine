@@ -76,16 +76,21 @@ void THProgram::Load(const GLchar* vs,const GLchar* fs)
 {
 	vertex=InitShader(vs,GL_VERTEX_SHADER);
 	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
+	TH_GLERROR_CHECK()
 	program=glCreateProgram();
+	TH_GLERROR_CHECK()
 	glAttachShader(program,vertex);
 	glAttachShader(program,fragment);
+	TH_GLERROR_CHECK()
 	glLinkProgram(program);
+	TH_GLERROR_CHECK()
 	glUseProgram(program);
+	TH_GLERROR_CHECK()
 }
 void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 {
-	assert(glGetError()==GL_NO_ERROR);
 	glGenTextures(1, &textureID);
+	TH_GLERROR_CHECK()
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
@@ -99,14 +104,14 @@ void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 }
 void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
 {
-	assert(glGetError()==GL_NO_ERROR);
 	glGenTextures(1, &textureID);
+	TH_GLERROR_CHECK()
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
@@ -120,9 +125,9 @@ void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRe
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, type,0);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 }
 
 
@@ -147,24 +152,24 @@ void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
 {
 	THLog("VertexBuffer Generation; %d Bytes",bytes);
 
-	assert(glGetError()==GL_NO_ERROR);
 	glGenBuffers(1,&vboHandler);
+	TH_GLERROR_CHECK()
 
 	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
 	glBufferData(GL_ARRAY_BUFFER,bytes,data,usage);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	//ToDo Returning to default vertexbuffer
 }
 void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes) const
 {
-	assert(glGetError()==GL_NO_ERROR);
 	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
+	TH_GLERROR_CHECK()
 	glBufferSubData(GL_ARRAY_BUFFER,offset,bytes,data);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	//ToDo Returning to default vertexbuffer
 }
 
@@ -192,10 +197,10 @@ void THFrameBuffer::Load(THImage* img)
 	glRenderbufferStorage(GL_RENDERBUFFER,GL_RGBA4,width,height);
 	*/
 
-	assert(glGetError()==GL_NO_ERROR);
 	glGenFramebuffers(1,&fboHandler);
+	TH_GLERROR_CHECK()
 	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	//glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,rbHandler);
 	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fboImage->textureID,0);
 	
@@ -234,17 +239,17 @@ The combination of internal formats of the attached images violates an implement
 		break;
 	}
 #endif
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	//ToDo Returning to default framebuffer
 }
 void THFrameBuffer::EndDrawing() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	assert(glGetError()==GL_NO_ERROR);
+	TH_GLERROR_CHECK()
 	//ToDo Returning to default framebuffer
 	//glBindRenderbuffer(GL_RENDERBUFFER,0);
 }
