@@ -5,6 +5,7 @@
 #include <malloc.h>
 
 #include <GameEngine/Util/THMath.h>
+#include <assert.h>
 
 
 class THColor
@@ -45,30 +46,37 @@ public:
 	inline void SetUniform(const char* name,float f1) const
 	{
 		glUniform1f(glGetUniformLocation(program,name),f1);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline void SetUniform(const char* name,float f1,float f2) const
 	{
 		glUniform2f(glGetUniformLocation(program,name),f1,f2);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline void SetUniform(const char* name,float f1,float f2,float f3) const
 	{
 		glUniform3f(glGetUniformLocation(program,name),f1,f2,f3);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline void SetUniform(const char* name,float f1,float f2,float f3,float f4) const
 	{
 		glUniform4f(glGetUniformLocation(program,name),f1,f2,f3,f4);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline GLint GetUniformLocation(const GLchar* name) const
 	{
 		return glGetUniformLocation(program,name);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline GLint GetAttribLocation(const GLchar* name) const
 	{
 		return glGetAttribLocation(program,name);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline void Use() const
 	{
 		glUseProgram(program);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 
 	void Delete() const
@@ -150,15 +158,18 @@ application and used a few times to draw primitives.
 	inline void BeginDrawing() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 	inline void EndDrawing() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,0);
+		assert(glGetError()==GL_NO_ERROR);
 		//ToDo Returning to default vertexbuffer
 	}
 	inline void DeleteVBO() const
 	{
 		glDeleteBuffers(1,&vboHandler);
+		assert(glGetError()==GL_NO_ERROR);
 	}
 };
 
@@ -173,12 +184,14 @@ public:
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 		glBindTexture(GL_TEXTURE_2D,fboImage->textureID);
+		assert(glGetError()==GL_NO_ERROR);
 		//glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
 	}
 	void EndDrawing() const;
 	void DeleteFBO() const
 	{
 		glDeleteFramebuffers(1,&fboHandler);
+		assert(glGetError()==GL_NO_ERROR);
 		//glDeleteRenderbuffers(1,&rbHandler);
 	}
 };

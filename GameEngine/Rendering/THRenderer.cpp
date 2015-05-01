@@ -114,11 +114,12 @@ void THDefProgram::Load()
 }
 void THGLInit()
 {
+	assert(glGetError()==GL_NO_ERROR);
     //glClearColor(0.7f,0.6f,0.5f,1.0f);
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
-	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	assert(glGetError()==GL_NO_ERROR);
 
 #if USE_DEPTH_BUFFER==1
 	glEnable(GL_DEPTH_TEST);
@@ -129,13 +130,18 @@ void THGLInit()
 	glDepthMask(GL_FALSE);
 #endif
 	glViewport(0, 0, windowWidthi,windowHeighti);
+	assert(glGetError()==GL_NO_ERROR);
 
 	const GLfloat verts[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
 	THZeroVertices.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 
+	assert(glGetError()==GL_NO_ERROR);
+
 	THDefaultProgram.Load();
 	THDefaultProgram.SetColorAdd(0.0f,0.0f,0.0f,0.0f);
 	THDefaultProgram.SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
+
+	assert(glGetError()==GL_NO_ERROR);
 
 	OnSurfaceCreated();
 #ifndef NDEBUG
@@ -145,6 +151,8 @@ void THGLInit()
 		assert(0);
 	}
 #endif
+
+	assert(glGetError()==GL_NO_ERROR);
 }
 void THTerm_Display() {
     if (eglDisplay != EGL_NO_DISPLAY) {
