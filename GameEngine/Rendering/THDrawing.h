@@ -113,6 +113,10 @@ public:
 	{
 		glDeleteTextures(1,&textureID);
 	}
+	inline void Viewport() const
+	{
+		glViewport(0,0,width,height);
+	}
 };
 
 class THTexture
@@ -193,6 +197,10 @@ public:
 		glDeleteFramebuffers(1,&fboHandler);
 		assert(glGetError()==GL_NO_ERROR);
 		//glDeleteRenderbuffers(1,&rbHandler);
+	}
+	inline void Viewport() const
+	{
+		fboImage->Viewport();
 	}
 };
 
