@@ -10,6 +10,19 @@ void THFrame::PostDraw()
 {
 	THDefaultProgram.PostDraw();
 }
+void THFrame::DrawImage(const THVector2& p,const THVector2& size,const THImage& img)
+{
+	glBindTexture(GL_TEXTURE_2D,img.textureID);
+
+	glVertexAttrib2f(THDefaultProgram.rotationHandler,1.0f,0.0f);
+	glVertexAttrib4f(THDefaultProgram.textureHandler,0.0f,0.0f,1.0f,1.0f);
+	glVertexAttrib2f(THDefaultProgram.centerHandler,0.0f,0.0f);
+
+	glVertexAttrib2fv(THDefaultProgram.scaleHandler,(const GLfloat*)&size);
+	glVertexAttrib2fv(THDefaultProgram.positionHandler,(const GLfloat*)&p);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
 void THFrame::DrawTexture(const THVector2& p,const THVector2& center,const THVector2& size,const THRot2& rot,const THTexture *tex)
 {
 	glBindTexture(GL_TEXTURE_2D,tex->image->textureID);
