@@ -17,6 +17,7 @@
 
 
 static long long THFrameRate;
+static long long THMaxTimePass;
 
 #if THPLATFORM==THPLATFORM_ANDROID
 timespec timesp;
@@ -41,6 +42,7 @@ long long GetCurrentTimeMicro()
 void SetFrameRate(float _frameRate)
 {
 	THFrameRate=(long long)(1000000.0f/_frameRate);
+	THMaxTimePass=THFrameRate<<1;
 }
 //randomize random field
 static void Randomize()
@@ -81,7 +83,7 @@ static void RenderEnterFrame()
 
 	if(gap>THFrameRate)
 	{
-		THDeltaTime=(float)((double)gap*1e-6);
+		THDeltaTime=(float)((double)(gap<THMaxTimePass?gap:THMaxTimePass)*1e-6);
 		if(THisRunning){MainEnterFrame();}
 		OnDrawFrame();
 		THLastNanosec=ct;
