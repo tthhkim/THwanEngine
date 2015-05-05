@@ -55,7 +55,7 @@ protected:
 	const T m_delta;
 
 	//Interpolater
-	const THInterpolator m_interpolator;
+	THInterpolator m_interpolator;
 };
 
 #endif

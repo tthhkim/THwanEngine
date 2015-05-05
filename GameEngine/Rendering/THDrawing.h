@@ -187,7 +187,6 @@ public:
 	inline void BeginDrawing() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-		glBindTexture(GL_TEXTURE_2D,fboImage->textureID);
 		assert(glGetError()==GL_NO_ERROR);
 		//glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
 	}
