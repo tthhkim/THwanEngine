@@ -100,6 +100,19 @@ static void InitVars()
 #include <android/input.h>
 #include <android/keycodes.h>
 
+#if USE_ACCELEROMETER_SENSOR==1
+#include <android/sensor.h>
+
+ASensorManager* sensorManager;
+const ASensor* accelerometerSensor;
+ASensorEventQueue* asensorEventQueue;
+THVector3 asensorVector;
+THVector3& GetSensorVector()
+{
+	return asensorVector;
+}
+#endif
+
 static void init_display(struct android_app* app) {
 	THEGLInit(app);
 	THGLInit();
@@ -162,7 +175,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 
 #if USE_ACCELEROMETER_SENSOR==1
 			ASensorEventQueue_enableSensor(asensorEventQueue,accelerometerSensor);
-			ASensorEventQueue_setEventRate(engine->sensorEventQueue,engine->accelerometerSensor, TH_SENSOR_DELAY);
+			ASensorEventQueue_setEventRate(asensorEventQueue,accelerometerSensor, TH_SENSOR_DELAY);
 #endif
 
 			OnResume();
@@ -172,7 +185,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 
 			THisRunning=false;
 #if USE_ACCELEROMETER_SENSOR==1
-			ASensorEventQueue_disableSensor(engine->sensorEventQueue,engine->accelerometerSensor);
+			ASensorEventQueue_disableSensor(asensorEventQueue,accelerometerSensor);
 #endif
 
 			OnPause();
@@ -207,17 +220,6 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 #include <android/asset_manager.h>
 AAssetManager* assetManager;
 
-
-#if USE_ACCELEROMETER_SENSOR==1
-ASensorManager* sensorManager;
-const ASensor* accelerometerSensor;
-ASensorEventQueue* asensorEventQueue;
-THVector3 asensorVector;
-THVector3& GetSensorVector()
-{
-	return asensorVector;
-}
-#endif
 void android_main(struct android_app* state)
 {
 	InitVars();
@@ -229,8 +231,8 @@ void android_main(struct android_app* state)
 
 #if USE_ACCELEROMETER_SENSOR==1
 	sensorManager = ASensorManager_getInstance();
-    accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,ASENSOR_TYPE_ACCELEROMETER);
-    asensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,state->looper, LOOPER_ID_USER, NULL, NULL);
+    accelerometerSensor = ASensorManager_getDefaultSensor(sensorManager,ASENSOR_TYPE_ACCELEROMETER);
+    asensorEventQueue = ASensorManager_createEventQueue(sensorManager,state->looper, LOOPER_ID_USER, NULL, NULL);
 #endif
 
 	OnCreate(state);

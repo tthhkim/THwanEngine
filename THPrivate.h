@@ -16,6 +16,7 @@
 #include <GameEngine/Rendering/THDrawing.h>
 
 #include <GameEngine/Util/THMath.h>
+#include <GameEngine/Util/THMath3D.h>
 
 #ifndef NDEBUG
 	#define TH_GLERROR_CHECK()\

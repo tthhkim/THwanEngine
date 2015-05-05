@@ -35,6 +35,7 @@ extern float THDeltaTime=0.0f;
 
 void OnDrawFrame()
 {
+	if(eglDisplay == EGL_NO_DISPLAY){return;}
 	//Draw Start
 	
 	glClear(
