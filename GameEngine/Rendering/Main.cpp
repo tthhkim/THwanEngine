@@ -8,6 +8,7 @@
 #include <GameEngine/DisplayObject/THFrame.h>
 
 #include <GameEngine/Util/THMath.h>
+#include <GameEngine/Util/THMath3D.h>
 #include <THPrivate.h>
 
 #include <GameEngine/Rendering/THRenderer.h>
@@ -159,12 +160,20 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 			THisRunning=true;
 			THLastNanosec=GetCurrentTimeMicro();
 
+#if USE_ACCELEROMETER_SENSOR==1
+			ASensorEventQueue_enableSensor(asensorEventQueue,accelerometerSensor);
+			ASensorEventQueue_setEventRate(engine->sensorEventQueue,engine->accelerometerSensor, TH_SENSOR_DELAY);
+#endif
+
 			OnResume();
 			break;
 		case APP_CMD_LOST_FOCUS:
 			THLog("Lost Focus()");
 
 			THisRunning=false;
+#if USE_ACCELEROMETER_SENSOR==1
+			ASensorEventQueue_disableSensor(engine->sensorEventQueue,engine->accelerometerSensor);
+#endif
 
 			OnPause();
 			break;
@@ -197,6 +206,18 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 
 #include <android/asset_manager.h>
 AAssetManager* assetManager;
+
+
+#if USE_ACCELEROMETER_SENSOR==1
+ASensorManager* sensorManager;
+const ASensor* accelerometerSensor;
+ASensorEventQueue* asensorEventQueue;
+THVector3 asensorVector;
+THVector3& GetSensorVector()
+{
+	return asensorVector;
+}
+#endif
 void android_main(struct android_app* state)
 {
 	InitVars();
@@ -205,6 +226,12 @@ void android_main(struct android_app* state)
 	app_dummy();
 
 	assetManager=state->activity->assetManager;
+
+#if USE_ACCELEROMETER_SENSOR==1
+	sensorManager = ASensorManager_getInstance();
+    accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,ASENSOR_TYPE_ACCELEROMETER);
+    asensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,state->looper, LOOPER_ID_USER, NULL, NULL);
+#endif
 
 	OnCreate(state);
 #ifndef NDEBUG
@@ -224,16 +251,26 @@ void android_main(struct android_app* state)
     }
 	*/
 	struct android_poll_source* source;
-    int events;
+    int events,ident;
+
 
 	THLastNanosec=GetCurrentTimeMicro();
 	while (1) {
-        while (ALooper_pollAll(0, NULL, &events,
-                (void**)&source) >= 0) {
+        while ((ident=ALooper_pollAll(0, NULL, &events,
+                (void**)&source)) >= 0) {
             if (source) {
                 source->process(state, source);
             }
-
+#if USE_ACCELEROMETER_SENSOR==1
+			if (ident == LOOPER_ID_USER)
+			{
+				ASensorEvent aevent;
+				while (ASensorEventQueue_getEvents(asensorEventQueue,&aevent, 1) > 0)
+				{
+					asensorVector.Set(aevent.acceleration.x, aevent.acceleration.y,aevent.acceleration.z);
+				}
+			}
+#endif
             if(state->destroyRequested)
             {
                 THLog("Destroy Requested");

@@ -202,6 +202,13 @@ void OnResume();
 void OnPause();
 void OnDestroy();
 void SetFrameRate(float rate);
+#if THPLATFORM==THPLATFORM_ANDROID
+#if USE_ACCELEROMETER_SENSOR==1
+#include <android/sensor.h>
+THVector3& GetSensorVector();
+#endif
+#endif
+
 #define TH_PNG_RGB 1
 #define TH_PNG_RGBA 2
 #define TH_PNG_GREY 3
