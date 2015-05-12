@@ -202,5 +202,24 @@ public:
 		fboImage->Viewport();
 	}
 };
+class THFrameBufferPingPong
+{
+public:
+	inline THImage& GetImage1(){return m_image1;}
+	inline THImage& GetImage2(){return m_image2;}
+	void Viewport(){m_image1.Viewport();}
+	void SetSize(GLsizei w,GLsizei h);
+	void Load(GLenum format=GL_RGB,GLenum type=GL_UNSIGNED_SHORT_5_6_5,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void SyncFrameBuffer();
+	void Change(){m_isone=!m_isone;}
+	THFrameBuffer& GetDstFrameBuffer(){return m_isone?m_fb2:m_fb1;}
+	void BeginDrawing(){GetDstFrameBuffer().BeginDrawing();}
+	void EndDrawing(){GetDstFrameBuffer().EndDrawing();}
+	THImage& GetSourceImage(){return m_isone?m_image1:m_image2;}
+protected:
+	THFrameBuffer m_fb1,m_fb2;
+	THImage m_image1,m_image2;
+	bool m_isone;
+};
 
 #endif

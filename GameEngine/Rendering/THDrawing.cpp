@@ -253,3 +253,19 @@ void THFrameBuffer::EndDrawing() const
 	//ToDo Returning to default framebuffer
 	//glBindRenderbuffer(GL_RENDERBUFFER,0);
 }
+
+void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
+{
+	m_image1.SetSize(w,h);
+	m_image2.SetSize(w,h);
+}
+void THFrameBufferPingPong::Load(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
+{
+	m_image1.LoadFrameBuffer(format,type,filter,isRepeat);
+	m_image2.LoadFrameBuffer(format,type,filter,isRepeat);
+}
+void THFrameBufferPingPong::SyncFrameBuffer()
+{
+	m_fb1.Load(&m_image1);
+	m_fb2.Load(&m_image2);
+}
