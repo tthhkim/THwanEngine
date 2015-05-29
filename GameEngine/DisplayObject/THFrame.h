@@ -48,7 +48,7 @@ public:
 
 	
 
-	virtual void Draw();
+	virtual void Draw(){}
 
 	/*
 	void DrawObjects(unsigned int start,unsigned int count) const;

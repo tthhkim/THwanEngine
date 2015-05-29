@@ -3,7 +3,7 @@
 
 #include <malloc.h>
 #include <string.h>
-#include <THPrivate.h>
+#include <assert.h>
 
 template <typename T>
 class THArray
@@ -64,7 +64,6 @@ public:
 	{		
 		if(num==maxNum)
 		{
-			THError("THArray : ReAlloced()");
 			maxNum<<=1;
 			Realloc();
 		}
@@ -76,7 +75,6 @@ public:
 		assert(i<num);
 		if(num==maxNum)
 		{
-			THError("THArray : ReAlloced()");
 			maxNum<<=1;
 			Realloc();
 		}

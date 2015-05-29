@@ -1,7 +1,8 @@
 #ifndef THKim_THDrawing
 #define THKim_THDrawing
 
-#include <GLES2/gl2.h>
+#include <THSettings.h>
+#include GLES_HEADER
 #include <malloc.h>
 
 #include <GameEngine/Util/THMath.h>

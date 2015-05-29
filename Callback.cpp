@@ -20,7 +20,6 @@
 
 void THApplication::OnCreate()
 {
-	THLog("%f",THRand01());
 	//SetEGL(3,0);
 	//SetEGL(int glesversion,int depthsize);
 }

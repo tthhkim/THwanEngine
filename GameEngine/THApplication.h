@@ -11,7 +11,7 @@
 #include <GameEngine/Rendering/THDrawing.h>
 
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
+#include GLES_HEADER
 
 class THFrame;
 
@@ -33,7 +33,6 @@ public:
 	void SetOrtho(const THVector2& minp,const THVector2& maxp);
 	void EGLInit(EGLNativeWindowType window);
 	void TermDisplay();
-	void SetEGL(int glesversion,int depthsize);
 	void Loop();
 
 	void GLInit();
@@ -65,7 +64,6 @@ protected:
 	EGLSurface m_eglSurface;
 	EGLContext m_eglContext;
 	EGLConfig m_eglConfig;
-	int m_glesversion,m_egldepthsize;
 
 	//GameSize
 	THVector2 m_gameScale;

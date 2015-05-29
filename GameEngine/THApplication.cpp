@@ -16,8 +16,6 @@ THApplication::THApplication()
 	m_eglSurface=0;
 	m_eglContext=0;
 	m_eglConfig=0;
-	m_glesversion=2;
-	m_egldepthsize=0;
 
 	//GameSize
 	//THVector2 m_gameScale;
@@ -41,7 +39,6 @@ THApplication::THApplication()
 
 	SetFrameRate(60.0f);
 }
-#include <GLES2/gl2.h>
 void THApplication::GLInit()
 {
 	//glClearColor(0.7f,0.6f,0.5f,1.0f);
@@ -50,16 +47,14 @@ void THApplication::GLInit()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	TH_GLERROR_CHECK()
 
-	if(m_egldepthsize)
-	{
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_TRUE);
-	}else
-	{
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-	}
+#if DEPTH_SIZE_BIT>0
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+#else
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+#endif
 	ViewportInit();
 	TH_GLERROR_CHECK()
 
@@ -132,11 +127,6 @@ void THApplication::OnEnterFrame()
 	m_currentFrame->OnEnterFrame();
 }
 
-void THApplication::SetEGL(int glesversion,int depthsize)
-{
-	m_glesversion=glesversion;
-	m_egldepthsize=depthsize;
-}
 void THApplication::EGLInit(EGLNativeWindowType window)
 {
 	EGLInitDisplay();
@@ -160,7 +150,7 @@ void THApplication::EGLChooseConfig()
             EGL_BLUE_SIZE, 8,
             EGL_GREEN_SIZE, 8,
             EGL_RED_SIZE, 8,
-			EGL_DEPTH_SIZE,m_egldepthsize,
+			EGL_DEPTH_SIZE,DEPTH_SIZE_BIT,
             EGL_NONE
     };
 	EGLint numConfigs;
@@ -169,7 +159,7 @@ void THApplication::EGLChooseConfig()
 void THApplication::EGLMakeContext()
 {
 	const EGLint attrib_list[] = {
-		EGL_CONTEXT_CLIENT_VERSION, m_glesversion,
+		EGL_CONTEXT_CLIENT_VERSION, USE_GLES_VERSION,
         EGL_NONE
     };
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, NULL, attrib_list);

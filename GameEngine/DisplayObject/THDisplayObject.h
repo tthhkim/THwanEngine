@@ -1,14 +1,9 @@
 #ifndef THKim_THDisplayObject
 #define THKim_THDisplayObject
 
-#include <assert.h>
-#include <GLES2/gl2.h>
-
 #include <GameEngine/Util/THMath.h>
 #include <GameEngine/Util/THArray.h>
-
-
-class THTexture;
+#include <GameEngine/Rendering/THDrawing.h>
 
 //THDisplayObject-----------------------------------------
 

@@ -88,8 +88,6 @@
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h" />
     <ClInclude Include="..\GameEngine\Rendering\THDrawing.h" />
     <ClInclude Include="..\GameEngine\THApplication.h" />
-    <ClInclude Include="..\GameEngine\THPlatformAndroid.h" />
-    <ClInclude Include="..\GameEngine\THPlatformWindows.h" />
     <ClInclude Include="..\GameEngine\Util\THArray.h" />
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />

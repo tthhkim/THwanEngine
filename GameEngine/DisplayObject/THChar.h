@@ -2,7 +2,6 @@
 #define THKim_THChar
 
 #include <assert.h>
-#include <GLES2/gl2.h>
 
 #include <GameEngine/Util/THMath.h>
 #include <GameEngine/Util/THArray.h>

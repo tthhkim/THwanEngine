@@ -95,12 +95,6 @@
     <ClInclude Include="..\GameEngine\THApplication.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameEngine\THPlatformWindows.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameEngine\THPlatformAndroid.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\GameEngine\DisplayObject\THChar.h">
       <Filter>헤더 파일\DisplayObject</Filter>
     </ClInclude>

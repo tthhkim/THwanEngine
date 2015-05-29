@@ -2,6 +2,7 @@
 #define THKim_THPrivate
 
 #include <THSettings.h>
+#include GLES_HEADER
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android_native_app_glue.h>
@@ -9,8 +10,6 @@
 #include <android/input.h>
 #include <android/asset_manager.h>
 #endif
-
-#include <GLES2/gl2.h>
 
 #include <assert.h>
 #include <GameEngine/Rendering/THDrawing.h>
