@@ -74,7 +74,6 @@
     <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THFrame.cpp" />
-    <ClCompile Include="..\GameEngine\Rendering\Main.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
     <ClCompile Include="..\GameEngine\THApplication.cpp" />
     <ClCompile Include="..\GameEngine\THPlatformAndroid.cpp" />

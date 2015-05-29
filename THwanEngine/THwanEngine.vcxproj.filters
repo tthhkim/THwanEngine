@@ -22,15 +22,15 @@
     <Filter Include="소스 파일\lodepng">
       <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\DisplayObject">
+      <UniqueIdentifier>{5fc6f04e-11d6-4db0-9470-72941c38d9ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\DisplayObject">
+      <UniqueIdentifier>{c081c50b-49a4-4860-be64-265cdb499442}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\GameEngine\DisplayObject\THFrame.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameEngine\Rendering\Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp">
@@ -45,9 +45,6 @@
     <ClCompile Include="..\Includes\lodepng.cpp">
       <Filter>소스 파일\lodepng</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
@@ -60,11 +57,14 @@
     <ClCompile Include="..\GameEngine\THPlatformWindows.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp">
+      <Filter>소스 파일\DisplayObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
+      <Filter>소스 파일\DisplayObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -89,9 +89,6 @@
     <ClInclude Include="..\THSettings.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameEngine\DisplayObject\THChar.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THVectorArray.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
@@ -103,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\THPlatformAndroid.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\DisplayObject\THChar.h">
+      <Filter>헤더 파일\DisplayObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h">
+      <Filter>헤더 파일\DisplayObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
