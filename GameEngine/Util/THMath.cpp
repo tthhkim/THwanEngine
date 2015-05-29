@@ -1,9 +1,37 @@
 #include "THMath.h"
 #include "THMath3D.h"
 #include <THPrivate.h>
+#include <stdlib.h>
+#include <time.h>
 
 //For Random
-extern double InvRandomMax=0.0;
+double InvRandomMax=0.0;
+//randomize random field
+void Randomize()
+{
+	unsigned int rv=(unsigned int)time(0);
+	unsigned int cvp=0;
+	unsigned int cvm=1;
+	while(rv)
+	{
+		cvp+=rv;
+		rv=rv>>1;
+		cvm*=rv?rv:1;
+	}
+	srand( (unsigned int)((cvp>>1) + (cvm>>1)) );
+
+
+	extern double InvRandomMax;
+	InvRandomMax=1.0/RAND_MAX;
+}
+double THRand01()
+{ return rand()*InvRandomMax; }
+double THRand(double a,double b)
+{ return a+(b-a)*THRand01(); }
+float THRandf(float a,float b)
+{ return a+(float)((b-a)*THRand01()); }
+int THRandi(int a,int b)
+{ return a+(int)((b-a)*THRand01()); }
 
 float THInvSqrt(float x)
 {

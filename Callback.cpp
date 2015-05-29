@@ -16,35 +16,26 @@
 #include <unistd.h>
 #endif
 
-void OnCreate(THApplicaation* state)
+#include <GameEngine/THApplication.h>
+
+void THApplication::OnCreate()
 {
-	//GoFrame();
+	THLog("%f",THRand01());
+	//SetEGL(3,0);
+	//SetEGL(int glesversion,int depthsize);
 }
-void OnSurfaceCreated()
+void THApplication::OnSurfaceCreated()
 {
 	//SetOrtho( THVector2(0.0f,0.0f) , THVector2(72.0f,128.0f) );
 	//TextureLoading
 }
-
-void OnResume()
+void THApplication::OnResume()
 {
 }
-
-void OnPause()
+void THApplication::OnPause()
 {
 }
-
-void OnDestroy()
-{		
+void THApplication::OnDestroy()
+{
 	//Memory Free
 }
-
-
-/*
-void OnSaveInstanceState(saved_state* saved)
-{
-}
-void OnLoadInstanceState(saved_state* loaded)
-{
-}
-*/

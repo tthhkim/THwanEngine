@@ -87,6 +87,51 @@ void THProgram::Load(const GLchar* vs,const GLchar* fs)
 	glUseProgram(program);
 	TH_GLERROR_CHECK()
 }
+#include <lodepng.h>
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,GLenum format)
+{
+	THAsset asset=THAsset_open(filename,
+#if THPLATFORM==THPLATFORM_ANDROID
+		AASSET_MODE_STREAMING
+#elif THPLATFORM==THPLATFORM_WINDOWS
+		"rb"
+#endif
+		);
+	int size=THAsset_length(asset);
+	unsigned char* mem=new unsigned char[size];
+	THAsset_read(asset,mem,size);
+
+	unsigned char* colorBuf;
+
+	LodePNGColorType ctype;
+	switch(format)
+	{
+	case GL_LUMINANCE:
+		ctype=LCT_GREY;
+		break;
+	case GL_LUMINANCE_ALPHA:
+		ctype=LCT_GREY_ALPHA;
+		break;
+	case GL_RGB:
+		ctype=LCT_RGB;
+		break;
+	case GL_RGBA:
+		ctype=LCT_RGBA;
+		break;
+	}
+	LodePNGState state;
+	lodepng_state_init(&state);
+	state.info_raw.colortype=ctype;
+	state.info_raw.bitdepth=8;
+	state.decoder.read_text_chunks=0;
+	lodepng_decode(&colorBuf,&width,&height,&state,mem,size);
+	lodepng_state_cleanup(&state);
+
+	delete[] mem;
+	THLog("LibPNG // Width : %d , Height : %d",width,height);
+
+	return colorBuf;
+}
 void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 {
 	glGenTextures(1, &textureID);
@@ -107,6 +152,16 @@ void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
 	TH_GLERROR_CHECK()
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
 	TH_GLERROR_CHECK()
+}
+void THImage::LoadFile(const char* name,GLenum format,GLfloat filter,bool isRepeat)
+{
+	size_t widthi,heighti;
+	void* colorBuf=LoadImageBuffer(name,widthi,heighti,format);
+
+	SetSize(widthi,heighti);
+
+	Load(colorBuf,format,filter,isRepeat);
+	free(colorBuf);
 }
 void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
 {

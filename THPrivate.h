@@ -19,6 +19,10 @@
 #include <GameEngine/Util/THMath3D.h>
 
 #ifndef NDEBUG
+#define TH_ISDEBUG 1
+#endif
+
+#ifdef TH_ISDEBUG
 	#define TH_GLERROR_CHECK()\
 		{\
 			const GLenum gl_estatus=glGetError();\
@@ -30,10 +34,11 @@
 #else
 	#define TH_GLERROR_CHECK
 #endif
-
-
-class THFrame;
-class THTween;
+#define MAKE_VERTEX(l,t,r,b)\
+		{l,t,\
+		r,t,\
+		l,b,\
+		r,b};
 
 #if THPLATFORM==THPLATFORM_WINDOWS
 #define APPLICATION_NAME "TestApplicatonName"
@@ -63,159 +68,18 @@ class THTween;
 #endif
 #endif
 
-#define TH_GETTER(type,name,varname) \
-	inline type Get##name() const{\
-		return varname;\
-	}
-#define TH_SETTER(type,name,varname) \
-	inline void Set##name(type name) {\
-		varname=name;\
-	}
-#define TH_VARIABLES(type,name,varname) \
-	TH_GETTER(type,name,varname) \
-	TH_SETTER(type,name,varname)
-
-#define MAKE_CENTER_VERTEX(hw,hh) \
-	{-hw, -hh,hw, -hh,-hw,hh,hw,hh}
-#define MAKE_VERTEX(left,bottom,right,top) \
-	{left, bottom,right, bottom,left,top,right,top}
-
-extern GLfloat THGameFullVertices[];
-extern GLfloat THProjectMatrix[];
-extern THVertexBuffer THZeroVertices;
-
-#ifndef NDEBUG
-extern float cFPS;
-#endif
-
-extern THVector2 windowSize;
-extern GLsizei windowWidthi;
-extern GLsizei windowHeighti;
-extern THVector2 gameScale;
-
-extern THVector2 gameMaxBound;
-extern THVector2 gameMinBound;
-
-extern THFrame* currentFrame;
-
-extern float THDeltaTime;
-
-class THDefProgram : public THProgram
-{
-public:
-	void Load();
-	GLint vertexHandler;
-	GLint rotationHandler;
-	GLint scaleHandler;
-	GLint positionHandler;
-	GLint centerHandler;
-	GLint textureHandler;
-	GLint projectMatrixHandler;
-	GLint colorAddHandler,colorMultiplyHandler;
-
-	void PreDraw() const
-	{
-		Use();
-		glEnableVertexAttribArray(vertexHandler);
-		THZeroVertices.BeginDrawing();
-		glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,0);
-	}
-	void PostDraw() const
-	{
-		glDisableVertexAttribArray(vertexHandler);
-		THZeroVertices.EndDrawing();
-	}
-	inline void EnableVertex() const
-	{
-		glEnableVertexAttribArray(vertexHandler);
-	}
-	inline void DisableVertex() const
-	{
-		glDisableVertexAttribArray(vertexHandler);
-	}
-	inline void SetRotation(float c,float s) const
-	{
-		glVertexAttrib2f(rotationHandler,c,s);
-	}
-	inline void SetScale(float x,float y) const
-	{
-		glVertexAttrib2f(scaleHandler,x,y);
-	}
-	inline void SetPosition(float x,float y) const
-	{
-		glVertexAttrib2f(positionHandler,x,y);
-	}
-	inline void SetCenter(const GLfloat *v) const
-	{
-		glVertexAttrib2fv(centerHandler,v);
-	}
-	inline void SetTexture(const THVector2& tp,const THVector2& ts)
-	{
-		glVertexAttrib4f(textureHandler,tp.x,tp.y,ts.x,ts.y);
-	}
-	inline void SetRotation(const GLfloat *v) const
-	{
-		glVertexAttrib2fv(rotationHandler,v);
-	}
-	inline void SetScale(const GLfloat *v) const
-	{
-		glVertexAttrib2fv(scaleHandler,v);
-	}
-	inline void SetPosition(const GLfloat *v) const
-	{
-		glVertexAttrib2fv(positionHandler,v);
-	}
-	inline void SetColorAdd(float r,float g,float b,float a)
-	{
-		glUniform4f(colorAddHandler,r,g,b,a);
-	}
-	inline void SetColorMultiply(float r,float g,float b,float a)
-	{
-		glUniform4f(colorMultiplyHandler,r,g,b,a);
-	}
-protected:
-};
-extern THDefProgram THDefaultProgram;
-
-
-void GoFrame(THFrame* f,void* data=0);
-
-//pthread_t newThread(void* (*function)(void*), void* data);
-
-void SetOrtho(const THVector2& minp,const THVector2& maxp);
 
 #if THPLATFORM==THPLATFORM_ANDROID
-typedef struct android_app THApplicaation;
 typedef AAsset* THAsset;
 typedef int THAssetMode;
 #elif THPLATFORM==THPLATFORM_WINDOWS
 #include <Windows.h>
-typedef HWND THApplicaation;
 typedef FILE* THAsset;
 typedef const char* THAssetMode;
 #endif
 
-void OnCreate(THApplicaation* state);
-void OnSurfaceCreated();
-//void OnSaveInstanceState(saved_state* saved);
-//void OnLoadInstanceState(saved_state* loaded);
-void OnResume();
-void OnPause();
-void OnDestroy();
-void SetFrameRate(float rate);
-#if THPLATFORM==THPLATFORM_ANDROID
-#if USE_ACCELEROMETER_SENSOR==1
-#include <android/sensor.h>
-THVector3& GetSensorVector();
-#endif
-#endif
+long long GetCurrentTimeMicro();
 
-#define TH_PNG_RGB 1
-#define TH_PNG_RGBA 2
-#define TH_PNG_GREY 3
-#define TH_PNG_GREY_ALPHA 4
-GLenum THImage2GLImageType(int type);
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,int colorType);
 THAsset THAsset_open(const char *name,
 	THAssetMode mode=
 #if THPLATFORM==THPLATFORM_ANDROID
@@ -229,31 +93,14 @@ size_t THAsset_seek(THAsset asset,size_t offset,int whence);
 size_t THAsset_read(THAsset asset,void *data,size_t bytes);
 size_t THAsset_length(THAsset asset);
 
+#if THPLATFORM==THPLATFORM_ANDROID
+#if USE_ACCELEROMETER_SENSOR==1
+#include <android/sensor.h>
+THVector3& GetSensorVector();
+#endif
+#endif
 
-static inline void ViewportInit()
-{
-	glViewport(0,0,windowWidthi,windowHeighti);
-}
-static inline THVector2 ProjectVector(const THVector2& v)
-{
-	return THVector2( v.x*THProjectMatrix[0]+THProjectMatrix[2] , v.y*THProjectMatrix[3]+THProjectMatrix[5] );
-}
 
-long long GetCurrentTimeMicro();
 
-void AddTimer(float timeSkip,void (*action)(void*),void* data);
-
-static inline float getGameX(float _x)
-{
-	return _x*gameScale.x + gameMinBound.x;
-}
-static inline float getGameY(float _y)
-{
-	return -_y*gameScale.y + gameMaxBound.y;
-}
-static inline THVector2 GetGameRelative(const THVector2& v)
-{
-	return gameMinBound+((gameMaxBound-gameMinBound)*v);
-}
 
 #endif

@@ -36,12 +36,10 @@ public:
 	virtual void OnTouchDown(const THVector2& p){}
 	virtual void OnTouchUp(const THVector2& p){}
 	virtual void OnTouchMove(const THVector2& p,const THVector2& delta){}
-
-	#if THPLATFORM==THPLATFORM_WINDOWS
-	virtual void OnRightTouchDown(const THVector2& p){}
-	virtual void OnKeyUp(WPARAM key){}
-	virtual void OnKeyDown(WPARAM key){}
-	#endif
+	
+	//for windows
+	virtual void OnKeyUp(unsigned int key){}
+	virtual void OnKeyDown(unsigned int key){}
 
 	virtual int OnBackReleased(){return 0;}
 	virtual void OnEnterFrame(){}
@@ -52,7 +50,7 @@ public:
 
 	virtual void Draw();
 
-
+	/*
 	void DrawObjects(unsigned int start,unsigned int count) const;
 	inline void DrawObjects() const
 	{
@@ -62,6 +60,7 @@ public:
 	void PostDraw();
 	void DrawImage(const THVector2& p,const THVector2& size,const THImage& img);
 	void DrawTexture(const THVector2& p,const THVector2& center,const THVector2& size,const THRot2& rot,const THTexture *tex);
+	*/
 #ifndef NDEBUG
 #endif
 

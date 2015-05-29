@@ -2,6 +2,7 @@
 #include <GameEngine/Rendering/THDrawing.h>
 #include <THPrivate.h>
 
+/*
 void THFrame::PreDraw()
 {
 	THDefaultProgram.PreDraw();
@@ -55,7 +56,7 @@ void THFrame::Draw()
 	DrawObjects();
 	PostDraw();
 }
-
+*/
 void THFrame::FrameDown(const THVector2& p)
 {
 	m_lasttouched=p;

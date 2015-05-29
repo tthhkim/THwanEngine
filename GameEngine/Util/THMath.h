@@ -395,21 +395,14 @@ static inline THVector2 InverseMultiply(const THRot2& a,const THVector2& v)
 
 void GetCirclePolygonVertices(THVector2* arr,int count,float radius);
 
-#include <stdlib.h>
-extern double InvRandomMax;
-
+void Randomize();
 //in a range [0,1)
-static inline double THRand01()
-{ return rand()*InvRandomMax; }
-
+double THRand01();
 //in a range [a,b)
-static inline double THRand(double a,double b)
-{ return a+(b-a)*THRand01(); }
+double THRand(double a,double b);
 //in a range [a,b)
-static inline float THRandf(float a,float b)
-{ return a+(float)((b-a)*THRand01()); }
+float THRandf(float a,float b);
 //in a range [a,b)
-static inline int THRandi(int a,int b)
-{ return a+(int)((b-a)*THRand01()); }
+int THRandi(int a,int b);
 
 #endif

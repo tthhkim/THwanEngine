@@ -36,9 +36,6 @@
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\Callback.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -53,6 +50,15 @@
     </ClCompile>
     <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp">
       <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\THApplication.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\THPlatformAndroid.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\THPlatformWindows.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +86,6 @@
     <ClInclude Include="..\GameEngine\Util\THTween.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameEngine\Rendering\THRenderer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\THSettings.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -91,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THVectorArray.h">
       <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\THApplication.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\THPlatformWindows.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\THPlatformAndroid.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

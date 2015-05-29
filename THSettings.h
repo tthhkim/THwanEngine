@@ -1,10 +1,7 @@
 #ifndef THKim_THSetting
 #define THKim_THSetting
 
-#define USE_PNG 1
-#define PNG_UPSIDE_DOWN 0
 #define SHOW_LOG 1
-#define USE_DEPTH_BUFFER 0
 
 #define THPLATFORM_WINDOWS 1
 #define THPLATFORM_ANDROID 2

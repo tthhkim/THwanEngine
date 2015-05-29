@@ -88,7 +88,7 @@ public:
 		glDeleteProgram(program);
 	}
 };
-
+unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,GLenum format);
 class THImage
 {
 public:
@@ -101,7 +101,7 @@ public:
 
 	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 	void LoadFrameBuffer(GLenum format=GL_RGB,GLenum type=GL_UNSIGNED_SHORT_5_6_5,GLfloat filter=GL_NEAREST,bool isRepeat=false);
-	void LoadFile(const char* name,int colorType,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void LoadFile(const char* name,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
 	void SetSize(GLsizei w,GLsizei h)
 	{
 		width=w;

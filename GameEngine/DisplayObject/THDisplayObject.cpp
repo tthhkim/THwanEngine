@@ -41,6 +41,7 @@ void THDisplayObject::CalculateWorldAttrib()
 
 void THDisplayObject::Draw()
 {
+	/*
 	if(texture)
 	{
 		glBindTexture(GL_TEXTURE_2D,texture->image->textureID);
@@ -57,6 +58,7 @@ void THDisplayObject::Draw()
 	{
 		m_children.arr[i]->Draw();
 	}
+	*/
 }
 
 

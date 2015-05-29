@@ -76,7 +76,9 @@
     <ClCompile Include="..\GameEngine\DisplayObject\THFrame.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\Main.cpp" />
     <ClCompile Include="..\GameEngine\Rendering\THDrawing.cpp" />
-    <ClCompile Include="..\GameEngine\Rendering\THRenderer.cpp" />
+    <ClCompile Include="..\GameEngine\THApplication.cpp" />
+    <ClCompile Include="..\GameEngine\THPlatformAndroid.cpp" />
+    <ClCompile Include="..\GameEngine\THPlatformWindows.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
     <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp" />
     <ClCompile Include="..\Includes\lodepng.cpp" />
@@ -86,7 +88,9 @@
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h" />
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h" />
     <ClInclude Include="..\GameEngine\Rendering\THDrawing.h" />
-    <ClInclude Include="..\GameEngine\Rendering\THRenderer.h" />
+    <ClInclude Include="..\GameEngine\THApplication.h" />
+    <ClInclude Include="..\GameEngine\THPlatformAndroid.h" />
+    <ClInclude Include="..\GameEngine\THPlatformWindows.h" />
     <ClInclude Include="..\GameEngine\Util\THArray.h" />
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
