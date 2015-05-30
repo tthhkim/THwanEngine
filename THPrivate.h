@@ -16,27 +16,21 @@
 #include <GameEngine/Util/THMath.h>
 #include <GameEngine/Util/THMath3D.h>
 
-#ifndef NDEBUG
-#define TH_ISDEBUG 1
-#endif
+#include <GameEngine/THApplication.h>
 
 #ifdef TH_ISDEBUG
-	#define TH_GLERROR_CHECK()\
+	#define TH_GLERROR_CHECK(func)\
 		{\
 			const GLenum gl_estatus=glGetError();\
 			if(gl_estatus!=GL_NO_ERROR)\
 			{\
-				THError("GL Error : %d",gl_estatus);\
+				THError("GL Error : %s (%x)",func,gl_estatus);\
 			}\
 		}
 #else
-	#define TH_GLERROR_CHECK
+	#define TH_GLERROR_CHECK(x)
 #endif
-#define MAKE_VERTEX(l,t,r,b)\
-		{l,t,\
-		r,t,\
-		l,b,\
-		r,b};
+#define MAKE_VERTEX(l,t,r,b) {l,t,r,t,l,b,r,b};
 
 #if THPLATFORM==THPLATFORM_WINDOWS
 #define APPLICATION_NAME "TestApplicatonName"
@@ -77,6 +71,9 @@ typedef const char* THAssetMode;
 #endif
 
 long long GetCurrentTimeMicro();
+THApplication& GetApplication();
+float GetDeltaTime();
+unsigned char *ReadFile(const char *name,size_t *length);
 
 THAsset THAsset_open(const char *name,
 	THAssetMode mode=

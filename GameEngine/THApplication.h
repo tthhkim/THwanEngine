@@ -24,6 +24,7 @@ class THApplication
 {
 public:
 	void *data;
+	float m_dt;
 
 	THApplication();
 	void Start();
@@ -53,6 +54,12 @@ public:
 	int OnBackReleased();
 	void OnKeyUp(int k);
 	void OnKeyDown(int k);
+
+	inline THVector2& GetGameScale(){return m_gameScale;}
+	inline THVector2& GetGameBoundMin(){return m_gameMinBound;}
+	inline THVector2& GetGameBoundMax(){return m_gameMaxBound;}
+	inline GLfloat *GetProjectionMatrix(){return THProjectMatrix;}
+	inline THVector2& GetWindowSize(){return m_windowSize;}
 protected:
 	bool m_isrunning;
 	long long m_lastMicroSec;
@@ -74,12 +81,10 @@ protected:
 
 	THLinkedList m_timerlist;
 
-	float m_dt;
+	
 
 	inline float getGameX(float _x){return _x*m_gameScale.x + m_gameMinBound.x;}
 	inline float getGameY(float _y){return -_y*m_gameScale.y + m_gameMaxBound.y;}
-	
-	void InitZeroOneVBO();
 
 	void OnDrawFrame();
 	void OnEnterFrame();

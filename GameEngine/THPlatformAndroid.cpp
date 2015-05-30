@@ -198,6 +198,10 @@ void THEGLWrapper::EGLInitSurface(EGLNativeWindowType window)
 
     m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, window, NULL);
 }
+void THApplication::SwapBuffer()
+{
+	eglSwapBuffers(m_eglDisplay, m_eglSurface);
+}
 
 THAsset THAsset_open(const char *name,THAssetMode mode)
 {

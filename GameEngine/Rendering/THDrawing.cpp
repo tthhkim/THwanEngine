@@ -43,30 +43,21 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 
 	return shader;
 }
+unsigned char *ReadFile(const char *name,size_t *length)
+{
+	THAsset f=THAsset_open(name);
+	size_t l=THAsset_length(f);
+	unsigned char *buf=new unsigned char[l+1];
+	THAsset_read(f,buf,l);
+	THAsset_close(f);
+	buf[l]=0;
+	if(length){*length=l;}
+	return buf;
+}
 void THProgram::LoadFile(const char *vs,const char *fs)
 {
-	THAsset vsf,fsf;
-#if THPLATFORM==THPLATFORM_ANDROID
-	vsf=THAsset_open(vs,AASSET_MODE_STREAMING);
-	fsf=THAsset_open(fs,AASSET_MODE_STREAMING);
-#elif THPLATFORM==THPLATFORM_WINDOWS
-	vsf=THAsset_open(vs,"rb");
-	fsf=THAsset_open(fs,"rb");
-#endif
-
-	size_t vl=THAsset_length(vsf);
-	size_t fl=THAsset_length(fsf);
-
-	GLchar *vsc=new GLchar[vl+1];
-	GLchar *fsc=new GLchar[fl+1];
-
-	THAsset_read(vsf,vsc,vl);
-	THAsset_read(fsf,fsc,fl);
-	THAsset_close(vsf);
-	THAsset_close(fsf);
-
-	vsc[vl]=0;
-	fsc[fl]=0;
+	GLchar *vsc=(GLchar*)ReadFile(vs,0);
+	GLchar *fsc=(GLchar*)ReadFile(fs,0);
 
 	Load(vsc,fsc);
 	delete[] vsc;
@@ -76,34 +67,26 @@ void THProgram::Load(const GLchar* vs,const GLchar* fs)
 {
 	vertex=InitShader(vs,GL_VERTEX_SHADER);
 	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("InitShader")
 	program=glCreateProgram();
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("CreateProgram")
 	glAttachShader(program,vertex);
 	glAttachShader(program,fragment);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("AttachShader")
 	glLinkProgram(program);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("LinkProgram")
 	glUseProgram(program);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("UseProgram")
 }
 #include <lodepng.h>
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,GLenum format)
+unsigned char* LoadImageBuffer(const char *filename,GLenum format,size_t *width,size_t *height)
 {
-	THAsset asset=THAsset_open(filename,
-#if THPLATFORM==THPLATFORM_ANDROID
-		AASSET_MODE_STREAMING
-#elif THPLATFORM==THPLATFORM_WINDOWS
-		"rb"
-#endif
-		);
-	int size=THAsset_length(asset);
-	unsigned char* mem=new unsigned char[size];
-	THAsset_read(asset,mem,size);
+	size_t size;
+	unsigned char *mem=ReadFile(filename,&size);
 
 	unsigned char* colorBuf;
-
 	LodePNGColorType ctype;
+	size_t w,h;
 	switch(format)
 	{
 	case GL_LUMINANCE:
@@ -124,65 +107,39 @@ unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height
 	state.info_raw.colortype=ctype;
 	state.info_raw.bitdepth=8;
 	state.decoder.read_text_chunks=0;
-	lodepng_decode(&colorBuf,&width,&height,&state,mem,size);
+	lodepng_decode(&colorBuf,&w,&h,&state,mem,size);
 	lodepng_state_cleanup(&state);
 
 	delete[] mem;
-	THLog("LibPNG // Width : %d , Height : %d",width,height);
+	THLog("LoadPNG // Width : %d , Height : %d",width,height);
+
+	if(width){*width=w;}
+	if(height){*height=h;}
 
 	return colorBuf;
 }
-void THImage::Load(void* data,GLenum format,GLfloat filter,bool isRepeat)
+void THImage::Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
 {
 	glGenTextures(1, &textureID);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("GenTextures")
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-	if(isRepeat)
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
-	else
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	}
-	TH_GLERROR_CHECK()
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, GL_UNSIGNED_BYTE, data);
-	TH_GLERROR_CHECK()
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, edgeparam);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, edgeparam);
+	TH_GLERROR_CHECK("TexParameterf")
+	glTexImage2D(GL_TEXTURE_2D, 0, internelformat, width, height, 0,format, type, data);
+	TH_GLERROR_CHECK("TexImage2D")
 }
-void THImage::LoadFile(const char* name,GLenum format,GLfloat filter,bool isRepeat)
+void THImage::LoadFile(const char* name,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
 {
 	size_t widthi,heighti;
-	void* colorBuf=LoadImageBuffer(name,widthi,heighti,format);
+	void* colorBuf=LoadImageBuffer(name,format,&widthi,&heighti);
 
 	SetSize(widthi,heighti);
 
-	Load(colorBuf,format,filter,isRepeat);
+	Load(colorBuf,format,format,type,filter,edgeparam);
 	free(colorBuf);
-}
-void THImage::LoadFrameBuffer(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
-{
-	glGenTextures(1, &textureID);
-	TH_GLERROR_CHECK()
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-	if(isRepeat)
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	}
-	else
-	{
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	}
-	TH_GLERROR_CHECK()
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,format, type,0);
-	TH_GLERROR_CHECK()
 }
 
 
@@ -208,23 +165,23 @@ void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
 	THLog("VertexBuffer Generation; %d Bytes",bytes);
 
 	glGenBuffers(1,&vboHandler);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("GenBuffers")
 
 	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
 	glBufferData(GL_ARRAY_BUFFER,bytes,data,usage);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BufferData")
 	//ToDo Returning to default vertexbuffer
 }
 void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes) const
 {
 	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BindBuffer")
 	glBufferSubData(GL_ARRAY_BUFFER,offset,bytes,data);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BufferSubData")
 	//ToDo Returning to default vertexbuffer
 }
 
@@ -253,9 +210,9 @@ void THFrameBuffer::Load(THImage* img)
 	*/
 
 	glGenFramebuffers(1,&fboHandler);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("GenFrameBuffers")
 	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BindFrameBuffer")
 	//glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,rbHandler);
 	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fboImage->textureID,0);
 	
@@ -294,17 +251,17 @@ The combination of internal formats of the attached images violates an implement
 		break;
 	}
 #endif
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("FrameBufferTexture2D")
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BindFrameBuffer")
 	//ToDo Returning to default framebuffer
 }
 void THFrameBuffer::EndDrawing() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("BindFrameBuffer")
 	//ToDo Returning to default framebuffer
 	//glBindRenderbuffer(GL_RENDERBUFFER,0);
 }
@@ -314,10 +271,10 @@ void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
 	m_image1.SetSize(w,h);
 	m_image2.SetSize(w,h);
 }
-void THFrameBufferPingPong::Load(GLenum format,GLenum type,GLfloat filter,bool isRepeat)
+void THFrameBufferPingPong::Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
 {
-	m_image1.LoadFrameBuffer(format,type,filter,isRepeat);
-	m_image2.LoadFrameBuffer(format,type,filter,isRepeat);
+	m_image1.Load(data,internelformat,format,type,filter,edgeparam);
+	m_image2.Load(data,internelformat,format,type,filter,edgeparam);
 }
 void THFrameBufferPingPong::SyncFrameBuffer()
 {

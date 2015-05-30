@@ -88,7 +88,7 @@ public:
 		glDeleteProgram(program);
 	}
 };
-unsigned char* LoadImageBuffer(const char *filename,size_t& width,size_t& height,GLenum format);
+unsigned char* LoadImageBuffer(const char *filename,GLenum format,size_t *width,size_t *height);
 class THImage
 {
 public:
@@ -99,9 +99,8 @@ public:
 	THImage(){}
 	THImage(GLsizei w,GLsizei h):size((float)w,(float)h),width(w),height(h){}
 
-	void Load(void* data,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
-	void LoadFrameBuffer(GLenum format=GL_RGB,GLenum type=GL_UNSIGNED_SHORT_5_6_5,GLfloat filter=GL_NEAREST,bool isRepeat=false);
-	void LoadFile(const char* name,GLenum format,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
+	void LoadFile(const char* name,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
 	void SetSize(GLsizei w,GLsizei h)
 	{
 		width=w;
@@ -209,7 +208,7 @@ public:
 	inline THImage& GetImage2(){return m_image2;}
 	void Viewport(){m_image1.Viewport();}
 	void SetSize(GLsizei w,GLsizei h);
-	void Load(GLenum format=GL_RGB,GLenum type=GL_UNSIGNED_SHORT_5_6_5,GLfloat filter=GL_NEAREST,bool isRepeat=false);
+	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
 	void SyncFrameBuffer();
 	void Change(){m_isone=!m_isone;}
 	THFrameBuffer& GetDstFrameBuffer(){return m_isone?m_fb2:m_fb1;}

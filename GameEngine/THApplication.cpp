@@ -5,6 +5,14 @@
 #include <EGL/egl.h>
 
 THApplication THApp;
+THApplication& GetApplication()
+{
+	return THApp;
+}
+float GetDeltaTime()
+{
+	return THApp.m_dt;
+}
 THApplication::THApplication()
 {
 	m_isrunning=false;
@@ -25,7 +33,7 @@ THApplication::THApplication()
 
 	//THVertexBuffer m_zerooneVBO;
 
-	THFrame* m_currentFrame=0;
+	m_currentFrame=0;
 
 	//THLinkedList m_timerlist;
 
@@ -37,7 +45,7 @@ void THApplication::GLInit()
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("glBlendFunc")
 
 		/*
 	glEnable(GL_DEPTH_TEST);
@@ -48,15 +56,10 @@ void THApplication::GLInit()
 	glDepthMask(GL_FALSE);
 
 	ViewportInit();
-	TH_GLERROR_CHECK()
+	TH_GLERROR_CHECK("Viewport")
 
-/*
-	THDefaultProgram.Load();
-	THDefaultProgram.SetColorAdd(0.0f,0.0f,0.0f,0.0f);
-	THDefaultProgram.SetColorMultiply(1.0f,1.0f,1.0f,1.0f);
-
-	TH_GLERROR_CHECK()
-	*/
+	const GLfloat verts[8]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
+	m_zerooneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 }
 void THApplication::Start()
 {
@@ -90,7 +93,6 @@ void THApplication::Loop()
 }
 void THApplication::OnDrawFrame()
 {
-	//if(m_eglDisplay == EGL_NO_DISPLAY){return;}
 	//Draw Start
 	
 	glClear(
@@ -101,7 +103,6 @@ void THApplication::OnDrawFrame()
 	m_currentFrame->Draw();
 
 	SwapBuffer();
-	//eglSwapBuffers(m_eglDisplay, m_eglSurface);
 	//Draw End
 }
 void THApplication::OnEnterFrame()
@@ -131,14 +132,8 @@ void THApplication::SetOrtho(const THVector2& minp,const THVector2& maxp)
 	m_gameScale=(maxp-minp) / m_windowSize;
 
 	THOrthoMatrix33(THProjectMatrix,minp,maxp);
-	//glUniform3fv(THDefaultProgram.projectMatrixHandler,2,THProjectMatrix);
 
 	THLog("Set Ortho : %.1f , %.1f / %.1f , %.1f",minp.x,minp.y,maxp.x,maxp.y);
-}
-void THApplication::InitZeroOneVBO()
-{
-	const GLfloat verts[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
-	m_zerooneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 }
 void THApplication::GoFrame(THFrame* f,void* data)
 {

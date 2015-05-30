@@ -91,6 +91,15 @@ int main()
 		return 0;
 	}
 	glfwMakeContextCurrent(window);
+
+	GLenum err=glewInit();
+	if(err!=GLEW_OK)
+	{
+		THError("GLEW Init Failed");
+		return 0;
+	}
+	THLog("GLEW Initialed");
+
 	THApp.data=window;
 	glfwSetKeyCallback(window,key_callback);
 	glfwSetMouseButtonCallback(window,mouse_button_callback);
