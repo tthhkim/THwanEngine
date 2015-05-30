@@ -37,10 +37,14 @@ protected:
 	GLuint fragment;
 public:
 	GLuint program;
+	GLint vertexHandler;
 
 	THProgram(){}
 
 	void Load(const GLchar* vs,const GLchar* fs);
+	void LoadVertexHandler(const GLchar *name);
+	inline void EnableVertexAttribArray(){glEnableVertexAttribArray(vertexHandler);}
+	inline void DisableVertexAttribArray(){glDisableVertexAttribArray(vertexHandler);}
 	void LoadFile(const char *vs,const char *fs);
 
 	inline void SetUniform(const char* name,float f1) const

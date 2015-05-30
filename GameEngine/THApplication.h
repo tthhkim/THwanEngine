@@ -60,6 +60,7 @@ public:
 	inline THVector2& GetGameBoundMax(){return m_gameMaxBound;}
 	inline GLfloat *GetProjectionMatrix(){return THProjectMatrix;}
 	inline THVector2& GetWindowSize(){return m_windowSize;}
+	inline THVertexBuffer& GetZeroOneVBO(){return m_zerooneVBO;}
 protected:
 	bool m_isrunning;
 	long long m_lastMicroSec;

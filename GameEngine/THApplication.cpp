@@ -13,6 +13,10 @@ float GetDeltaTime()
 {
 	return THApp.m_dt;
 }
+THVertexBuffer& GetZeroOneVBO()
+{
+	return THApp.GetZeroOneVBO();
+}
 THApplication::THApplication()
 {
 	m_isrunning=false;

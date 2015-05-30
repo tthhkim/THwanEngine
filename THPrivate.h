@@ -73,6 +73,7 @@ typedef const char* THAssetMode;
 long long GetCurrentTimeMicro();
 THApplication& GetApplication();
 float GetDeltaTime();
+THVertexBuffer& GetZeroOneVBO();
 unsigned char *ReadFile(const char *name,size_t *length);
 
 THAsset THAsset_open(const char *name,

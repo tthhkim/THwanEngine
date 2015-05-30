@@ -78,6 +78,10 @@ void THProgram::Load(const GLchar* vs,const GLchar* fs)
 	glUseProgram(program);
 	TH_GLERROR_CHECK("UseProgram")
 }
+void THProgram::LoadVertexHandler(const GLchar *name)
+{
+	vertexHandler=GetAttribLocation(name?name:"vert");
+}
 #include <lodepng.h>
 unsigned char* LoadImageBuffer(const char *filename,GLenum format,size_t *width,size_t *height)
 {
