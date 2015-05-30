@@ -19,14 +19,17 @@
     <Filter Include="소스 파일\Util">
       <UniqueIdentifier>{8f234c50-0938-4842-bb0f-0075cf55e028}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\lodepng">
-      <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\DisplayObject">
       <UniqueIdentifier>{5fc6f04e-11d6-4db0-9470-72941c38d9ee}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\DisplayObject">
       <UniqueIdentifier>{c081c50b-49a4-4860-be64-265cdb499442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GLFW">
+      <UniqueIdentifier>{47164466-4e02-4c14-9aff-39c1dd49c771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lodepng">
+      <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +46,7 @@
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
     <ClCompile Include="..\Includes\lodepng.cpp">
-      <Filter>소스 파일\lodepng</Filter>
+      <Filter>lodepng</Filter>
     </ClCompile>
     <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp">
       <Filter>소스 파일\Util</Filter>
@@ -62,6 +65,45 @@
     </ClCompile>
     <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp">
       <Filter>소스 파일\DisplayObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\THEGLWrapper.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\context.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\init.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\input.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\monitor.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\wgl_context.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\win32_init.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\win32_monitor.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\win32_time.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\win32_tls.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\win32_window.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\window.c">
+      <Filter>GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Includes\GLFW\src\winmm_joystick.c">
+      <Filter>GLFW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +142,33 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h">
       <Filter>헤더 파일\DisplayObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\THEGLWrapper.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\glfw3.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\glfw3native.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\internal.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\nsgl_context.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\wgl_context.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\win32_platform.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\win32_tls.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Includes\GLFW\src\winmm_joystick.h">
+      <Filter>GLFW</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,9 +10,6 @@
 
 #include <GameEngine/Rendering/THDrawing.h>
 
-#include <EGL/egl.h>
-#include GLES_HEADER
-
 class THFrame;
 
 //Timer Function Definition
@@ -26,15 +23,17 @@ public:
 class THApplication
 {
 public:
+	void *data;
+
 	THApplication();
 	void Start();
 
 	inline void ViewportInit(){glViewport(0,0,m_windowWidthi,m_windowHeighti);}
 	void SetOrtho(const THVector2& minp,const THVector2& maxp);
-	void EGLInit(EGLNativeWindowType window);
-	void TermDisplay();
+
 	void Loop();
 
+	void SetWindowSize(int w,int h);
 	void GLInit();
 	void OnCreate();
 	void OnSurfaceCreated();
@@ -52,28 +51,20 @@ public:
 	void OnTouchMove(const THVector2& p);
 	void OnTouchUp(const THVector2& p);
 	int OnBackReleased();
-	void OnKeyUp(unsigned int k);
-	void OnKeyDown(unsigned int k);
+	void OnKeyUp(int k);
+	void OnKeyDown(int k);
 protected:
 	bool m_isrunning;
 	long long m_lastMicroSec;
 	long long m_minTimeGap,m_maxTimeGap;
 
-	//EGL Variables
-	EGLDisplay m_eglDisplay;
-	EGLSurface m_eglSurface;
-	EGLContext m_eglContext;
-	EGLConfig m_eglConfig;
-
 	//GameSize
 	THVector2 m_gameScale;
-	THVector2 m_gameMinBound;
-	THVector2 m_gameMaxBound;
+	THVector2 m_gameMinBound,m_gameMaxBound;
 
 	//WindowSize
 	THVector2 m_windowSize;
-	GLsizei m_windowWidthi;
-	GLsizei m_windowHeighti;
+	GLsizei m_windowWidthi,m_windowHeighti;
 
 	GLfloat THProjectMatrix[6];
 
@@ -90,14 +81,9 @@ protected:
 	
 	void InitZeroOneVBO();
 
-	void EGLInitDisplay();
-	void EGLChooseConfig();
-	//platform independent
-	void EGLInitSurface(EGLNativeWindowType window);
-	void EGLMakeContext();
-
 	void OnDrawFrame();
 	void OnEnterFrame();
+	void SwapBuffer();
 };
 
 #endif

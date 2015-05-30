@@ -2,7 +2,6 @@
 #define THKim_THPrivate
 
 #include <THSettings.h>
-#include GLES_HEADER
 
 #if THPLATFORM==THPLATFORM_ANDROID
 #include <android_native_app_glue.h>

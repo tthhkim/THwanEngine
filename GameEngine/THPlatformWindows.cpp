@@ -6,8 +6,6 @@
 
 extern THApplication THApp;
 
-#include <Windows.h>
-
 static LARGE_INTEGER timesp;
 static double THTimeFrequency;
 
@@ -23,195 +21,101 @@ long long GetCurrentTimeMicro()
 	return (long long)((double)timesp.QuadPart*THTimeFrequency);
 }
 
-#include <windowsx.h>
-static bool destroyRequested=false;
-static bool isMouseDown;
-LRESULT CALLBACK HandleWindowMessages(HWND nativeWindow, UINT message, WPARAM windowParameters, LPARAM longWindowParameters)
+
+static void key_callback(GLFWwindow *window,int key,int scancode,int action,int modes)
 {
-	
-	switch (message)
+	if(action==GLFW_PRESS)
 	{
-	case WM_SYSCOMMAND:
-		// Handle 2 system messages: screen saving and monitor power. We need to prevent them whilst we're rendering for a short time.
-		{
-			switch (windowParameters)
-			{
-			case SC_SCREENSAVE:
-			case SC_MONITORPOWER:
-				{
-					// Return 0 to let Windows know we don't want to sleep or turn the monitor off right now.
-					return 0;
-				}
-			}
-			break;
-		}
-	case WM_CLOSE:
-		// Handle the close message when a user clicks the quit icon of the window
-		{
-			// Tell the demo that it should stop rendering.
-			destroyRequested = true;
-
-			// Post a quit message
-			PostQuitMessage(0);
-
-			// Return 1 to let Windows know the message has been successfully handled
-			return 1;
-		}
-	case WM_MOUSEMOVE:
+		THApp.OnKeyDown(key);
+	}else if(action==GLFW_RELEASE)
 	{
-		if(isMouseDown==false){return 0;}
-		const THVector2 p((float)(GET_X_LPARAM(longWindowParameters)),(float)(GET_Y_LPARAM(longWindowParameters)));
-		THApp.OnTouchMove(p);
-
-		return 1;
-	}
-		break;
-	case WM_LBUTTONDOWN:
-	{
-		isMouseDown=true;
-		const THVector2 p((float)(GET_X_LPARAM(longWindowParameters)),(float)(GET_Y_LPARAM(longWindowParameters)));
-		THApp.OnTouchDown(p);
-
-		return 1;
-	}
-		break;
-	case WM_LBUTTONUP:
-	{
-		isMouseDown=false;
-		const THVector2 p((float)(GET_X_LPARAM(longWindowParameters)),(float)(GET_Y_LPARAM(longWindowParameters)));
-		THApp.OnTouchUp(p);
-
-		return 1;
-	}
-		break;
-	case WM_KEYUP:
-		if(windowParameters==VK_BACK)
+		if(key==GLFW_KEY_BACKSPACE)
 		{
 			if(THApp.OnBackReleased()==0)
 			{
-				destroyRequested = true;
-
-				// Post a quit message
-				PostQuitMessage(0);
-
-				return 1;
+				glfwSetWindowShouldClose(window,1);
 			}
-		}else
-		{
-			THApp.OnKeyUp(windowParameters);
-			return 1;
 		}
-		break;
-	case WM_KEYDOWN:
-		if(windowParameters!=VK_BACK)
-		{
-			THApp.OnKeyDown(windowParameters);
-			return 1;
-		}
-		break;
-		/*
-	case WM_RBUTTONDOWN:
-	{
-		const THVector2 p(getGameX((float)(GET_X_LPARAM(longWindowParameters))),getGameY((float)(GET_Y_LPARAM(longWindowParameters))));
-		currentFrame->OnRightTouchDown(p);
+		
+		THApp.OnKeyUp(key);
 	}
-		break;
-		*/
-	}
-	return DefWindowProc(nativeWindow, message, windowParameters, longWindowParameters);
 }
-static bool CreateWindowAndDisplay( HINSTANCE applicationInstance, HWND &nativeWindow, HDC &deviceContext ) 
+static bool isMouseDown;
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	// Describe the native window in a window class structure
-	WNDCLASS nativeWindowDescription;
-	nativeWindowDescription.style = CS_HREDRAW | CS_VREDRAW;
-	nativeWindowDescription.lpfnWndProc = HandleWindowMessages;
-	nativeWindowDescription.cbClsExtra = 0;
-	nativeWindowDescription.cbWndExtra = 0;
-	nativeWindowDescription.hInstance = applicationInstance;
-	nativeWindowDescription.hIcon = 0;
-	nativeWindowDescription.hCursor = 0;
-	nativeWindowDescription.lpszMenuName = 0;
-	nativeWindowDescription.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
-	nativeWindowDescription.lpszClassName = WINDOW_CLASS_NAME;
-
-	// Register the windows class with the OS.
-	ATOM registerClass = RegisterClass(&nativeWindowDescription);
-	if (!registerClass)
-	{
-		THError("Failed to register the window class");
-	}
-
-	// Create a rectangle describing the area of the window
-	RECT windowRectangle;
-	SetRect(&windowRectangle, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-	AdjustWindowRectEx(&windowRectangle, WS_CAPTION | WS_SYSMENU, false, 0);
-
-	// Create the window from the available information
-	nativeWindow = CreateWindow( WINDOW_CLASS_NAME, APPLICATION_NAME, WS_VISIBLE | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, 
-	                             windowRectangle.right - windowRectangle.left, windowRectangle.bottom - windowRectangle.top,
-	                             NULL, NULL, applicationInstance, NULL);
-	if (!nativeWindow)
-	{
-		THError("Failed to create the window");
-		return false;
-	}
-
-	// Get the associated device context from the window
-	deviceContext = GetDC(nativeWindow);
-	if (!deviceContext)
-	{
-		THError("Failed to create the device context");
-		return false;
-	}
-
-	return true;
+	if(isMouseDown==false){return;}
+	const THVector2 p((float)xpos,(float)ypos);
+	THApp.OnTouchMove(p);
 }
-
-int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TCHAR* /*commandLineString*/, int /*showCommand*/)
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	double xpos,ypos;
+	glfwGetCursorPos(window,&xpos,&ypos);
+	const THVector2 p((float)xpos,(float)ypos);
+	if(action==GLFW_PRESS)
+	{
+		isMouseDown=true;
+		THApp.OnTouchDown(p);
+	}else if(action==GLFW_RELEASE)
+	{
+		isMouseDown=false;
+		THApp.OnTouchUp(p);
+	}
+	
+}
+int main()
 {
 	Randomize();
 	PrepareTime();
 
-	AllocConsole();
-	using namespace std;
-	freopen("conin$","r",stdin);
-	freopen("conout$","w",stdout);
-	freopen("conout$","w",stderr);
+	//AllocConsole();
+	//using namespace std;
+	//freopen("conin$","r",stdin);
+	//freopen("conout$","w",stdout);
+	//freopen("conout$","w",stderr);
 
 
 	THLog("OnCreate()");
 	THApp.OnCreate();
 
+	if(!glfwInit())
+	{
+		THError("glfwInit Failed");
+		return 0;
+	}
+	GLFWwindow *window=glfwCreateWindow(WINDOW_WIDTH,WINDOW_HEIGHT,APPLICATION_NAME,0,0);
+	if(window==0)
+	{
+		THError("glfwCreateWindow Failed");
+		glfwTerminate();
+		return 0;
+	}
+	glfwMakeContextCurrent(window);
+	THApp.data=window;
+	glfwSetKeyCallback(window,key_callback);
+	glfwSetMouseButtonCallback(window,mouse_button_callback);
+	glfwSetCursorPosCallback(window,cursor_position_callback);
 
-	// Windows variables
-	HWND				nativeWindow = NULL;
-	HDC					deviceContext = NULL;
-	CreateWindowAndDisplay(applicationInstance,nativeWindow,deviceContext);
-	
-	THLog("EGLInit");
-	THApp.EGLInit(nativeWindow);
-	THLog("GLInit");
-	
+	int width,height;
+	glfwGetFramebufferSize(window,&width,&height);
+	THApp.SetWindowSize(width,height);
+	THLog("SurfaceInitialed");
+
 	THApp.GLInit();
 	THApp.OnSurfaceCreated();
+	THLog("GLInit");
+
 
 	THLog("GainFocus");
 	THApp.OnResume();
 
 	THApp.Start();
 
-	while(destroyRequested==false)
+	while(glfwWindowShouldClose(window)==false)
 	{
-		// Check for messages from the windowing system. These will pass through the callback registered earlier.
-		MSG eventMessage;
-		while(PeekMessage(&eventMessage, nativeWindow, NULL, NULL, PM_REMOVE))
-		{
-			TranslateMessage(&eventMessage);
-			DispatchMessage(&eventMessage);
-		}
-
+		glfwPollEvents();
 		THApp.Loop();
+		//keep running
 	}
 	THApp.SetRunning(false);
 
@@ -222,28 +126,16 @@ int WINAPI WinMain(HINSTANCE applicationInstance, HINSTANCE previousInstance, TC
 	THApp.OnDestroy();
 
 	//THDefaultProgram.Delete();
-	THApp.TermDisplay();
 
-	if (deviceContext)
-	{
-		ReleaseDC(nativeWindow, deviceContext);
-	}
-
-	// Destroy the window
-	if (nativeWindow)
-	{
-		DestroyWindow(nativeWindow);
-	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
 }
-void THApplication::EGLInitSurface(EGLNativeWindowType window)
+void THApplication::SwapBuffer()
 {
-	m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, window, NULL);
-	if(m_eglSurface == EGL_NO_SURFACE)
-	{
-		eglGetError(); // Clear error
-		m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, NULL, NULL);
-	}
+	glfwSwapBuffers((GLFWwindow*)data);
 }
+
 
 THAsset THAsset_open(const char *name,THAssetMode mode)
 {

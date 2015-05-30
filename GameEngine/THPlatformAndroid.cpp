@@ -1,10 +1,14 @@
 #include "THApplication.h"
 #include <THPrivate.h>
-#include <time.h>
 
 #if THPLATFORM==THPLATFORM_ANDROID
 
+#include <time.h>
+#include <unistd.h>
+#include <GameEngine/THEGLWrapper.h>
+
 extern THApplication THApp;
+THEGLWrapper EGLWrapper;
 
 timespec timesp;
 long long GetCurrentTimeMicro()
@@ -30,7 +34,7 @@ THVector3& GetSensorVector()
 #endif
 
 static void init_display(struct android_app* app) {
-	THApp.EGLInit(app->window);
+	EGLWrapper.EGLInit((EGLNativeWindowType)app->window);
 	THApp.GLInit();
 	THApp.OnSurfaceCreated();
 }
@@ -81,12 +85,12 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             break;
 		case APP_CMD_TERM_WINDOW:
 			THLog("Term Window()");
-			THApp.TermDisplay();
+			//EGL.TermDisplay();
 			break;
 		case APP_CMD_GAINED_FOCUS:
 			THLog("Gained Focus()");
 
-			THApp.Init();
+			THApp.Start();
 
 #if USE_ACCELEROMETER_SENSOR==1
 			ASensorEventQueue_enableSensor(asensorEventQueue,accelerometerSensor);
@@ -121,7 +125,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 			*/
 		case APP_CMD_DESTROY:
 			THLog("OnDestroy()");
-			OnDestroy();
+			THApp.OnDestroy();
 			break;
     }
 }
@@ -130,7 +134,7 @@ AAssetManager* assetManager;
 
 void android_main(struct android_app* state)
 {
-	InitVars();
+	Randomize();
 
 	THLog("OnCreate()");
 	app_dummy();
@@ -144,13 +148,6 @@ void android_main(struct android_app* state)
 #endif
 
 	THApp.OnCreate();
-#ifndef NDEBUG
-	if(currentFrame==0)
-	{
-		THError("Frame Not Set! Must be set in OnCreate()");
-		assert(0);
-	}
-#endif
 
 	state->onAppCmd = engine_handle_cmd;
 	state->onInputEvent=handle_input;
@@ -164,7 +161,7 @@ void android_main(struct android_app* state)
     int events,ident;
 
 
-	THLastNanosec=GetCurrentTimeMicro();
+	THApp.Start();
 	while (1) {
         while ((ident=ALooper_pollAll(0, NULL, &events,
                 (void**)&source)) >= 0) {
@@ -184,7 +181,7 @@ void android_main(struct android_app* state)
             if(state->destroyRequested)
             {
                 THLog("Destroy Requested");
-                THApp.TermDisplay();
+                EGLWrapper.TermDisplay();
 				return;
             }
         }
@@ -192,14 +189,14 @@ void android_main(struct android_app* state)
     }
 }
 
-void THApplication::EGLInitSurface(EGLNativeWindowType window)
+void THEGLWrapper::EGLInitSurface(EGLNativeWindowType window)
 {
 	EGLint format;
-    eglGetConfigAttrib(eglDisplay, config, EGL_NATIVE_VISUAL_ID, &format);
+    eglGetConfigAttrib(m_eglDisplay, m_eglConfig, EGL_NATIVE_VISUAL_ID, &format);
 	
-    ANativeWindow_setBuffersGeometry(window, 0, 0, format);
+    ANativeWindow_setBuffersGeometry((ANativeWindow*)window, 0, 0, format);
 
-    eglSurface = eglCreateWindowSurface(eglDisplay, m_eglConfig, window, NULL);
+    m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, window, NULL);
 }
 
 THAsset THAsset_open(const char *name,THAssetMode mode)

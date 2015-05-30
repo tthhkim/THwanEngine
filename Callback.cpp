@@ -20,8 +20,6 @@
 
 void THApplication::OnCreate()
 {
-	//SetEGL(3,0);
-	//SetEGL(int glesversion,int depthsize);
 }
 void THApplication::OnSurfaceCreated()
 {

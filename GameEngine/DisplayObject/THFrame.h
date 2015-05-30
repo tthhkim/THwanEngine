@@ -38,8 +38,8 @@ public:
 	virtual void OnTouchMove(const THVector2& p,const THVector2& delta){}
 	
 	//for windows
-	virtual void OnKeyUp(unsigned int key){}
-	virtual void OnKeyDown(unsigned int key){}
+	virtual void OnKeyUp(int key){}
+	virtual void OnKeyDown(int key){}
 
 	virtual int OnBackReleased(){return 0;}
 	virtual void OnEnterFrame(){}

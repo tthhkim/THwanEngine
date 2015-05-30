@@ -2,7 +2,6 @@
 #define THKim_THDrawing
 
 #include <THSettings.h>
-#include GLES_HEADER
 #include <malloc.h>
 
 #include <GameEngine/Util/THMath.h>

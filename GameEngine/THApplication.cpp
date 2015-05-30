@@ -9,13 +9,7 @@ THApplication::THApplication()
 {
 	m_isrunning=false;
 	m_lastMicroSec=0;
-	m_minTimeGap=0;m_maxTimeGap=0;
-
-	//EGL Variables
-	m_eglDisplay=0;
-	m_eglSurface=0;
-	m_eglContext=0;
-	m_eglConfig=0;
+	SetFrameRate(60.0f);
 
 	//GameSize
 	//THVector2 m_gameScale;
@@ -36,8 +30,6 @@ THApplication::THApplication()
 	//THLinkedList m_timerlist;
 
 	m_dt=0.0f;
-
-	SetFrameRate(60.0f);
 }
 void THApplication::GLInit()
 {
@@ -47,14 +39,14 @@ void THApplication::GLInit()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	TH_GLERROR_CHECK()
 
-#if DEPTH_SIZE_BIT>0
+		/*
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-#else
+	*/
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
-#endif
+
 	ViewportInit();
 	TH_GLERROR_CHECK()
 
@@ -70,6 +62,12 @@ void THApplication::Start()
 {
 	m_isrunning=true;
 	m_lastMicroSec=GetCurrentTimeMicro();
+}
+void THApplication::SetWindowSize(int w,int h)
+{
+	m_windowWidthi=w;
+	m_windowHeighti=h;
+	m_windowSize.Set((float)w,(float)h);
 }
 
 void THApplication::SetFrameRate(float _frameRate)
@@ -92,19 +90,18 @@ void THApplication::Loop()
 }
 void THApplication::OnDrawFrame()
 {
-	if(m_eglDisplay == EGL_NO_DISPLAY){return;}
+	//if(m_eglDisplay == EGL_NO_DISPLAY){return;}
 	//Draw Start
 	
 	glClear(
 		GL_COLOR_BUFFER_BIT
-#if USE_DEPTH_BUFFER==1
 		|GL_DEPTH_BUFFER_BIT
-#endif
 		);
 
 	m_currentFrame->Draw();
 
-	eglSwapBuffers(m_eglDisplay, m_eglSurface);
+	SwapBuffer();
+	//eglSwapBuffers(m_eglDisplay, m_eglSurface);
 	//Draw End
 }
 void THApplication::OnEnterFrame()
@@ -126,60 +123,6 @@ void THApplication::OnEnterFrame()
 
 	m_currentFrame->OnEnterFrame();
 }
-
-void THApplication::EGLInit(EGLNativeWindowType window)
-{
-	EGLInitDisplay();
-	EGLChooseConfig();
-	EGLInitSurface(window);
-	EGLMakeContext();
-}
-void THApplication::EGLInitDisplay()
-{
-	m_eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    EGLint eglMajor,eglMinor;
-    eglInitialize(m_eglDisplay, &eglMajor,&eglMinor);
-	THLog("EGL Initialization : %d.%d",eglMajor,eglMinor);
-}
-void THApplication::EGLChooseConfig()
-{
-	const EGLint attribs[] = {
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-			EGL_DEPTH_SIZE,DEPTH_SIZE_BIT,
-            EGL_NONE
-    };
-	EGLint numConfigs;
-    eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &numConfigs);
-}
-void THApplication::EGLMakeContext()
-{
-	const EGLint attrib_list[] = {
-		EGL_CONTEXT_CLIENT_VERSION, USE_GLES_VERSION,
-        EGL_NONE
-    };
-    m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, NULL, attrib_list);
-	/*
-#if THPLATFORM==THPLATFORM_WINDOWS
-	eglBindAPI(EGL_OPENGL_ES_API);
-#endif
-	*/
-	if (eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext) == EGL_FALSE) {
-		THError("Unable to eglMakeCurrent");
-		assert(0);
-		return;
-    }
-	EGLint sw,sh;
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_WIDTH, &sw);
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &sh);
-	m_windowWidthi=sw;
-	m_windowHeighti=sh;
-	m_windowSize.Set((float)sw,(float)sh);
-}
 void THApplication::SetOrtho(const THVector2& minp,const THVector2& maxp)
 {
 	m_gameMinBound=minp;
@@ -196,21 +139,6 @@ void THApplication::InitZeroOneVBO()
 {
 	const GLfloat verts[]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
 	m_zerooneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
-}
-void THApplication::TermDisplay() {
-    if (m_eglDisplay != EGL_NO_DISPLAY) {
-        eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (m_eglContext != EGL_NO_CONTEXT) {
-            eglDestroyContext(m_eglDisplay, m_eglContext);
-        }
-        if (m_eglSurface != EGL_NO_SURFACE) {
-            eglDestroySurface(m_eglDisplay, m_eglSurface);
-        }
-        eglTerminate(m_eglDisplay);
-    }
-    m_eglDisplay = EGL_NO_DISPLAY;
-    m_eglContext = EGL_NO_CONTEXT;
-    m_eglSurface = EGL_NO_SURFACE;
 }
 void THApplication::GoFrame(THFrame* f,void* data)
 {
@@ -256,11 +184,11 @@ int THApplication::OnBackReleased()
 {
 	return m_currentFrame->OnBackReleased();
 }
-void THApplication::OnKeyUp(unsigned int k)
+void THApplication::OnKeyUp(int k)
 {
 	m_currentFrame->OnKeyUp(k);
 }
-void THApplication::OnKeyDown(unsigned int k)
+void THApplication::OnKeyDown(int k)
 {
 	m_currentFrame->OnKeyUp(k);
 }

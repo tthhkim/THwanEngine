@@ -283,9 +283,9 @@ The combination of internal formats of the attached images violates an implement
 	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 		THError("FrameBuffer : INCOMPLETE_ATTACHMENT");
 		break;
-	case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-		THError("FrameBuffer : INCOMPLETE_DIMENSIONS");
-		break;
+	//case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+	//	THError("FrameBuffer : INCOMPLETE_DIMENSIONS");
+	//	break;
 	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 		THError("FrameBuffer : MISSING_ATTACHMENT");
 		break;
