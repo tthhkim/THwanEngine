@@ -31,7 +31,7 @@ public:
 
 	void Load(unsigned int cap)
 	{
-		if(arr==0)
+		if(arr==0&&cap!=0)
 		{
 			arr=(T*)malloc(sizeof(T)*cap);
 			num=0;
@@ -52,8 +52,14 @@ public:
 	{
 		if(cap>maxNum)
 		{
-			maxNum=cap+1;
-			Realloc();
+			maxNum=cap;
+			if(arr)
+			{
+				Realloc();
+			}else
+			{
+				arr=(T*)malloc(sizeof(T)*cap);
+			}
 		}
 	}
 	bool IsAllocated() const
