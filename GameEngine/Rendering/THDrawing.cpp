@@ -270,6 +270,13 @@ void THFrameBuffer::EndDrawing() const
 	//glBindRenderbuffer(GL_RENDERBUFFER,0);
 }
 
+void THFBOSet::SetSize(size_t w,size_t h){img.SetSize(w,h);}
+void THFBOSet::Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
+{
+	img.Load(data,internelformat,format,type,filter,edgeparam);
+	fbo.Load(&img);
+}
+
 void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
 {
 	m_image1.SetSize(w,h);

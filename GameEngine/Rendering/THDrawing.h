@@ -206,6 +206,18 @@ public:
 		fboImage->Viewport();
 	}
 };
+class THFBOSet
+{
+public:
+	THFrameBuffer fbo;
+	THImage img;
+
+	void SetSize(size_t w,size_t h);
+	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
+	inline void Viewport(){img.Viewport();}
+	inline void BeginDrawing(){fbo.BeginDrawing();}
+	inline void EndDrawing(){fbo.EndDrawing();}
+};
 class THFrameBufferPingPong
 {
 public:
