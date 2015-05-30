@@ -13,9 +13,9 @@ float GetDeltaTime()
 {
 	return THApp.m_dt;
 }
-THVertexBuffer& GetZeroOneVBO()
+THVertexBuffer& GetOneVBO()
 {
-	return THApp.GetZeroOneVBO();
+	return THApp.GetOneVBO();
 }
 THApplication::THApplication()
 {
@@ -62,8 +62,8 @@ void THApplication::GLInit()
 	ViewportInit();
 	TH_GLERROR_CHECK("Viewport")
 
-	const GLfloat verts[8]=MAKE_VERTEX(0.0f,0.0f,1.0f,1.0f);
-	m_zerooneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
+	const GLfloat verts[8]=MAKE_VERTEX(-1.0f,-1.0f,1.0f,1.0f);
+	m_oneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
 }
 void THApplication::Start()
 {
@@ -111,6 +111,9 @@ void THApplication::OnDrawFrame()
 }
 void THApplication::OnEnterFrame()
 {
+#ifdef TH_ISDEBUG
+	if(m_currentFrame==0){THError("Frame Not Set");assert(0);}
+#endif
 	//timer step
 	THTimerDef *timer=(THTimerDef*)m_timerlist.GetList(),*tnext;
 	while(timer)

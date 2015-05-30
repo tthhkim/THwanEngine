@@ -30,7 +30,7 @@
 #else
 	#define TH_GLERROR_CHECK(x)
 #endif
-#define MAKE_VERTEX(l,t,r,b) {l,t,r,t,l,b,r,b};
+#define MAKE_VERTEX(l,b,r,t) {l,b,r,b,l,t,r,t};
 
 #if THPLATFORM==THPLATFORM_WINDOWS
 #define APPLICATION_NAME "TestApplicatonName"
@@ -73,7 +73,7 @@ typedef const char* THAssetMode;
 long long GetCurrentTimeMicro();
 THApplication& GetApplication();
 float GetDeltaTime();
-THVertexBuffer& GetZeroOneVBO();
+THVertexBuffer& GetOneVBO();
 unsigned char *ReadFile(const char *name,size_t *length);
 
 THAsset THAsset_open(const char *name,
