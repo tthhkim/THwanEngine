@@ -45,6 +45,7 @@ public:
 	void LoadVertexHandler(const GLchar *name);
 	inline void EnableVertexAttribArray(){glEnableVertexAttribArray(vertexHandler);}
 	inline void DisableVertexAttribArray(){glDisableVertexAttribArray(vertexHandler);}
+	inline void VertexAttribPointer(const void *p){glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,p);}
 	void LoadFile(const char *vs,const char *fs);
 
 	inline void SetUniform(const char* name,float f1) const
