@@ -9,6 +9,7 @@
 #include <GameEngine/Util/THMath3D.h>
 
 #include <GameEngine/Rendering/THDrawing.h>
+#include <GameEngine/Rendering/THBuffer.h>
 
 class THFrame;
 

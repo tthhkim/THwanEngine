@@ -105,6 +105,9 @@
     <ClCompile Include="..\Includes\GLFW\src\winmm_joystick.c">
       <Filter>GLFW</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameEngine\Rendering\THBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="..\Includes\GLFW\src\winmm_joystick.h">
       <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\Rendering\THBuffer.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

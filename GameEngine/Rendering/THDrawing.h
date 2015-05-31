@@ -106,17 +106,9 @@ public:
 
 	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
 	void LoadFile(const char* name,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
-	void SetSize(GLsizei w,GLsizei h)
-	{
-		width=w;
-		height=h;
-		size.Set((float)w,(float)h);
-	}
+	void SetSize(GLsizei w,GLsizei h);
+	void Delete() const;
 
-	inline void DeleteTexture() const
-	{
-		glDeleteTextures(1,&textureID);
-	}
 	inline void Viewport() const
 	{
 		glViewport(0,0,width,height);
@@ -146,96 +138,5 @@ protected:
 };
 
 
-class THVertexBuffer
-{
-public:
-	GLuint vboHandler;
-	/*
-GL_STATIC_DRAW The buffer object data will be specified once by the
-application and used many times to draw primitives.
-
-GL_DYNAMIC_DRAW The buffer object data will be specified repeatedly by the
-application and used many times to draw primitives.
-
-GL_STREAM_DRAW The buffer object data will be specified once by the
-application and used a few times to draw primitives.
-*/
-	void Load(void* data,GLuint bytes,GLenum usage);
-	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
-
-	inline void BeginDrawing() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-		assert(glGetError()==GL_NO_ERROR);
-	}
-	inline void EndDrawing() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		assert(glGetError()==GL_NO_ERROR);
-		//ToDo Returning to default vertexbuffer
-	}
-	inline void DeleteVBO() const
-	{
-		glDeleteBuffers(1,&vboHandler);
-		assert(glGetError()==GL_NO_ERROR);
-	}
-};
-
-class THFrameBuffer
-{
-public:
-	GLuint fboHandler;//,rbHandler;
-	THImage* fboImage;
-
-	void Load(THImage* img);
-	inline void BeginDrawing() const
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-		assert(glGetError()==GL_NO_ERROR);
-		//glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
-	}
-	void EndDrawing() const;
-	void DeleteFBO() const
-	{
-		glDeleteFramebuffers(1,&fboHandler);
-		assert(glGetError()==GL_NO_ERROR);
-		//glDeleteRenderbuffers(1,&rbHandler);
-	}
-	inline void Viewport() const
-	{
-		fboImage->Viewport();
-	}
-};
-class THFBOSet
-{
-public:
-	THFrameBuffer fbo;
-	THImage img;
-
-	void SetSize(size_t w,size_t h);
-	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
-	inline void Viewport(){img.Viewport();}
-	inline void BeginDrawing(){fbo.BeginDrawing();}
-	inline void EndDrawing(){fbo.EndDrawing();}
-};
-class THFrameBufferPingPong
-{
-public:
-	inline THImage& GetImage1(){return m_image1;}
-	inline THImage& GetImage2(){return m_image2;}
-	void Viewport(){m_image1.Viewport();}
-	void SetSize(GLsizei w,GLsizei h);
-	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
-	void SyncFrameBuffer();
-	void Change(){m_isone=!m_isone;}
-	THFrameBuffer& GetDstFrameBuffer(){return m_isone?m_fb2:m_fb1;}
-	void BeginDrawing(){GetDstFrameBuffer().BeginDrawing();}
-	void EndDrawing(){GetDstFrameBuffer().EndDrawing();}
-	THImage& GetSourceImage(){return m_isone?m_image1:m_image2;}
-protected:
-	THFrameBuffer m_fb1,m_fb2;
-	THImage m_image1,m_image2;
-	bool m_isone;
-};
 
 #endif

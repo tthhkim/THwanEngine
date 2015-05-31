@@ -12,6 +12,7 @@
 
 #include <assert.h>
 #include <GameEngine/Rendering/THDrawing.h>
+#include <GameEngine/Rendering/THBuffer.h>
 
 #include <GameEngine/Util/THMath.h>
 #include <GameEngine/Util/THMath3D.h>
