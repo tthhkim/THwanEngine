@@ -37,13 +37,13 @@ void THFrameBuffer::Load()
 #endif
 	glGenFramebuffers(1,&fboHandler);
 	TH_GLERROR_CHECK("GenFrameBuffers")
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 	TH_GLERROR_CHECK("BindFrameBuffer")
 }
 void THFrameBuffer::Attach(THImage* img,GLenum attachment)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-	TH_GLERROR_CHECK("BindFrameBuffer")
+	//glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
+	//TH_GLERROR_CHECK("BindFrameBuffer")
 	glFramebufferTexture2D(GL_FRAMEBUFFER,attachment,GL_TEXTURE_2D,img->textureID,0);
 	
 #ifndef NDEBUG
@@ -83,8 +83,8 @@ The combination of internal formats of the attached images violates an implement
 #endif
 	TH_GLERROR_CHECK("FrameBufferTexture2D")
 
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	TH_GLERROR_CHECK("BindFrameBuffer")
+	//glBindFramebuffer(GL_FRAMEBUFFER,0);
+	//TH_GLERROR_CHECK("BindFrameBuffer")
 }
 void THFrameBuffer::Delete() const
 {
@@ -98,6 +98,7 @@ void THFrameBufferSet::Load(void *data,GLenum internelformat,GLenum format,GLenu
 	img.Load(data,internelformat,format,type,filter,edgeparam);
 	fbo.Load();
 	fbo.Attach(&img);
+	fbo.EndDrawing();
 }
 
 void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
@@ -116,6 +117,7 @@ void THFrameBufferPingPong::SyncFrameBuffer()
 	m_fb1.Attach(&m_image1);
 	m_fb2.Load();
 	m_fb2.Attach(&m_image2);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
 void THPixelBuffer::LoadReader(size_t size)
