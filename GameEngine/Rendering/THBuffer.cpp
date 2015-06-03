@@ -30,37 +30,21 @@ void THVertexBuffer::Delete() const
 	glDeleteBuffers(1,&vboHandler);
 	assert(glGetError()==GL_NO_ERROR);
 }
-
-void THFrameBuffer::Load(THImage* img)
+void THFrameBuffer::Load()
 {
-	fboImage=img;
-
-#ifndef NDEBUG
+#ifdef TH_ISDEBUG
 	THLog("FrameBuffer Generation;");
 #endif
-
-	/*
-	GLuint fboTextureHandler;
-	glGenTextures(1,&fboTextureHandler);
-	glBindTexture(GL_TEXTURE_2D,fboTextureHandler);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D,0,format,(GLsizei)fboImage.size.x,(GLsizei)fboImage.size.y,0,format,GL_UNSIGNED_BYTE,0);
-	fboImage.textureID=fboTextureHandler;
-	*/
-
-	/*
-	glGenRenderbuffers(1,&rbHandler);
-	glBindRenderbuffer(GL_RENDERBUFFER,rbHandler);
-	glRenderbufferStorage(GL_RENDERBUFFER,GL_RGBA4,width,height);
-	*/
-
 	glGenFramebuffers(1,&fboHandler);
 	TH_GLERROR_CHECK("GenFrameBuffers")
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	TH_GLERROR_CHECK("BindFrameBuffer")
+}
+void THFrameBuffer::Attach(THImage* img,GLenum attachment)
+{
 	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 	TH_GLERROR_CHECK("BindFrameBuffer")
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,rbHandler);
-	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,fboImage->textureID,0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,attachment,GL_TEXTURE_2D,img->textureID,0);
 	
 #ifndef NDEBUG
 	/*
@@ -99,10 +83,8 @@ The combination of internal formats of the attached images violates an implement
 #endif
 	TH_GLERROR_CHECK("FrameBufferTexture2D")
 
-
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	TH_GLERROR_CHECK("BindFrameBuffer")
-	//ToDo Returning to default framebuffer
 }
 void THFrameBuffer::Delete() const
 {
@@ -114,7 +96,8 @@ void THFrameBufferSet::SetSize(size_t w,size_t h){img.SetSize(w,h);}
 void THFrameBufferSet::Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
 {
 	img.Load(data,internelformat,format,type,filter,edgeparam);
-	fbo.Load(&img);
+	fbo.Load();
+	fbo.Attach(&img);
 }
 
 void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
@@ -129,8 +112,10 @@ void THFrameBufferPingPong::Load(void *data,GLenum internelformat,GLenum format,
 }
 void THFrameBufferPingPong::SyncFrameBuffer()
 {
-	m_fb1.Load(&m_image1);
-	m_fb2.Load(&m_image2);
+	m_fb1.Load();
+	m_fb1.Attach(&m_image1);
+	m_fb2.Load();
+	m_fb2.Attach(&m_image2);
 }
 
 void THPixelBuffer::LoadReader(size_t size)

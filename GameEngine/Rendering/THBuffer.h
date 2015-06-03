@@ -41,23 +41,19 @@ class THFrameBuffer
 {
 public:
 	GLuint fboHandler;
-	THImage* fboImage;
 
-	void Load(THImage* img);
+	void Load();
+	void Attach(THImage* img,GLenum attachment=GL_COLOR_ATTACHMENT0);
 	inline void BeginDrawing() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 		assert(glGetError()==GL_NO_ERROR);
 	}
-	void EndDrawing() const
+	inline void EndDrawing() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
 	}
 	void Delete() const;
-	inline void Viewport() const
-	{
-		fboImage->Viewport();
-	}
 };
 class THFrameBufferSet
 {
@@ -74,8 +70,8 @@ public:
 class THFrameBufferPingPong
 {
 public:
-	inline THImage& GetImage1(){return m_image1;}
-	inline THImage& GetImage2(){return m_image2;}
+	THFrameBuffer m_fb1,m_fb2;
+	THImage m_image1,m_image2;
 	void Viewport(){m_image1.Viewport();}
 	void SetSize(GLsizei w,GLsizei h);
 	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
@@ -86,8 +82,7 @@ public:
 	void EndDrawing(){GetDstFrameBuffer().EndDrawing();}
 	THImage& GetSourceImage(){return m_isone?m_image1:m_image2;}
 protected:
-	THFrameBuffer m_fb1,m_fb2;
-	THImage m_image1,m_image2;
+	
 	bool m_isone;
 };
 class THPixelBuffer
