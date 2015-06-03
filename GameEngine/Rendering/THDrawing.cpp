@@ -54,16 +54,16 @@ unsigned char *ReadFile(const char *name,size_t *length)
 	if(length){*length=l;}
 	return buf;
 }
-void THProgram::LoadFile(const char *vs,const char *fs)
+void THProgram::LoadFile(const char *vs,const char *fs,bool link)
 {
 	GLchar *vsc=(GLchar*)ReadFile(vs,0);
 	GLchar *fsc=(GLchar*)ReadFile(fs,0);
 
-	Load(vsc,fsc);
+	Load(vsc,fsc,link);
 	delete[] vsc;
 	delete[] fsc;
 }
-void THProgram::Load(const GLchar* vs,const GLchar* fs)
+void THProgram::Load(const GLchar* vs,const GLchar* fs,bool link)
 {
 	vertex=InitShader(vs,GL_VERTEX_SHADER);
 	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
@@ -73,6 +73,13 @@ void THProgram::Load(const GLchar* vs,const GLchar* fs)
 	glAttachShader(program,vertex);
 	glAttachShader(program,fragment);
 	TH_GLERROR_CHECK("AttachShader")
+	if(link)
+	{
+		Link();
+	}
+}
+void THProgram::Link()
+{
 	glLinkProgram(program);
 	TH_GLERROR_CHECK("LinkProgram")
 	glUseProgram(program);

@@ -41,12 +41,14 @@ public:
 
 	THProgram(){}
 
-	void Load(const GLchar* vs,const GLchar* fs);
+	void Load(const GLchar* vs,const GLchar* fs,bool link=true);
+	void LoadFile(const char *vs,const char *fs,bool link=true);
+	void Link();
 	void LoadVertexHandler(const GLchar *name);
 	inline void EnableVertexAttribArray(){glEnableVertexAttribArray(vertexHandler);}
 	inline void DisableVertexAttribArray(){glDisableVertexAttribArray(vertexHandler);}
 	inline void VertexAttribPointer(const void *p){glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,p);}
-	void LoadFile(const char *vs,const char *fs);
+	
 
 	inline void SetUniform(const char* name,float f1) const
 	{
