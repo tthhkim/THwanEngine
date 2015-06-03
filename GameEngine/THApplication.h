@@ -44,6 +44,7 @@ public:
 	void OnDestroy();
 
 	void SetFrameRate(float _frameRate);
+	void SetFrameRate(long long mingap,long long maxgap);
 
 	void GoFrame(THFrame* f,void* data=0);
 	void AddTimer(float _timeSkip,void (*_action)(void*),void* _data);

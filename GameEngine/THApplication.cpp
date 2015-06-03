@@ -82,6 +82,13 @@ void THApplication::SetFrameRate(float _frameRate)
 	m_minTimeGap=(long long)(1000000.0f/_frameRate);
 	m_maxTimeGap=m_minTimeGap<<1;
 }
+void THApplication::SetFrameRate(long long mingap,long long maxgap)
+{
+	assert(mingap>0);
+	assert(maxgap<mingap);
+	m_minTimeGap=mingap;
+	m_maxTimeGap=maxgap;
+}
 void THApplication::Loop()
 {
 	const long long ct=GetCurrentTimeMicro();
