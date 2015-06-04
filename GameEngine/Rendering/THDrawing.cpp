@@ -4,13 +4,13 @@
 #include <malloc.h>
 #include <GameEngine/DisplayObject/THFrame.h>
 
-static GLuint InitShader(const GLchar* source,GLenum type)
+GLuint LoadShader(const GLchar* source,GLenum type)
 {
 	GLuint shader=glCreateShader(type);
 	glShaderSource(shader,1,&source,NULL);
 	glCompileShader(shader);
 
-#ifndef NDEBUG
+#ifdef TH_ISDEBUG
 	//Shader Error Checking
 	const char* shaderName=0;
 	switch(type)
@@ -20,6 +20,9 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 		break;
 	case GL_FRAGMENT_SHADER:
 		shaderName="Fragment";
+		break;
+	case GL_GEOMETRY_SHADER:
+		shaderName="Geometry";
 		break;
 	}
 
@@ -41,6 +44,14 @@ static GLuint InitShader(const GLchar* source,GLenum type)
 	}
 #endif
 
+	TH_GLERROR_CHECK("CompileShader")
+	return shader;
+}
+GLuint LoadShaderFile(const char *name,GLenum type)
+{
+	GLchar *code=(GLchar*)ReadFile(name,0);
+	GLuint shader=LoadShader(code,type);
+	delete[] code;
 	return shader;
 }
 unsigned char *ReadFile(const char *name,size_t *length)
@@ -54,29 +65,15 @@ unsigned char *ReadFile(const char *name,size_t *length)
 	if(length){*length=l;}
 	return buf;
 }
-void THProgram::LoadFile(const char *vs,const char *fs,bool link)
+void THProgram::AttachShader(GLuint shader)
 {
-	GLchar *vsc=(GLchar*)ReadFile(vs,0);
-	GLchar *fsc=(GLchar*)ReadFile(fs,0);
-
-	Load(vsc,fsc,link);
-	delete[] vsc;
-	delete[] fsc;
+	glAttachShader(program,shader);
+	TH_GLERROR_CHECK("AttachShader")
 }
-void THProgram::Load(const GLchar* vs,const GLchar* fs,bool link)
+void THProgram::Load()
 {
-	vertex=InitShader(vs,GL_VERTEX_SHADER);
-	fragment=InitShader(fs,GL_FRAGMENT_SHADER);
-	TH_GLERROR_CHECK("InitShader")
 	program=glCreateProgram();
 	TH_GLERROR_CHECK("CreateProgram")
-	glAttachShader(program,vertex);
-	glAttachShader(program,fragment);
-	TH_GLERROR_CHECK("AttachShader")
-	if(link)
-	{
-		Link();
-	}
 }
 void THProgram::Link()
 {

@@ -85,7 +85,7 @@ void THApplication::SetFrameRate(float _frameRate)
 void THApplication::SetFrameRate(long long mingap,long long maxgap)
 {
 	assert(mingap>0);
-	assert(maxgap<mingap);
+	assert(maxgap>mingap);
 	m_minTimeGap=mingap;
 	m_maxTimeGap=maxgap;
 }
@@ -199,5 +199,5 @@ void THApplication::OnKeyUp(int k)
 }
 void THApplication::OnKeyDown(int k)
 {
-	m_currentFrame->OnKeyUp(k);
+	m_currentFrame->OnKeyDown(k);
 }

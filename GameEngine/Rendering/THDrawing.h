@@ -41,15 +41,34 @@ public:
 
 	THProgram(){}
 
-	void Load(const GLchar* vs,const GLchar* fs,bool link=true);
-	void LoadFile(const char *vs,const char *fs,bool link=true);
+	void Load();
+	void AttachShader(GLuint shader);
 	void Link();
 	void LoadVertexHandler(const GLchar *name);
 	inline void EnableVertexAttribArray(){glEnableVertexAttribArray(vertexHandler);}
 	inline void DisableVertexAttribArray(){glDisableVertexAttribArray(vertexHandler);}
 	inline void VertexAttribPointer(const void *p){glVertexAttribPointer(vertexHandler,2,GL_FLOAT,GL_FALSE,0,p);}
 	
-
+	inline void SetUniformi(const char *name,int i1) const
+	{
+		glUniform1i(glGetUniformLocation(program,name),i1);
+		assert(glGetError()==GL_NO_ERROR);
+	}
+	inline void SetUniformi(const char *name,int i1,int i2) const
+	{
+		glUniform2i(glGetUniformLocation(program,name),i1,i2);
+		assert(glGetError()==GL_NO_ERROR);
+	}
+	inline void SetUniformi(const char *name,int i1,int i2,int i3) const
+	{
+		glUniform3i(glGetUniformLocation(program,name),i1,i2,i3);
+		assert(glGetError()==GL_NO_ERROR);
+	}
+	inline void SetUniformi(const char *name,int i1,int i2,int i3,int i4) const
+	{
+		glUniform4i(glGetUniformLocation(program,name),i1,i2,i3,i4);
+		assert(glGetError()==GL_NO_ERROR);
+	}
 	inline void SetUniform(const char* name,float f1) const
 	{
 		glUniform1f(glGetUniformLocation(program,name),f1);
@@ -95,6 +114,8 @@ public:
 		glDeleteProgram(program);
 	}
 };
+GLuint LoadShader(const GLchar* source,GLenum type);
+GLuint LoadShaderFile(const char *name,GLenum type);
 unsigned char* LoadImageBuffer(const char *filename,GLenum format,size_t *width,size_t *height);
 class THImage
 {
