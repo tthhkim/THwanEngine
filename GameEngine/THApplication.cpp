@@ -13,7 +13,7 @@ float GetDeltaTime()
 {
 	return THApp.m_dt;
 }
-THVertexBuffer& GetOneVBO()
+THGLBuffer& GetOneVBO()
 {
 	return THApp.GetOneVBO();
 }
@@ -63,7 +63,7 @@ void THApplication::GLInit()
 	TH_GLERROR_CHECK("Viewport")
 
 	const GLfloat verts[8]=MAKE_VERTEX(-1.0f,-1.0f,1.0f,1.0f);
-	m_oneVBO.Load((void*)verts,sizeof(GLfloat)*8,GL_STATIC_DRAW);
+	m_oneVBO.LoadVertexBuffer(sizeof(GLfloat)*8,GL_STATIC_DRAW,(void*)verts);
 }
 void THApplication::Start()
 {

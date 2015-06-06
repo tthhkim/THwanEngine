@@ -48,9 +48,6 @@
     <ClCompile Include="..\Includes\lodepng.cpp">
       <Filter>lodepng</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp">
-      <Filter>소스 파일\Util</Filter>
-    </ClCompile>
     <ClCompile Include="..\GameEngine\THApplication.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -108,6 +105,12 @@
     <ClCompile Include="..\GameEngine\Rendering\THBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameEngine\Util\THUtils.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameEngine\Util\THTween.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h">
@@ -133,9 +136,6 @@
     </ClInclude>
     <ClInclude Include="..\THSettings.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameEngine\Util\THVectorArray.h">
-      <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\GameEngine\THApplication.h">
       <Filter>헤더 파일</Filter>
@@ -175,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\Rendering\THBuffer.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameEngine\Util\THUtils.h">
+      <Filter>헤더 파일\Util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

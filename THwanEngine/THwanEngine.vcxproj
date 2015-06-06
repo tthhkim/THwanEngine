@@ -89,7 +89,8 @@
     <ClCompile Include="..\GameEngine\THPlatformAndroid.cpp" />
     <ClCompile Include="..\GameEngine\THPlatformWindows.cpp" />
     <ClCompile Include="..\GameEngine\Util\THMath.cpp" />
-    <ClCompile Include="..\GameEngine\Util\THVectorArray.cpp" />
+    <ClCompile Include="..\GameEngine\Util\THTween.cpp" />
+    <ClCompile Include="..\GameEngine\Util\THUtils.cpp" />
     <ClCompile Include="..\Includes\GLFW\src\context.c" />
     <ClCompile Include="..\Includes\GLFW\src\init.c" />
     <ClCompile Include="..\Includes\GLFW\src\input.c" />
@@ -116,7 +117,7 @@
     <ClInclude Include="..\GameEngine\Util\THMath.h" />
     <ClInclude Include="..\GameEngine\Util\THMath3D.h" />
     <ClInclude Include="..\GameEngine\Util\THTween.h" />
-    <ClInclude Include="..\GameEngine\Util\THVectorArray.h" />
+    <ClInclude Include="..\GameEngine\Util\THUtils.h" />
     <ClInclude Include="..\Includes\GLFW\glfw3.h" />
     <ClInclude Include="..\Includes\GLFW\glfw3native.h" />
     <ClInclude Include="..\Includes\GLFW\src\internal.h" />

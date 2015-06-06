@@ -1,6 +1,45 @@
 #include "THBuffer.h"
 #include <THPrivate.h>
 
+void THGLBuffer::Load(GLenum target,size_t size,GLenum usage,void *data)
+{
+	m_target=target;
+	glGenBuffers(1,&handler);
+	TH_GLERROR_CHECK("GenBuffer");
+
+	glBindBuffer(target,handler);
+	glBufferData(target,size,data,usage);
+	TH_GLERROR_CHECK("BufferData");
+}
+void THGLBuffer::Delete()
+{
+	glDeleteBuffers(1,&handler);
+	TH_GLERROR_CHECK("DeleteBuffer");
+}
+void* THGLBuffer::MapBuffer(GLenum access)
+{
+	return glMapBuffer(m_target,access);
+	TH_GLERROR_CHECK("MapBuffer");
+}
+void THGLBuffer::UnmapBuffer()
+{
+	glUnmapBuffer(m_target);
+	TH_GLERROR_CHECK("UnmapBuffer");
+}
+
+void THGLBuffer::LoadVertexBuffer(size_t size,GLenum usage,void *data)
+{
+	Load(GL_ARRAY_BUFFER,size,usage,data);
+}
+void THGLBuffer::LoadPixelReader(size_t size,GLenum usage,void *data)
+{
+	Load(GL_PIXEL_PACK_BUFFER,size,usage,data);
+}
+void THGLBuffer::LoadPixelWriter(size_t size,GLenum usage,void *data)
+{
+	Load(GL_PIXEL_UNPACK_BUFFER,size,usage,data);
+}
+/*
 void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
 {
 	THLog("VertexBuffer Generation; %d Bytes",bytes);
@@ -30,6 +69,7 @@ void THVertexBuffer::Delete() const
 	glDeleteBuffers(1,&vboHandler);
 	assert(glGetError()==GL_NO_ERROR);
 }
+*/
 void THFrameBuffer::Load()
 {
 #ifdef TH_ISDEBUG
@@ -100,26 +140,7 @@ void THFrameBufferSet::Load(void *data,GLenum internelformat,GLenum format,GLenu
 	fbo.Attach(&img);
 	fbo.EndDrawing();
 }
-
-void THFrameBufferPingPong::SetSize(GLsizei w,GLsizei h)
-{
-	m_image1.SetSize(w,h);
-	m_image2.SetSize(w,h);
-}
-void THFrameBufferPingPong::Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter,GLfloat edgeparam)
-{
-	m_image1.Load(data,internelformat,format,type,filter,edgeparam);
-	m_image2.Load(data,internelformat,format,type,filter,edgeparam);
-}
-void THFrameBufferPingPong::SyncFrameBuffer()
-{
-	m_fb1.Load();
-	m_fb1.Attach(&m_image1);
-	m_fb2.Load();
-	m_fb2.Attach(&m_image2);
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-}
-
+/*
 void THPixelBuffer::LoadReader(size_t size)
 {
 	m_isreadonly=true;
@@ -160,3 +181,4 @@ void THPixelBuffer::Delete()
 {
 	glDeleteBuffers(1,&pboHandler);
 }
+*/

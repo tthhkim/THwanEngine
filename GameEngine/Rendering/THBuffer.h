@@ -5,21 +5,41 @@
 #include <GameEngine/Rendering/THDrawing.h>
 #include <assert.h>
 
+class THGLBuffer
+{
+public:
+	GLuint handler;
 
+	inline GLenum GetTarget(){return m_target;}
+/*
+GL_STATIC_?? The buffer object data will be specified once by the
+application and used many times to draw primitives.
+
+GL_DYNAMIC_?? The buffer object data will be specified repeatedly by the
+application and used many times to draw primitives.
+
+GL_STREAM_?? The buffer object data will be specified once by the
+application and used a few times to draw primitives.
+*/
+	void Load(GLenum target,size_t size,GLenum usage,void *data=0);
+	void Delete();
+	void *MapBuffer(GLenum access);
+	void UnmapBuffer();
+	inline void Begin(){glBindBuffer(m_target,handler);}
+	inline void End(){glBindBuffer(m_target,0);}
+
+	void LoadVertexBuffer(size_t size,GLenum usage,void *data=0);
+	void LoadPixelReader(size_t size,GLenum usage,void *data=0);
+	void LoadPixelWriter(size_t size,GLenum usage,void *data=0);
+protected:
+	GLenum m_target;
+};
+
+/*
 class THVertexBuffer
 {
 public:
 	GLuint vboHandler;
-	/*
-GL_STATIC_DRAW The buffer object data will be specified once by the
-application and used many times to draw primitives.
-
-GL_DYNAMIC_DRAW The buffer object data will be specified repeatedly by the
-application and used many times to draw primitives.
-
-GL_STREAM_DRAW The buffer object data will be specified once by the
-application and used a few times to draw primitives.
-*/
 	void Load(void* data,GLuint bytes,GLenum usage);
 	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
 
@@ -36,7 +56,7 @@ application and used a few times to draw primitives.
 	}
 	void Delete() const;
 };
-
+*/
 class THFrameBuffer
 {
 public:
@@ -67,24 +87,7 @@ public:
 	inline void BeginDrawing(){fbo.BeginDrawing();}
 	inline void EndDrawing(){fbo.EndDrawing();}
 };
-class THFrameBufferPingPong
-{
-public:
-	THFrameBuffer m_fb1,m_fb2;
-	THImage m_image1,m_image2;
-	void Viewport(){m_image1.Viewport();}
-	void SetSize(GLsizei w,GLsizei h);
-	void Load(void *data,GLenum internelformat,GLenum format,GLenum type,GLfloat filter=GL_NEAREST,GLfloat edgeparam=GL_CLAMP_TO_EDGE);
-	void SyncFrameBuffer();
-	void Change(){m_isone=!m_isone;}
-	THFrameBuffer& GetDstFrameBuffer(){return m_isone?m_fb2:m_fb1;}
-	void BeginDrawing(){GetDstFrameBuffer().BeginDrawing();}
-	void EndDrawing(){GetDstFrameBuffer().EndDrawing();}
-	THImage& GetSourceImage(){return m_isone?m_image1:m_image2;}
-protected:
-	
-	bool m_isone;
-};
+/*
 class THPixelBuffer
 {
 public:
@@ -103,5 +106,5 @@ public:
 protected:
 	bool m_isreadonly;
 };
-
+*/
 #endif

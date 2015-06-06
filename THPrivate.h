@@ -14,8 +14,7 @@
 #include <GameEngine/Rendering/THDrawing.h>
 #include <GameEngine/Rendering/THBuffer.h>
 
-#include <GameEngine/Util/THMath.h>
-#include <GameEngine/Util/THMath3D.h>
+#include <GameEngine/Util/THUtils.h>
 
 #include <GameEngine/THApplication.h>
 
@@ -74,7 +73,7 @@ typedef const char* THAssetMode;
 long long GetCurrentTimeMicro();
 THApplication& GetApplication();
 float GetDeltaTime();
-THVertexBuffer& GetOneVBO();
+THGLBuffer& GetOneVBO();
 unsigned char *ReadFile(const char *name,size_t *length);
 
 THAsset THAsset_open(const char *name,
