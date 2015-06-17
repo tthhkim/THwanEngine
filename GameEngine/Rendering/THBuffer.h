@@ -34,29 +34,20 @@ application and used a few times to draw primitives.
 protected:
 	GLenum m_target;
 };
-
-/*
-class THVertexBuffer
+class THRenderBuffer
 {
 public:
-	GLuint vboHandler;
-	void Load(void* data,GLuint bytes,GLenum usage);
-	void Update(GLvoid* data,GLintptr offset,GLuint bytes) const;
+	GLuint renderBuffer;
 
-	inline void BeginDrawing() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-		assert(glGetError()==GL_NO_ERROR);
-	}
-	inline void EndDrawing() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		assert(glGetError()==GL_NO_ERROR);
-		//ToDo Returning to default vertexbuffer
-	}
+	/*
+	where # is the bit size of stencil buffer
+	GL_STENCIL_INDEX# 
+	GL_DEPTH_COMPONENT#
+	GL_DEPTH#_STENCIL#
+	*/
+	void Load(GLsizei width,GLsizei height,GLenum internalformat);
 	void Delete() const;
 };
-*/
 class THFrameBuffer
 {
 public:
@@ -64,6 +55,7 @@ public:
 
 	void Load();
 	void Attach(THImage* img,GLenum attachment=GL_COLOR_ATTACHMENT0);
+	void Attach(THRenderBuffer *renderbuf,GLenum attachment);
 	inline void BeginDrawing() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
@@ -74,6 +66,8 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
 	}
 	void Delete() const;
+protected:
+	void CheckAttachment();
 };
 class THFrameBufferSet
 {
@@ -87,24 +81,4 @@ public:
 	inline void BeginDrawing(){fbo.BeginDrawing();}
 	inline void EndDrawing(){fbo.EndDrawing();}
 };
-/*
-class THPixelBuffer
-{
-public:
-	GLuint pboHandler;
-
-	void LoadReader(size_t size);
-	void LoadWriter(size_t size);
-	void Begin() const;
-	void End() const;
-	void* MapBuffer() const;
-	void UnmapBuffer() const;
-	void Delete();
-	inline bool IsReadOnly() const{return m_isreadonly;}
-	inline bool IsWriteOnly() const{return !m_isreadonly;}
-	inline GLenum GetTarget() const{return m_isreadonly?GL_PIXEL_PACK_BUFFER:GL_PIXEL_UNPACK_BUFFER;}
-protected:
-	bool m_isreadonly;
-};
-*/
 #endif

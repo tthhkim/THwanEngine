@@ -39,37 +39,22 @@ void THGLBuffer::LoadPixelWriter(size_t size,GLenum usage,void *data)
 {
 	Load(GL_PIXEL_UNPACK_BUFFER,size,usage,data);
 }
-/*
-void THVertexBuffer::Load(void* data,GLuint bytes,GLenum usage)
+
+
+void THRenderBuffer::Load(GLsizei width,GLsizei height,GLenum internalformat)
 {
-	THLog("VertexBuffer Generation; %d Bytes",bytes);
-
-	glGenBuffers(1,&vboHandler);
-	TH_GLERROR_CHECK("GenBuffers")
-
-	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-	glBufferData(GL_ARRAY_BUFFER,bytes,data,usage);
-
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-	TH_GLERROR_CHECK("BufferData")
-	//ToDo Returning to default vertexbuffer
+	glGenRenderbuffers(1,&renderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER,renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER,internalformat,width,height);
+	glBindRenderbuffer(GL_RENDERBUFFER,0);
+	TH_GLERROR_CHECK("RenderBuffer Create");
 }
-void THVertexBuffer::Update(GLvoid* data,GLintptr offset,GLuint bytes) const
+void THRenderBuffer::Delete() const
 {
-	glBindBuffer(GL_ARRAY_BUFFER,vboHandler);
-	TH_GLERROR_CHECK("BindBuffer")
-	glBufferSubData(GL_ARRAY_BUFFER,offset,bytes,data);
+	glDeleteRenderbuffers(1,&renderBuffer);
+}
 
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-	TH_GLERROR_CHECK("BufferSubData")
-	//ToDo Returning to default vertexbuffer
-}
-void THVertexBuffer::Delete() const
-{
-	glDeleteBuffers(1,&vboHandler);
-	assert(glGetError()==GL_NO_ERROR);
-}
-*/
+
 void THFrameBuffer::Load()
 {
 #ifdef TH_ISDEBUG
@@ -80,13 +65,9 @@ void THFrameBuffer::Load()
 	glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
 	TH_GLERROR_CHECK("BindFrameBuffer")
 }
-void THFrameBuffer::Attach(THImage* img,GLenum attachment)
+void THFrameBuffer::CheckAttachment()
 {
-	//glBindFramebuffer(GL_FRAMEBUFFER,fboHandler);
-	//TH_GLERROR_CHECK("BindFrameBuffer")
-	glFramebufferTexture2D(GL_FRAMEBUFFER,attachment,GL_TEXTURE_2D,img->textureID,0);
-	
-#ifndef NDEBUG
+	#ifndef NDEBUG
 	/*
 	GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
 Not all framebuffer attachment points are framebuffer attachment complete. This means that at least one attachment point with a renderbuffer or texture attached has its attached object no longer in existence or has an attached image with a width or height of zero, or the color attachment point has a non-color-renderable image attached, or the depth attachment point has a non-depth-renderable image attached, or the stencil attachment point has a non-stencil-renderable image attached.
@@ -121,10 +102,20 @@ The combination of internal formats of the attached images violates an implement
 		break;
 	}
 #endif
-	TH_GLERROR_CHECK("FrameBufferTexture2D")
+}
+void THFrameBuffer::Attach(THImage* img,GLenum attachment)
+{
+	glFramebufferTexture2D(GL_FRAMEBUFFER,attachment,GL_TEXTURE_2D,img->textureID,0);
+	CheckAttachment();
 
-	//glBindFramebuffer(GL_FRAMEBUFFER,0);
-	//TH_GLERROR_CHECK("BindFrameBuffer")
+	TH_GLERROR_CHECK("FrameBufferTexture2D")
+}
+void THFrameBuffer::Attach(THRenderBuffer *renderbuf,GLenum attachment)
+{
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,attachment,GL_RENDERBUFFER,renderbuf->renderBuffer);
+	CheckAttachment();
+
+	TH_GLERROR_CHECK("RenderBuffer Attachment");
 }
 void THFrameBuffer::Delete() const
 {
@@ -140,45 +131,3 @@ void THFrameBufferSet::Load(void *data,GLenum internelformat,GLenum format,GLenu
 	fbo.Attach(&img);
 	fbo.EndDrawing();
 }
-/*
-void THPixelBuffer::LoadReader(size_t size)
-{
-	m_isreadonly=true;
-
-	glGenBuffers(1,&pboHandler);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER,pboHandler);
-	glBufferData(GL_PIXEL_PACK_BUFFER,size,0,GL_STREAM_READ);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER,0);
-	TH_GLERROR_CHECK("BufferData")
-}
-void THPixelBuffer::LoadWriter(size_t size)
-{
-	m_isreadonly=false;
-
-	glGenBuffers(1,&pboHandler);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER,pboHandler);
-	glBufferData(GL_PIXEL_UNPACK_BUFFER,size,0,GL_STREAM_DRAW);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER,0);
-	TH_GLERROR_CHECK("BufferData")
-}
-void THPixelBuffer::Begin() const
-{
-	glBindBuffer(GetTarget(),pboHandler);
-}
-void THPixelBuffer::End() const
-{
-	glBindBuffer(GetTarget(),0);
-}
-void* THPixelBuffer::MapBuffer() const
-{
-	return glMapBuffer(GetTarget(),m_isreadonly?GL_READ_ONLY:GL_WRITE_ONLY);
-}
-void THPixelBuffer::UnmapBuffer() const
-{
-	glUnmapBuffer(GetTarget());
-}
-void THPixelBuffer::Delete()
-{
-	glDeleteBuffers(1,&pboHandler);
-}
-*/
