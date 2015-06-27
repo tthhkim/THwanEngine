@@ -23,6 +23,11 @@ application and used a few times to draw primitives.
 */
 	void Load(GLenum target,size_t size,GLenum usage,void *data=0);
 	void Delete();
+	/*
+	GL_READ_ONLY 0x88B8
+	GL_WRITE_ONLY 0x88B9
+	GL_READ_WRITE 0x88BA
+	*/
 	void *MapBuffer(GLenum access);
 	void UnmapBuffer();
 	inline void Begin(){glBindBuffer(m_target,handler);}

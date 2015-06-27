@@ -293,6 +293,7 @@ public:
 			);
 	}
 
+	//Solve A*x=v
 	THVector2 Solve(const THVector2& v) const
 	{
 		const float a=1.0f/Discriminant();
@@ -301,6 +302,7 @@ public:
 			a*(row1.x*v.y - row2.x*v.x)
 			);
 	}
+	//Solve A*x=v
 	THVector2 Solve(float invD,const THVector2& v) const
 	{
 		return THVector2(
