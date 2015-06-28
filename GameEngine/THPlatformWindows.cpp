@@ -40,10 +40,9 @@ static void key_callback(GLFWwindow *window,int key,int scancode,int action,int 
 		THApp.OnKeyUp(key);
 	}
 }
-static bool isMouseDown;
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if(isMouseDown==false){return;}
+	if(THApp.IsTouchDown()==false){return;}
 	const THVector2 p((float)xpos,(float)ypos);
 	THApp.OnTouchMove(p);
 }
@@ -54,11 +53,9 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 	const THVector2 p((float)xpos,(float)ypos);
 	if(action==GLFW_PRESS)
 	{
-		isMouseDown=true;
 		THApp.OnTouchDown(p);
 	}else if(action==GLFW_RELEASE)
 	{
-		isMouseDown=false;
 		THApp.OnTouchUp(p);
 	}
 	

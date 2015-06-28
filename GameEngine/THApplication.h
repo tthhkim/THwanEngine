@@ -63,6 +63,7 @@ public:
 	inline GLfloat *GetProjectionMatrix(){return THProjectMatrix;}
 	inline THVector2& GetWindowSize(){return m_windowSize;}
 	inline THGLBuffer& GetOneVBO(){return m_oneVBO;}
+	inline bool IsTouchDown(){return m_istouchdown;}
 protected:
 	bool m_isrunning;
 	long long m_lastMicroSec;
@@ -75,6 +76,8 @@ protected:
 	//WindowSize
 	THVector2 m_windowSize;
 	GLsizei m_windowWidthi,m_windowHeighti;
+
+	bool m_istouchdown;
 
 	GLfloat THProjectMatrix[6];
 

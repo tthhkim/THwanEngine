@@ -20,6 +20,7 @@ THGLBuffer& GetOneVBO()
 THApplication::THApplication()
 {
 	m_isrunning=false;
+	m_istouchdown=false;
 	m_lastMicroSec=0;
 	SetFrameRate(60.0f);
 
@@ -174,6 +175,7 @@ void THApplication::AddTimer(float _timeSkip,void (*_action)(void*),void* _data)
 void THApplication::OnTouchDown(const THVector2& p)
 {
 	if(m_currentFrame->canTouch==false){return;}
+	m_istouchdown=true;
 	const THVector2 p2(getGameX(p.x),getGameY(p.y));
 	m_currentFrame->FrameDown(p2);
 }
@@ -186,6 +188,7 @@ void THApplication::OnTouchMove(const THVector2& p)
 void THApplication::OnTouchUp(const THVector2& p)
 {
 	if(m_currentFrame->canTouch==false){return;}
+	m_istouchdown=false;
 	const THVector2 p2(getGameX(p.x),getGameY(p.y));
 	m_currentFrame->FrameUp(p2);
 }
