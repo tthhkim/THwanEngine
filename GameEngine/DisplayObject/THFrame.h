@@ -106,12 +106,11 @@ public:
 	}
 
 	void FrameDown(const THVector2& p);
-	void FrameMove(const THVector2& p);
+	void FrameMove(const THVector2& p,const THVector2& delta);
 	void FrameUp(const THVector2& p);
 
 protected:
 	THButton *m_buttondown;
-	THVector2 m_lasttouched;
 };
 
 #endif

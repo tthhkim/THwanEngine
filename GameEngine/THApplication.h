@@ -64,6 +64,8 @@ public:
 	inline THVector2& GetWindowSize(){return m_windowSize;}
 	inline THGLBuffer& GetOneVBO(){return m_oneVBO;}
 	inline bool IsTouchDown(){return m_istouchdown;}
+	inline THVector2& GetLastTouchedPoint(){return m_lasttouched;}
+	inline THVector2& GetTouchDelta(){return m_touchdelta;}
 protected:
 	bool m_isrunning;
 	long long m_lastMicroSec;
@@ -78,6 +80,7 @@ protected:
 	GLsizei m_windowWidthi,m_windowHeighti;
 
 	bool m_istouchdown;
+	THVector2 m_lasttouched,m_touchdelta;
 
 	GLfloat THProjectMatrix[6];
 

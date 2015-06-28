@@ -59,7 +59,6 @@ void THFrame::Draw()
 */
 void THFrame::FrameDown(const THVector2& p)
 {
-	m_lasttouched=p;
 	OnTouchDown(p);
 
 	unsigned int i=buttonList.num;
@@ -79,10 +78,9 @@ void THFrame::FrameDown(const THVector2& p)
 		}
 	}
 }
-void THFrame::FrameMove(const THVector2& p)
+void THFrame::FrameMove(const THVector2& p,const THVector2& delta)
 {
-	OnTouchMove(p,p-m_lasttouched);
-	m_lasttouched=p;
+	OnTouchMove(p,delta);
 }
 void THFrame::FrameUp(const THVector2& p)
 {

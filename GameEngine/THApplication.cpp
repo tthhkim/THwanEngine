@@ -178,12 +178,16 @@ void THApplication::OnTouchDown(const THVector2& p)
 	m_istouchdown=true;
 	const THVector2 p2(getGameX(p.x),getGameY(p.y));
 	m_currentFrame->FrameDown(p2);
+	m_lasttouched=p2;
+	m_touchdelta.SetZero();
 }
 void THApplication::OnTouchMove(const THVector2& p)
 {
 	if(m_currentFrame->canTouch==false){return;}
 	const THVector2 p2(getGameX(p.x),getGameY(p.y));
-	m_currentFrame->FrameMove(p2);
+	m_touchdelta=p2-m_lasttouched;
+	m_currentFrame->FrameMove(p2,m_touchdelta);
+	m_lasttouched=p2;
 }
 void THApplication::OnTouchUp(const THVector2& p)
 {
