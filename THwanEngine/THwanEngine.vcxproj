@@ -78,6 +78,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Calculator\CalculatorManager.cpp" />
+    <ClCompile Include="..\Calculator\FunctionForm.cpp" />
     <ClCompile Include="..\Callback.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THChar.cpp" />
     <ClCompile Include="..\GameEngine\DisplayObject\THDisplayObject.cpp" />
@@ -106,6 +108,10 @@
     <ClCompile Include="..\Includes\lodepng.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Calculator\CalculatorManager.h" />
+    <ClInclude Include="..\Calculator\Form.h" />
+    <ClInclude Include="..\Calculator\FunctionForm.h" />
+    <ClInclude Include="..\Calculator\NonFunctionForm.h" />
     <ClInclude Include="..\GameEngine\DisplayObject\THChar.h" />
     <ClInclude Include="..\GameEngine\DisplayObject\THDisplayObject.h" />
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h" />

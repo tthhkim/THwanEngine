@@ -31,6 +31,9 @@
     <Filter Include="lodepng">
       <UniqueIdentifier>{f6d1e1a3-d471-4381-94e7-a8045cadff76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Calculator">
+      <UniqueIdentifier>{fe63b0a3-70fa-409c-998a-493eec0d91aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\GameEngine\DisplayObject\THFrame.cpp">
@@ -111,6 +114,12 @@
     <ClCompile Include="..\GameEngine\Util\THTween.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
+    <ClCompile Include="..\Calculator\CalculatorManager.cpp">
+      <Filter>Calculator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Calculator\FunctionForm.cpp">
+      <Filter>Calculator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GameEngine\DisplayObject\THFrame.h">
@@ -178,6 +187,18 @@
     </ClInclude>
     <ClInclude Include="..\GameEngine\Util\THUtils.h">
       <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Calculator\NonFunctionForm.h">
+      <Filter>Calculator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Calculator\CalculatorManager.h">
+      <Filter>Calculator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Calculator\Form.h">
+      <Filter>Calculator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Calculator\FunctionForm.h">
+      <Filter>Calculator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
